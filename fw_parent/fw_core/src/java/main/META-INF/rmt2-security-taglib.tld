@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>security</short-name>
+    <uri>/rmt2-securitytaglib</uri>
+  <tag>
+    <name>UserLogOffCheck</name>
+    <tag-class>com.api.jsp.taglib.security.RMT2CheckUserNotLoggedInTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Determines if the user is not signed on to the system.
+    </description>
+  </tag>        
+  <tag>
+    <name>UserLogInCheck</name>
+    <tag-class>com.api.jsp.taglib.security.RMT2CheckUserLoggedInTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Determines if the user has signed on to the system.
+    </description>
+    <attribute>
+	   <name>userName</name>
+	   <required>false</required>
+	   <rtexprvalue>true</rtexprvalue>
+    </attribute>      
+  </tag>    
+  <tag>
+    <name>RolesExist</name>
+    <tag-class>com.api.jsp.taglib.security.RMT2RoleExistCheckTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Determines if one or more roles matches any of the roles assigned to a user.
+    </description>
+    <attribute>
+       <name>roles</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>  
+  <tag>
+    <name>RolesNotExist</name>
+    <tag-class>com.api.jsp.taglib.security.RMT2RoleNotExistCheckTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Determines if one or more roles matches any of the roles assigned to a user.
+    </description>
+    <attribute>
+       <name>roles</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>    
+  <tag>
+    <name>UserResourceRouter</name>
+    <tag-class>com.api.jsp.taglib.security.RMT2AppPageRouterTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Redirects the user to the specified URL based on whether or not the user is signed on the system. 
+    </description>
+    <attribute>
+       <name>state</name>
+       <required>false</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>    
+    <attribute>
+       <name>roles</name>
+       <required>false</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>    
+    <attribute>
+       <name>success</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute> 
+	<attribute>
+	   <name>failure</name>
+	   <required>true</required>
+	   <rtexprvalue>true</rtexprvalue>
+    </attribute>
+	<attribute>
+	   <name>appName</name>
+	   <required>true</required>
+	   <rtexprvalue>true</rtexprvalue>
+    </attribute>
+	<attribute>
+	   <name>userName</name>
+	   <required>true</required>
+	   <rtexprvalue>true</rtexprvalue>
+    </attribute>            
+  </tag>
+</taglib>

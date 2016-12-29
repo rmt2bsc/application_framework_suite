@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<DataSource Name="XactTypeView">
+  <Sql Select="xact_type_id, 
+		xact_catg_id, 
+		description, 
+		code, 
+		to_multiplier, 
+		from_multiplier, 
+		to_acct_type_id, 
+		to_acct_catg_id, 
+		from_acct_type_id, 
+		from_acct_catg_id, 
+		has_subsidiary" From="xact_type" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="XactTypeTable" DBName="xact_type" Updateable="true"/>
+  <ColAttr Name="XactTypeId" DBName="xact_type_id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="XactCatgId" DBName="xact_catg_id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Description" DBName="description" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Code" DBName="code" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="ToMultiplier" DBName="to_multiplier" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="FromMultiplier" DBName="from_multiplier" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="ToAcctTypeId" DBName="to_acct_type_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="ToAcctCatgId" DBName="to_acct_catg_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="FromAcctTypeId" DBName="from_acct_type_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="FromAcctCatgId" DBName="from_acct_catg_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="HasSubsidiary" DBName="has_subsidiary" SqlType="smallint" IsNull="false" JavaType="int" PrimaryKey="false" TableName="XactTypeTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DataSource Name="FinancialdataView">
+  <Sql Select="year, 
+		quarter, 
+		code, 
+		amount" From="financialdata" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="FinancialdataTable" DBName="financialdata" Updateable="true"/>
+  <ColAttr Name="Year" DBName="year" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="true" TableName="FinancialdataTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Quarter" DBName="quarter" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="true" TableName="FinancialdataTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Code" DBName="code" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="true" TableName="FinancialdataTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Amount" DBName="amount" SqlType="numeric" IsNull="true" JavaType="double" PrimaryKey="false" TableName="FinancialdataTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

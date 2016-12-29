@@ -1,0 +1,18 @@
+<html>
+	<body>
+	  API providing classes and interfaces to operate the HTTP URL Query-Based Web Service engine.<br><br>
+	  <u>How to use</u><br>
+	  Add the servlet mapping to the web.xml configuration file of the Service Dispatch application as such:
+	  <pre>
+	      &lt;servlet&gt;
+          &lt;servlet-name&gt;remoteservices&lt;/servlet-name&gt;
+          &lt;servlet-class&gt;com.api.messaging.webservice.http.engine.HttpServiceController&lt;/servlet-class&gt;
+        &lt;/servlet&gt;
+  
+			  &lt;servlet-mapping&gt;
+			    &lt;servlet-name&gt;remoteservices&lt;/servlet-name&gt;
+			    &lt;url-pattern&gt;/remoteservices&lt;/url-pattern&gt;
+			  &lt;/servlet-mapping&gt;
+	  </pre>
+	</body>
+</html>

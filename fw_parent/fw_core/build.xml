@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project name="Framework 2012" basedir="." default="compile">
+	<property file="build.properties" />
+
+	<path id="build.classpath">
+		<pathelement path="${lib.classpath}" />
+	</path>
+
+	<target name="clean" description="Deletes the work directories">
+		<echo message="Cleaning scratch directories for application ${appName}..." />
+		<delete dir="${compileDir}" />
+	</target>
+
+	<target name="compile" depends="clean" description="Compiles the Application">
+		<echo message="OS Architecture ${os.arch}" />
+		<echo message="OS Name ${os.name}" />
+		<echo message="OS Version ${os.version}" />
+		<echo message="Classpath: ${lib.classpath}" />
+
+		<mkdir dir="${classesDir}" />
+		<echo message="Compliling fw2012 application ${appName}..." />
+		<javac srcdir="${javaSrcDir}" destdir="${classesDir}">
+			<classpath refid="build.classpath" />
+		</javac>
+		<copy todir="${classesDir}">
+			<fileset dir="${resourceDir}">
+				<include name="**" />
+			</fileset>
+		</copy>
+		<copy todir="${classesDir}/META-INF" >
+			<fileset dir="${sourceRoot}/java/META-INF">
+				<include name="*.tld" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="deploy" depends="compile" description="Prepares the application for distribution which includes creating the directory structure, copying the application files to the respective directories, and creating the runnable jar">
+		<echo message="Deploying application ${appName}..." />
+		<echo message="Creating jar for ${appName} and sending to ${distDir}..." />
+		<jar destfile="../dist/${jarFileName}" basedir="${classesDir}" />
+		<echo message="Deployment completed" />
+	</target>
+
+</project>

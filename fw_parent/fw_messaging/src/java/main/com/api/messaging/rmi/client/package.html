@@ -1,0 +1,25 @@
+<html>
+	<body> 
+			Provides interfaces, implementations, factories, and constant classes for creating and manipulating RMI clients.<br><br>
+			<b>How to use</b><br>
+			<pre>
+			    // Setup the client
+			    RemoteClientFactory f = new RemoteClientFactory();
+	        client = f.getRmiClient();
+	        // Create and setup the input message
+	        RmiMessageHandlerInput input = new RmiMessageHandlerInput();
+	        input.setRemoteObjectName("TestCommand1");
+	        input.setMessageId("RQ_TEST_1");
+	        input.setCommand("payload_1");
+	        // Contact the RMI object with input message and wait for the response...
+	        MessageHandlerResults r = client.sendMessage("TestCommand1", "RQ_TEST_1", "payload_1", input);
+
+	        
+	        // A quicker alternative...
+	        RemoteClientWrapper rmiClient = new RemoteClientWrapper();
+	        String payload = "This is a simple message";
+	        MessageHandlerResults r = rmiClient.sendMessage("TestCommand1", "RQ_TEST_1", "payload_1", payload);
+	        rmiClient.close();
+			</pre>
+	</body>
+</html>

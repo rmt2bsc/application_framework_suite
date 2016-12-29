@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<DataSource Name="ContactsView">
+  <Sql Select="id, 
+		surname, 
+		givenname, 
+		title, 
+		street, 
+		city, 
+		state, 
+		country, 
+		postalcode, 
+		phone, 
+		fax, 
+		customerid" From="contacts" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="ContactsTable" DBName="contacts" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Surname" DBName="surname" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Givenname" DBName="givenname" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Title" DBName="title" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Street" DBName="street" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="City" DBName="city" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="State" DBName="state" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Country" DBName="country" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Postalcode" DBName="postalcode" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Phone" DBName="phone" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Fax" DBName="fax" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Customerid" DBName="customerid" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="ContactsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

@@ -1,0 +1,12 @@
+16:28:28.781 INFO  [Thread-1] - Server accepting connections on tcp://128.93.22.124:3035/
+16:28:28.796 INFO  [Thread-1] - JNDI service accepting connections on tcp://128.93.22.124:3035/
+16:28:28.812 INFO  [Thread-1] - Admin service accepting connections on tcp://128.93.22.124:3035/
+16:28:28.953 INFO  [Thread-1] - Server accepting connections on rmi://128.93.22.124:1099/
+16:28:28.953 INFO  [Thread-1] - JNDI service accepting connections on rmi://128.93.22.124:1099/
+16:28:28.968 INFO  [Thread-1] - Admin service accepting connections on rmi://128.93.22.124:1099/
+17:29:53.968 INFO  [Thread-1] - Server accepting connections on tcp://128.93.22.124:3035/
+17:29:53.984 INFO  [Thread-1] - JNDI service accepting connections on tcp://128.93.22.124:3035/
+17:29:54.000 INFO  [Thread-1] - Admin service accepting connections on tcp://128.93.22.124:3035/
+17:29:54.109 INFO  [Thread-1] - Server accepting connections on rmi://128.93.22.124:1099/
+17:29:54.156 INFO  [Thread-1] - JNDI service accepting connections on rmi://128.93.22.124:1099/
+17:29:54.171 INFO  [Thread-1] - Admin service accepting connections on rmi://128.93.22.124:1099/

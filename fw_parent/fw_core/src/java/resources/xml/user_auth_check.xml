@@ -1,0 +1,16 @@
+
+<RQ_authentication_user_appcheck>
+	<header>
+		<message_id>RQ_authentication_user_appcheck</message_id>
+		<delivery_mode>SYNC</delivery_mode>
+		<message_mode>REQUEST</message_mode>
+		<delivery_date>$delivery_date$</delivery_date>
+		<user_id>$user_id$</user_id>
+	</header>
+	<user_credentials>
+		<uid>$uid$</uid>
+		<app_code>$app_code$</app_code>
+		<session_id>$session_id$</session_id>
+		<signed_on>false</signed_on>
+	</user_credentials>
+</RQ_authentication_user_appcheck>
