@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.055" errors="0" skipped="0" tests="10" name="testcases.io.file.FileSystemTest">
+<testsuite failures="0" time="0.085" errors="0" skipped="0" tests="10" name="testcases.io.file.FileSystemTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.7.0_67\jre\bin"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="Service Pack 1"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="C:\ProjectServer\RMT2_Fw_Suite\fw_parent\fw_core"/>
+    <property name="user.dir" value="C:\source\RMT2_Framework_Suite\fw_parent"/>
     <property name="java.runtime.version" value="1.7.0_67-b01"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
     <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.7.0_67\jre\lib\endorsed"/>
@@ -26,9 +26,9 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="user.variant" value=""/>
     <property name="os.name" value="Windows 7"/>
-    <property name="classworlds.conf" value="C:\tools\apache-maven-3.2.3\bin\m2.conf"/>
+    <property name="classworlds.conf" value="C:/tools/apache-maven-3.2.3/bin/m2.conf"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.7.0_67\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\AMD APP\bin\x86_64;C:\Program Files (x86)\AMD APP\bin\x86;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Java\jdk1.7.0_67/bin;C:\Program Files\SQL Anywhere 12\bin64;C:\Program Files\SQL Anywhere 12\bin32;C:\Program Files (x86)\Starbase\StarGate SDK\Lib;C:\Program Files (x86)\Starbase\StarGate SDK\Bin;C:\Program Files (x86)\Sybase\SQL Anywhere 8\win32;C:\Program Files (x86)\Sybase\Shared\win32;C:\Program Files (x86)\Sybase\Shared\Sybase Central 4.1;C:\tools\apache-maven-3.2.3\bin;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.7.0_67\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Users\appdev\bin;C:\tools\Git\mingw64\bin;C:\tools\Git\usr\local\bin;C:\tools\Git\usr\bin;C:\tools\Git\usr\bin;C:\tools\Git\mingw64\bin;C:\tools\Git\usr\bin;C:\Users\appdev\bin;C:\Program Files (x86)\AMD APP\bin\x86_64;C:\Program Files (x86)\AMD APP\bin\x86;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Java\jdk1.7.0_67\bin;C:\Program Files\SQL Anywhere 12\bin64;C:\Program Files\SQL Anywhere 12\bin32;C:\Program Files (x86)\Starbase\StarGate SDK\Lib;C:\Program Files (x86)\Starbase\StarGate SDK\Bin;C:\Program Files (x86)\Sybase\SQL Anywhere 8\win32;C:\Program Files (x86)\Sybase\Shared\win32;C:\Program Files (x86)\Sybase\Shared\Sybase Central 4.1;C:\tools\apache-maven-3.2.3\bin;C:\tools\Git\usr\bin\vendor_perl;C:\tools\Git\usr\bin\core_perl;."/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="51.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -39,11 +39,11 @@
     <property name="java.specification.version" value="1.7"/>
     <property name="file.encoding" value="Cp1252"/>
     <property name="user.name" value="appdev"/>
-    <property name="java.class.path" value="C:\tools\apache-maven-3.2.3\boot\plexus-classworlds-2.5.1.jar"/>
+    <property name="java.class.path" value="C:/tools/apache-maven-3.2.3/boot/plexus-classworlds-2.5.1.jar"/>
     <property name="java.vm.specification.version" value="1.7"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="C:\Program Files\Java\jdk1.7.0_67\jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher test"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean install"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -60,14 +60,14 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase time="0.003" classname="testcases.io.file.FileSystemTest" name="testDir"/>
+  <testcase time="0.013" classname="testcases.io.file.FileSystemTest" name="testDir"/>
   <testcase time="0" classname="testcases.io.file.FileSystemTest" name="testFile"/>
-  <testcase time="0.044" classname="testcases.io.file.FileSystemTest" name="testMimeTypeIdentification"/>
+  <testcase time="0.065" classname="testcases.io.file.FileSystemTest" name="testMimeTypeIdentification"/>
   <testcase time="0" classname="testcases.io.file.FileSystemTest" name="testFileListUtilityDirectoryAsFile"/>
   <testcase time="0.001" classname="testcases.io.file.FileSystemTest" name="testListFilesUsingEmptyWildcard"/>
-  <testcase time="0.001" classname="testcases.io.file.FileSystemTest" name="testLocateFilenameExtension"/>
+  <testcase time="0" classname="testcases.io.file.FileSystemTest" name="testLocateFilenameExtension"/>
   <testcase time="0.003" classname="testcases.io.file.FileSystemTest" name="testPropertisFileLoadByClassPath"/>
-  <testcase time="0.001" classname="testcases.io.file.FileSystemTest" name="testFileListUtilityWithWildcards"/>
-  <testcase time="0.001" classname="testcases.io.file.FileSystemTest" name="testFileListUtilityDirectoryNotFound"/>
-  <testcase time="0.001" classname="testcases.io.file.FileSystemTest" name="testFileListUtility"/>
+  <testcase time="0.003" classname="testcases.io.file.FileSystemTest" name="testFileListUtilityWithWildcards"/>
+  <testcase time="0" classname="testcases.io.file.FileSystemTest" name="testFileListUtilityDirectoryNotFound"/>
+  <testcase time="0" classname="testcases.io.file.FileSystemTest" name="testFileListUtility"/>
 </testsuite>
