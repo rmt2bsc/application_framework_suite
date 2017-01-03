@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<DataSource Name="SalesorderitemsView">
+  <Sql Select="id, 
+		lineid, 
+		productid, 
+		quantity, 
+		shipdate" From="salesorderitems" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="SalesorderitemsTable" DBName="salesorderitems" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="SalesorderitemsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Lineid" DBName="lineid" SqlType="smallint" IsNull="false" JavaType="int" PrimaryKey="true" TableName="SalesorderitemsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Productid" DBName="productid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="SalesorderitemsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Quantity" DBName="quantity" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="SalesorderitemsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Shipdate" DBName="shipdate" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="SalesorderitemsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

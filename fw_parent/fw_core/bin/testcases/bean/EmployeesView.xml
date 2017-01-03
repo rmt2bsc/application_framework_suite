@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<DataSource Name="EmployeesView">
+  <Sql Select="employeeid, 
+		managerid, 
+		surname, 
+		givenname, 
+		departmentid, 
+		street, 
+		city, 
+		state, 
+		country, 
+		postalcode, 
+		phone, 
+		status, 
+		socialsecuritynumber, 
+		salary, 
+		startdate, 
+		terminationdate, 
+		birthdate, 
+		benefithealthinsurance, 
+		benefitlifeinsurance, 
+		benefitdaycare, 
+		sex" From="employees" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="EmployeesTable" DBName="employees" Updateable="true"/>
+  <ColAttr Name="Employeeid" DBName="employeeid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Managerid" DBName="managerid" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Surname" DBName="surname" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Givenname" DBName="givenname" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Departmentid" DBName="departmentid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Street" DBName="street" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="City" DBName="city" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="State" DBName="state" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Country" DBName="country" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Postalcode" DBName="postalcode" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Phone" DBName="phone" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Status" DBName="status" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Socialsecuritynumber" DBName="socialsecuritynumber" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Salary" DBName="salary" SqlType="numeric" IsNull="false" JavaType="double" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Startdate" DBName="startdate" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Terminationdate" DBName="terminationdate" SqlType="date" IsNull="true" JavaType="java.util.Date" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Birthdate" DBName="birthdate" SqlType="date" IsNull="true" JavaType="java.util.Date" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Benefithealthinsurance" DBName="benefithealthinsurance" SqlType="bit" IsNull="true" JavaType="int" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Benefitlifeinsurance" DBName="benefitlifeinsurance" SqlType="bit" IsNull="true" JavaType="int" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Benefitdaycare" DBName="benefitdaycare" SqlType="bit" IsNull="true" JavaType="int" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Sex" DBName="sex" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="EmployeesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

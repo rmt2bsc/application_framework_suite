@@ -1,0 +1,41 @@
+<project name="Project Name" default="build" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="src" value=".\source\com"/>
+  <property name="build" value=".\web-inf\classes"/>
+  <property name="dist"  value=".\dist"/>
+
+  <target name="init">
+      <!-- Create the time stamp -->
+      <tstamp/>
+      <!-- Delete the ${build} and ${dist} directory trees -->
+      <delete dir="${build}\com"/>
+      <!-- Create the build directory structure used by compile -->
+      <mkdir dir="${build}\com"/>
+    </target>
+
+    <target name="compile">
+      <!-- Compile the java code from ${src} into ${build} -->
+      <javac srcdir="${src}" destdir="${build}"/>
+    </target>
+
+    <target name="build" depends="init">
+      <!-- Delete the build directory and compile the java code from ${src} into ${build} -->
+      <javac srcdir="${src}" destdir="${build}"/>
+    </target>
+
+    <target name="dist" depends="build">
+      <!-- Create the distribution directory -->
+      <mkdir dir="${dist}"/>
+
+      <!-- Put everything in ${build} into the home.jar file -->
+      <jar jarfile="${dist}/rmt2.jar" basedir="${build}"/>
+    </target>
+
+    <target name="clean">
+      <!-- Delete the ${build} and ${dist} directory trees -->
+      <delete dir="${build}"/>
+      <delete dir="${dist}"/>
+    </target>
+  </project>
+

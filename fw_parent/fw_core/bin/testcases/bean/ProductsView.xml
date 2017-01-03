@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<DataSource Name="ProductsView">
+  <Sql Select="id, 
+		name, 
+		description, 
+		size, 
+		color, 
+		quantity, 
+		unitprice, 
+		photo" From="products" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="ProductsTable" DBName="products" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Name" DBName="name" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Description" DBName="description" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Size" DBName="size" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Color" DBName="color" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Quantity" DBName="quantity" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Unitprice" DBName="unitprice" SqlType="numeric" IsNull="false" JavaType="double" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Photo" DBName="photo" SqlType="long binary" IsNull="true" JavaType="InputStream" PrimaryKey="false" TableName="ProductsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

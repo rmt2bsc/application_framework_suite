@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.rmt2.framework.suite</groupId>
+  <artifactId>fw-parent</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>rmt2-fw-suite</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+   <modules>
+    <module>fw_core</module>
+    <module>fw_web</module>
+    <module>fw_messaging</module>
+    <module>fw_jsp</module>
+    <module>fw_swing</module>
+  </modules>
+  <distributionManagement>
+		<snapshotRepository>
+			<id>InternalSnapshots</id>
+			<name>Internal Snapshots</name>
+			<url>file://rmtdaldev77/download/repo/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>InternalReleases</id>
+			<name>Internal Releases</name>
+			<url>file://rmtdalsys01/rmt2/repo/releases/</url>
+		</repository>
+	</distributionManagement>
+</project>

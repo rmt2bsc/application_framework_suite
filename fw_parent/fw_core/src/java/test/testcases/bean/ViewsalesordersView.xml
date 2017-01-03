@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<DataSource Name="ViewsalesordersView">
+  <Sql Select="id, 
+		lineid, 
+		productid, 
+		quantity, 
+		orderdate, 
+		shipdate, 
+		region, 
+		salesrepresentativename" From="viewsalesorders" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="ViewsalesordersTable" DBName="viewsalesorders" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Lineid" DBName="lineid" SqlType="smallint" IsNull="false" JavaType="int" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Productid" DBName="productid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Quantity" DBName="quantity" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Orderdate" DBName="orderdate" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Shipdate" DBName="shipdate" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Region" DBName="region" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Salesrepresentativename" DBName="salesrepresentativename" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="ViewsalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

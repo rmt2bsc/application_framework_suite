@@ -1,0 +1,151 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="AppServerConfig">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="LoggerConfigPath">
+          <xs:annotation>
+            <xs:documentation>*******************************  Application Properties           *******************************</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element type="xs:string" name="ContainerManagedPool"/>
+        <xs:element type="xs:byte" name="PageLinkMax"/>
+        <xs:element type="xs:byte" name="PaginationPageSize"/>
+        <xs:element type="xs:string" name="PollingPage"/>
+        <xs:element type="xs:string" name="ProtocolInformation"/>
+        <xs:element type="xs:string" name="RemoteSrvcApp"/>
+        <xs:element type="xs:string" name="RptFileExt"/>
+        <xs:element type="xs:string" name="RptXsltPath"/>
+        <xs:element type="xs:string" name="SerialDrive"/>
+        <xs:element type="xs:string" name="SerialExt"/>
+        <xs:element type="xs:string" name="SerialPath"/>
+        <xs:element type="xs:short" name="TimeoutInterval"/>
+        <xs:element type="xs:string" name="WebAppMapping"/>
+        <xs:element type="xs:string" name="WebAppsDir"/>
+        <xs:element type="xs:string" name="WebAppsDrive"/>
+        <xs:element name="SystemProperties">
+          <xs:annotation>
+            <xs:documentation>*******************************  JVM System Properties            *******************************</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="environment"/>
+              <xs:element type="xs:anyURI" name="soaphost"/>
+              <xs:element type="xs:string" name="SaxDriver"/>
+              <xs:element name="EmailConfig">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Authentication"/>
+                    <xs:element type="xs:string" name="Defaultcontent"/>
+                    <xs:element type="xs:string" name="HostPop3"/>
+                    <xs:element type="xs:string" name="HostSmtp"/>
+                    <xs:element type="xs:string" name="InternalSmtpDomain"/>
+                    <xs:element type="xs:string" name="UserId"/>
+                    <xs:element type="xs:string" name="Password"/>
+                    <xs:element type="xs:string" name="Resourcetype"/>
+                    <xs:element type="xs:string" name="TemplatePath"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="ConsumerMsgHandlerMappingsKey"/>
+              <xs:element type="xs:string" name="ConsumerMsgHandlerMappingsLocation"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ApiConfigurators">
+          <xs:annotation>
+            <xs:documentation>********************************************************************  Configurators used to initialize individual Api environments.         Each class must derive ApiConfigurator interface.                     ********************************************************************</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ApiConfigurator" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="className" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="JaxbContexts">
+          <xs:annotation>
+            <xs:documentation>*******************************  Messaging related configuration  *******************************</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="JaxbContext" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="name" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="MessagingSystemsInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="System" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Name"/>
+                    <xs:element type="xs:string" name="UseJndi"/>
+                    <xs:element type="xs:string" name="UseAuthentication"/>
+                    <xs:element type="xs:string" name="InitialContextFactory"/>
+                    <xs:element type="xs:string" name="ConnectionFactory"/>
+                    <xs:element type="xs:string" name="ProviderUrl"/>
+                    <xs:element type="xs:string" name="UserId"/>
+                    <xs:element type="xs:string" name="Password"/>
+                    <xs:element type="xs:byte" name="MaxConnectAttemps"/>
+                    <xs:element type="xs:short" name="ConnectAttemptInterval"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DestinationMappings">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Destination" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Rmt2Name"/>
+                    <xs:element type="xs:string" name="JndiName"/>
+                    <xs:element type="xs:string" name="ContainSuffix"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ServiceRegistry">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Service" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Name"/>
+                    <xs:element type="xs:string" name="ServiceType"/>
+                    <xs:element type="xs:string" name="application"/>
+                    <xs:element type="xs:string" name="module"/>
+                    <xs:element type="xs:string" name="transaction"/>
+                    <xs:element type="xs:string" name="destination"/>
+                    <xs:element type="xs:string" name="description"/>
+                    <xs:element type="xs:string" name="secure"/>
+                    <xs:element type="xs:string" name="host"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

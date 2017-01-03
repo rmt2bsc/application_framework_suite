@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<DataSource Name="XactView">
+  <Sql Select="xact_id, 
+		xact_type_id, 
+		xact_subtype_id, 
+		xact_date, 
+		xact_amount, 
+		tender_id, 
+		neg_instr_no, 
+		bank_trans_ind, 
+		confirm_no, 
+		entity_ref_no, 
+		posted_date, 
+		reason, 
+		date_created, 
+		date_updated, 
+		user_id" From="xact" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="XactTable" DBName="xact" Updateable="true"/>
+  <ColAttr Name="XactId" DBName="xact_id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="XactTypeId" DBName="xact_type_id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="XactSubtypeId" DBName="xact_subtype_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="XactDate" DBName="xact_date" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="XactAmount" DBName="xact_amount" SqlType="decimal" IsNull="true" JavaType="double" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="TenderId" DBName="tender_id" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="NegInstrNo" DBName="neg_instr_no" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="BankTransInd" DBName="bank_trans_ind" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="ConfirmNo" DBName="confirm_no" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="EntityRefNo" DBName="entity_ref_no" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="PostedDate" DBName="posted_date" SqlType="timestamp" IsNull="true" JavaType="java.util.Date" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Reason" DBName="reason" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="DateCreated" DBName="date_created" SqlType="timestamp" IsNull="true" JavaType="java.util.Date" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="DateUpdated" DBName="date_updated" SqlType="timestamp" IsNull="true" JavaType="java.util.Date" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="UserId" DBName="user_id" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="XactTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<DataSource Name="FinancialcodesView">
+  <Sql Select="code, 
+		type, 
+		description" From="financialcodes" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="FinancialcodesTable" DBName="financialcodes" Updateable="true"/>
+  <ColAttr Name="Code" DBName="code" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="true" TableName="FinancialcodesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Type" DBName="type" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="FinancialcodesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Description" DBName="description" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="FinancialcodesTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<DataSource Name="SalesordersView">
+  <Sql Select="id, 
+		customerid, 
+		orderdate, 
+		financialcode, 
+		region, 
+		salesrepresentative" From="salesorders" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="SalesordersTable" DBName="salesorders" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Customerid" DBName="customerid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Orderdate" DBName="orderdate" SqlType="date" IsNull="false" JavaType="java.util.Date" PrimaryKey="false" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Financialcode" DBName="financialcode" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Region" DBName="region" SqlType="char" IsNull="true" JavaType="char" PrimaryKey="false" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Salesrepresentative" DBName="salesrepresentative" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="SalesordersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

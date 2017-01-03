@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<DataSource Name="DepartmentsView">
+  <Sql Select="departmentid, 
+		departmentname, 
+		departmentheadid" From="departments" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="DepartmentsTable" DBName="departments" Updateable="true"/>
+  <ColAttr Name="Departmentid" DBName="departmentid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="DepartmentsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Departmentname" DBName="departmentname" SqlType="char" IsNull="false" JavaType="char" PrimaryKey="false" TableName="DepartmentsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Departmentheadid" DBName="departmentheadid" SqlType="integer" IsNull="true" JavaType="int" PrimaryKey="false" TableName="DepartmentsTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

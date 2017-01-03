@@ -1,0 +1,35 @@
+<html>
+	<body>
+	  API providing HTTP client classes and interfaces to interact with HTTP URL Query-Based Web Services.<br><br>
+	  <u>How to use</u><br>
+	  <pre>
+	      Request request;  -- Ensure instance is initialized properly
+	      Response response; -- Ensure instance is initialized properly
+	      HttpMessageSender client = HttpClientResourceFactory.getHttpInstance(request, response);
+			  ProviderConfig config;
+				try {
+				    config = ResourceFactory.getHttpConfigInstance();
+				    client.connect(config);
+				    client.processRequest();
+				    Object result = client.getMessage();
+				    return result;
+				}
+				catch (MessagingException e) {
+				    e.printStackTrace();
+				    throw new LoginException(e);
+				}
+				catch (ProviderConnectionException e) {
+				    e.printStackTrace();
+				    throw new LoginException(e);
+				}
+				catch (HttpClientMessageException e) {
+				    e.printStackTrace();
+				    throw new LoginException(e);
+				}
+				catch (MessageException e) {
+				    e.printStackTrace();
+				    throw new LoginException(e);
+				}
+	  </pre>
+	</body>
+</html>

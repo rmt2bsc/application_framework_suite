@@ -1,0 +1,15 @@
+
+<RQ_authentication_logout>
+	<header>
+		<message_id>RQ_authentication_logout</message_id>
+		<target_action>logout</target_action>
+		<delivery_mode>SYNC</delivery_mode>
+		<message_mode>REQUEST</message_mode>
+		<delivery_date>$delivery_date$</delivery_date>
+		<user_id>$user_id$</user_id>
+	</header>
+	<logout_credentials>
+		<uid>$uid$</uid>
+		<session_id>$session_id$</session_id>
+	</logout_credentials>
+</RQ_authentication_logout>

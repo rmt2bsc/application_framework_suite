@@ -1,0 +1,46 @@
+<html>
+	<body>
+	  API providing classes that act as clients to various types of web services designed and developed for the RMT2 platform.
+	  
+	  <b><u>How to Use the WebServiceInvocationClient to call SOAP based web services</u></b>
+	  <pre>
+	    ObjectFactory f = new ObjectFactory();
+			// Create Payload instance from JAXB generated java class
+			RQContentSearch ws = f.createRQContentSearch();
+			// Setup the header section of the SOAP body payload
+			HeaderType header = PayloadFactory.createHeader("RQ_content_search", "SYNC", "REQUEST", "rterrell");
+			ws.setHeader(header);
+			
+			// Setup individual data items of the SOAP body payload
+			ws.setContentId(BigInteger.valueOf(4283));
+			
+			// Marshal the payload to a XML String
+			String msg = ResourceFactory.getJaxbMessageBinder().marshalMessage(ws);
+		
+		  // Create the SoapClientWrapper instance
+			SoapClientWrapper client = new SoapClientWrapper();
+			try {
+			    // Call the intended web service
+			    SOAPMessage resp = client.callSoap(msg);
+			    
+			    // Check if response contains a SOAPFault
+			    if (client.isSoapError(resp)) {
+							String errMsg = client.getSoapErrorMessage(resp);
+							throw new Exception(errMsg);
+			    }
+			    
+			    // Obtain the payload from the response as a JAXB instance.
+			    RSContentSearch content = (RSContentSearch) client.getSoapResponsePayload();
+		
+		      // From this point, manage the JAXB instance as needed.
+			    if (content.getContent().size() > 0) {
+							byte image[] = RMT2Base64Decoder.decodeToBytes(content.getContent().get(0).getBinaryData());
+							RMT2File.outputFile(image, "c:/tmp/filetest.jpg");
+			    }
+			}
+			catch (Exception e) {
+			    e.printStackTrace();
+			}
+	  </pre>
+	</body>
+</html>

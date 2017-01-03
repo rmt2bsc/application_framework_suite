@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<DataSource Name="CustomersView">
+  <Sql Select="id, 
+		surname, 
+		givenname, 
+		street, 
+		city, 
+		state, 
+		country, 
+		postalcode, 
+		phone, 
+		companyname" From="customers" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="CustomersTable" DBName="customers" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Surname" DBName="surname" SqlType="varchar" IsNull="false" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Givenname" DBName="givenname" SqlType="varchar" IsNull="false" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Street" DBName="street" SqlType="varchar" IsNull="false" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="City" DBName="city" SqlType="varchar" IsNull="false" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="State" DBName="state" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Country" DBName="country" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Postalcode" DBName="postalcode" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Phone" DBName="phone" SqlType="varchar" IsNull="false" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Companyname" DBName="companyname" SqlType="varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="CustomersTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>

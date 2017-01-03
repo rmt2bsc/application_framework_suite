@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<DataSource Name="MarketinginformationView">
+  <Sql Select="id, 
+		productid, 
+		description" From="marketinginformation" Where="" GroupBy="" Having="" OrderBy=""/>
+  <TableUsage Name="MarketinginformationTable" DBName="marketinginformation" Updateable="true"/>
+  <ColAttr Name="Id" DBName="id" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="true" TableName="MarketinginformationTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Productid" DBName="productid" SqlType="integer" IsNull="false" JavaType="int" PrimaryKey="false" TableName="MarketinginformationTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+  <ColAttr Name="Description" DBName="description" SqlType="long varchar" IsNull="true" JavaType="String" PrimaryKey="false" TableName="MarketinginformationTable" Updateable="true" DisplayHeader="" Computed="false" DataValue=""/>
+</DataSource>
