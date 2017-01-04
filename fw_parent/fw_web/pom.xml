@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>fw-web</artifactId>
 	<version>2.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>fw_web</name>
 	<description>Base Web framework</description>
 	<parent>
@@ -10,12 +11,13 @@
 		<artifactId>fw-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.rmt2.framework.suite</groupId>
 			<artifactId>fw-core</artifactId>
 			<version>1.1-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -30,30 +32,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<sourceDirectory>src/resources</sourceDirectory>
-		<testSourceDirectory>src/java/test</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/resources</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/java/main</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/java/test</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
