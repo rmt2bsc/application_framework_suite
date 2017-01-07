@@ -8,10 +8,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import testcases.TestCaseConstants;
-
 import com.util.RMT2File;
 import com.util.RMT2String;
+
+import testcases.TestCaseConstants;
 
 /**
  * Test directory manipulation
@@ -30,10 +30,11 @@ public class DirecotryCreationTest {
      */
     @Before
     public void setUp() throws Exception {
-        newSingleDir = "/tmp2/";
-        existingDir = "/tmp2";
-        newMultiDir = "/tmp2/new_multi_dir/sub_dir_1/sub_dir_2/sub_dir_3/";
-        multiDirDelete = "/tmp2/";
+        newSingleDir = TestCaseConstants.DATA_DIR + "/tmp2/";
+        existingDir = TestCaseConstants.DATA_DIR + "/tmp2";
+        newMultiDir = TestCaseConstants.DATA_DIR
+                + "/tmp2/new_multi_dir/sub_dir_1/sub_dir_2/sub_dir_3/";
+        multiDirDelete = TestCaseConstants.DATA_DIR + "/tmp2/";
     }
 
     /**
@@ -46,8 +47,8 @@ public class DirecotryCreationTest {
         file1.delete();
         int rc = RMT2File.deleteFile(file2);
         // Assert.assertTrue(rc > 0);
-        System.out.println("total number of multiple directories deleted: "
-                + rc);
+        System.out
+                .println("total number of multiple directories deleted: " + rc);
     }
 
     @Test
