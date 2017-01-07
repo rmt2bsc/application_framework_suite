@@ -8,12 +8,12 @@ import java.util.ResourceBundle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import testcases.TestCaseConstants;
-
 import com.NotFoundException;
 import com.SystemException;
 import com.util.RMT2File;
 import com.util.RMT2FileDirectoryFilter;
+
+import testcases.TestCaseConstants;
 
 /**
  * Test file manipulation and MIME type identification
@@ -51,18 +51,18 @@ public class FileSystemTest {
         Assert.assertEquals(RMT2File.FILE_IO_NOT_DIR,
                 RMT2File.verifyDirectory(dir));
 
-        boolean result = RMT2File
-                .isNetworkShareAccessible(TestCaseConstants.SERVER_NAME
-                        + "/download");
-        Assert.assertTrue(result);
-
-        try {
-            result = true;
-            result = RMT2File.isNetworkShareAccessible(null);
-        } catch (Exception e) {
-            result = false;
-        }
-        Assert.assertFalse(result);
+        // boolean result = RMT2File
+        // .isNetworkShareAccessible(TestCaseConstants.SERVER_NAME
+        // + "/download");
+        // Assert.assertTrue(result);
+        //
+        // try {
+        // result = true;
+        // result = RMT2File.isNetworkShareAccessible(null);
+        // } catch (Exception e) {
+        // result = false;
+        // }
+        // Assert.assertFalse(result);
 
         return;
     }
@@ -93,33 +93,35 @@ public class FileSystemTest {
 
     @Test
     public void testFileListUtility() {
-        List<String> listing = RMT2File.getDirectoryListing(
-                TestCaseConstants.DATA_DIR, null);
+        List<String> listing = RMT2File
+                .getDirectoryListing(TestCaseConstants.DATA_DIR, null);
         Assert.assertTrue(listing.size() > 3);
     }
 
     @Test
     public void testFileListUtilityDirectoryNotFound() {
         try {
-            RMT2File.getDirectoryListing(TestCaseConstants.DATA_DIR
-                    + "NonExistingDirectory", null);
+            RMT2File.getDirectoryListing(
+                    TestCaseConstants.DATA_DIR + "NonExistingDirectory", null);
         } catch (NotFoundException e) {
             Assert.assertEquals(RMT2File.FILE_IO_NOTEXIST, e.getErrorCode());
             return;
         }
-        Assert.fail("Test failed due to an exception should have occurred regarding directory not found");
+        Assert.fail(
+                "Test failed due to an exception should have occurred regarding directory not found");
     }
 
     @Test
     public void testFileListUtilityDirectoryAsFile() {
         try {
-            RMT2File.getDirectoryListing(TestCaseConstants.DATA_DIR
-                    + "NewMFXGirls.txt", null);
+            RMT2File.getDirectoryListing(
+                    TestCaseConstants.DATA_DIR + "NewMFXGirls.txt", null);
         } catch (SystemException e) {
             Assert.assertEquals(RMT2File.FILE_IO_NOT_DIR, e.getErrorCode());
             return;
         }
-        Assert.fail("Test failed due to an exception should have occurred regarding a file was loaded instead of a directory");
+        Assert.fail(
+                "Test failed due to an exception should have occurred regarding a file was loaded instead of a directory");
     }
 
     @Test
@@ -127,8 +129,8 @@ public class FileSystemTest {
         Properties props;
         String result;
         try {
-            props = RMT2File.loadPropertiesObject(TestCaseConstants.DATA_DIR
-                    + "persist.properties");
+            props = RMT2File.loadPropertiesObject(
+                    TestCaseConstants.DATA_DIR + "persist.properties");
             result = props.getProperty("persist");
             Assert.assertEquals("FILE", result);
         } catch (Exception e) {
@@ -143,20 +145,20 @@ public class FileSystemTest {
 
     @Test
     public void testMimeTypeIdentification() {
-        String mimeType = RMT2File.getMimeType(TestCaseConstants.DATA_DIR
-                + "acct_cd_11783.jpg");
+        String mimeType = RMT2File
+                .getMimeType(TestCaseConstants.DATA_DIR + "acct_cd_11783.jpg");
         Assert.assertEquals("image/jpeg", mimeType);
-        mimeType = RMT2File.getMimeType(TestCaseConstants.DATA_DIR
-                + "Camera.wav");
+        mimeType = RMT2File
+                .getMimeType(TestCaseConstants.DATA_DIR + "Camera.wav");
         Assert.assertEquals("audio/x-wav", mimeType);
-        mimeType = RMT2File.getMimeType(TestCaseConstants.DATA_DIR
-                + "timesheet_20091220.pdf");
+        mimeType = RMT2File.getMimeType(
+                TestCaseConstants.DATA_DIR + "timesheet_20091220.pdf");
         Assert.assertEquals("application/pdf", mimeType);
-        mimeType = RMT2File.getMimeType(TestCaseConstants.DATA_DIR
-                + "VikingHorn_vbr.mp3");
+        mimeType = RMT2File
+                .getMimeType(TestCaseConstants.DATA_DIR + "VikingHorn_vbr.mp3");
         Assert.assertEquals("audio/mpeg", mimeType);
-        mimeType = RMT2File.getMimeType(TestCaseConstants.DATA_DIR
-                + "word_test.doc");
+        mimeType = RMT2File
+                .getMimeType(TestCaseConstants.DATA_DIR + "word_test.doc");
         Assert.assertEquals("application/msword", mimeType);
         mimeType = RMT2File
                 .getMimeType(TestCaseConstants.DATA_DIR + "test.xml");
@@ -165,16 +167,16 @@ public class FileSystemTest {
 
     @Test
     public void testLocateFilenameExtension() {
-        String ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR
-                + "acct_cd_11783.jpg");
+        String ext = RMT2File
+                .getFileExt(TestCaseConstants.DATA_DIR + "acct_cd_11783.jpg");
         Assert.assertEquals("jpg", ext);
         ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR + "Camera.wav");
         Assert.assertEquals("wav", ext);
-        ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR
-                + "timesheet_20091220.pdf");
+        ext = RMT2File.getFileExt(
+                TestCaseConstants.DATA_DIR + "timesheet_20091220.pdf");
         Assert.assertEquals("pdf", ext);
-        ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR
-                + "VikingHorn_vbr.mp3");
+        ext = RMT2File
+                .getFileExt(TestCaseConstants.DATA_DIR + "VikingHorn_vbr.mp3");
         Assert.assertEquals("mp3", ext);
         ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR + "word_test.doc");
         Assert.assertEquals("doc", ext);
