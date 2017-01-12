@@ -2,9 +2,12 @@ package testcases.soap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.soap.SOAPBody;
@@ -196,8 +199,22 @@ public class SoapMessageHelperTest {
         }
     }
 
+    /**
+     * Test getSoapInstance using XML String as SOAP message
+     */
     @Test
-    public void testGetSoapMessageFromRequestObject() {
+    public void testGetSoapInstanceUsingXmlString() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        this.assertRequest(obj);
+    }
+
+    /**
+     * Test getSoapInstance using Request object
+     */
+    @Test
+    public void testGetSoapInstanceUsingRequestObject() {
         Request mockRequest = Mockito.mock(Request.class);
         InputStream mockRequestInputStream = RMT2File.createInputStream(this
                 .buildSoapRequest());
@@ -219,39 +236,31 @@ public class SoapMessageHelperTest {
         SoapMessageHelper helper = new SoapMessageHelper();
         SOAPMessage results = helper.getSoapInstance(mockRequest);
         this.assertRequest(results);
+    }
 
-        // try {
-        // SOAPHeader header = results.getSOAPHeader();
-        // NodeList nodeList = header.getElementsByTagName("header1");
-        // Assert.assertNotNull(nodeList);
-        // Assert.assertEquals(1, nodeList.getLength());
-        // Node node = nodeList.item(0);
-        // Assert.assertNotNull(node);
-        // String val = node.getTextContent();
-        // Assert.assertNotNull(val);
-        // Assert.assertEquals("header1", "abc");
-        //
-        // nodeList = header.getElementsByTagName("header2");
-        // Assert.assertNotNull(nodeList);
-        // Assert.assertEquals(1, nodeList.getLength());
-        // node = nodeList.item(0);
-        // Assert.assertNotNull(node);
-        // val = node.getTextContent();
-        // Assert.assertNotNull(val);
-        // Assert.assertEquals("header2", "def");
-        //
-        // nodeList = header.getElementsByTagName("header3");
-        // Assert.assertNotNull(nodeList);
-        // Assert.assertEquals(1, nodeList.getLength());
-        // node = nodeList.item(0);
-        // Assert.assertNotNull(node);
-        // val = node.getTextContent();
-        // Assert.assertNotNull(val);
-        // Assert.assertEquals("header3", "ghi");
-        //
-        // } catch (SOAPException e) {
-        // e.printStackTrace();
-        // }
-
+    /**
+     * Test getSoapInstance using XML String as SOAP message and 2 attachments
+     */
+    @Test
+    public void testGetSoapInstanceUsingXMLStringAndAttachments() {
+        String soapXml = this.buildSoapRequest();
+        InputStream attachment1 = ClassLoader
+                .getSystemResourceAsStream("data/receipt.jpg");
+        InputStream attachment2 = ClassLoader
+                .getSystemResourceAsStream("data/word_test.doc");
+        List<Object> attachments = new ArrayList<Object>();
+        attachments.add(attachment1);
+        attachments.add(attachment2);
+        SoapMessageHelper helper = new SoapMessageHelper();
+        SOAPMessage results = helper.getSoapInstance(soapXml, attachments);
+        this.assertRequest(results);
+        Iterator<Object> iter = results.getAttachments();
+        Assert.assertNotNull(iter);
+        int count = 0;
+        while (iter.hasNext()) {
+            iter.next();
+            count++;
+        }
+        Assert.assertEquals(2, count);
     }
 }
