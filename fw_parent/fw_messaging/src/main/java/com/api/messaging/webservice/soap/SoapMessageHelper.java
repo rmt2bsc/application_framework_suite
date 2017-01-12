@@ -191,7 +191,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @param in
      * @return
      */
-    public String getSoapRequest(InputStream in) {
+    private String getSoapRequest(InputStream in) {
         // Get SOAP message as a String from the Object Input Stream of the
         // request
         String soapXml = null;
@@ -313,7 +313,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @return String the SOAP message in String format.
      * 
      */
-    public String getSoapRequest(HttpServletRequest request) {
+    private String getSoapRequest(HttpServletRequest request) {
         return request.getParameter(HttpConstants.XML_PAYLOAD);
     }
 
@@ -529,7 +529,7 @@ public class SoapMessageHelper extends RMT2Base {
      * more SOAP Attachments.
      * 
      * @param msg
-     *            The raw XML to be used as the body of the SOAP message.
+     *            The raw XML String to be used as the body of the SOAP message.
      * @param attachments
      *            a list of one or more attachments
      * @return an instance of SOAP MEssage instance.
