@@ -415,6 +415,7 @@ public class SoapMessageHelper extends RMT2Base {
             throws SoapServiceException {
         SoapMessageHelper helper = new SoapMessageHelper();
         String payload = helper.getBody(soapObj);
+        // TODO: Change JAXB logic to utilize JaxbUtil class for fw_core project
         MessageBinder binder = MessagingResourceFactory.getJaxbMessageBinder();
         Object jaxbPayload = binder.unMarshalMessage(payload);
         return jaxbPayload;
