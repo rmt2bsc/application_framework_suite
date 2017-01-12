@@ -2,6 +2,7 @@ package testcases.soap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -22,6 +23,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.rmt2.jaxb.AddressType;
+import org.rmt2.jaxb.ObjectFactory;
+import org.rmt2.jaxb.PersonType;
+import org.rmt2.jaxb.ZipcodeType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -29,6 +34,7 @@ import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
 import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
+import com.api.xml.jaxb.JaxbUtil;
 import com.util.RMT2File;
 
 @RunWith(PowerMockRunner.class)
@@ -89,16 +95,60 @@ public class SoapMessageHelperTest {
         soapMsg.append("xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
         soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
         soapMsg.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
-        // soapMsg.append("<soapenv:Header ");
-        // soapMsg.append("  <header1>abc</header1> ");
-        // soapMsg.append("  <header2>def</header2> ");
-        // soapMsg.append("  <header3>ghi</header3> ");
-        // soapMsg.append("</soapenv:Header> ");
+        soapMsg.append("<soapenv:Header> ");
+        soapMsg.append("  <header1>abc</header1> ");
+        soapMsg.append("  <header2>def</header2> ");
+        soapMsg.append("  <header3>ghi</header3> ");
+        soapMsg.append("</soapenv:Header> ");
         soapMsg.append("<soapenv:Body>");
         soapMsg.append("<payload soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">");
         soapMsg.append("  <username xsi:type=\"xsd:string\">rterrell</username>");
         soapMsg.append("  <password xsi:type=\"xsd:string\">test1234</password>");
         soapMsg.append("</payload>");
+        soapMsg.append("</soapenv:Body>");
+        soapMsg.append("</soapenv:Envelope>");
+        return soapMsg.toString();
+    }
+
+    private String buildJaxbSoapRequest() {
+        ObjectFactory f = new ObjectFactory();
+        ZipcodeType z = f.createZipcodeType();
+        z.setCity("Sheveport");
+        z.setState("LA");
+        z.setZipcode(BigInteger.valueOf(71106));
+
+        AddressType at = f.createAddressType();
+        at.setAddr1("4329 Harbor St");
+        at.setAddr2("P.O. Box 1234");
+        at.setAddr3("Building 324-a");
+        at.setAddr4("Room 432");
+        at.setAddrId(BigInteger.valueOf(32));
+        at.setPhoneHome("318-321-5432");
+        at.setZip(z);
+
+        PersonType pt = f.createPersonType();
+        pt.setBirthDate("1966-2-23");
+        pt.setFirstName("Roy");
+        pt.setLastName("Terrell");
+        pt.setSsn("444-55-5432");
+        pt.setAddress(at);
+
+        JaxbUtil jaxb = new JaxbUtil("org.rmt2.jaxb");
+        String bodyXml = jaxb.marshalMessage(pt);
+
+        StringBuilder soapMsg = new StringBuilder();
+        soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        soapMsg.append("<soapenv:Envelope ");
+        soapMsg.append("xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
+        soapMsg.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
+        soapMsg.append("<soapenv:Header> ");
+        soapMsg.append("  <header1>person object</header1> ");
+        soapMsg.append("  <header2>address object</header2> ");
+        soapMsg.append("  <header3>zip code object</header3> ");
+        soapMsg.append("</soapenv:Header> ");
+        soapMsg.append("<soapenv:Body>");
+        soapMsg.append(bodyXml);
         soapMsg.append("</soapenv:Body>");
         soapMsg.append("</soapenv:Envelope>");
         return soapMsg.toString();
@@ -262,5 +312,66 @@ public class SoapMessageHelperTest {
             count++;
         }
         Assert.assertEquals(2, count);
+    }
+
+    /**
+     * Test getHeaderValue(String)
+     */
+    @Test
+    public void testGetHeaderValue() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        this.assertRequest(obj);
+
+        try {
+            String val = h.getHeaderValue("header1", obj);
+            Assert.assertNotNull(val);
+            Assert.assertEquals("abc", val);
+            val = h.getHeaderValue("header2", obj);
+            Assert.assertNotNull(val);
+            Assert.assertEquals("def", val);
+            val = h.getHeaderValue("header3", obj);
+            Assert.assertNotNull(val);
+            Assert.assertEquals("ghi", val);
+        } catch (SOAPException e) {
+            e.printStackTrace();
+            Assert.fail("A server error occurred while testing SoapMessageHelper.getHeaderValue() method");
+        }
+    }
+
+    /**
+     * Test getBody(SOAPMessage), convert to JAXB object, and verify data.
+     */
+    @Test
+    public void testGetSoapBody() {
+        String soapXml = this.buildJaxbSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+        String jaxbXml = h.getBody(obj);
+        Assert.assertNotNull(jaxbXml);
+
+        JaxbUtil jaxb = new JaxbUtil("org.rmt2.jaxb");
+        Object jaxbObj = jaxb.unMarshalMessage(jaxbXml);
+        Assert.assertNotNull(jaxbObj);
+        Assert.assertTrue(jaxbObj instanceof PersonType);
+        PersonType person = (PersonType) jaxbObj;
+        Assert.assertEquals("Roy", person.getFirstName());
+        Assert.assertEquals("Terrell", person.getLastName());
+        Assert.assertEquals("1966-2-23", person.getBirthDate());
+        Assert.assertEquals("444-55-5432", person.getSsn());
+
+        Assert.assertNotNull(person.getAddress());
+        AddressType at = person.getAddress();
+        Assert.assertEquals(BigInteger.valueOf(32), at.getAddrId());
+        Assert.assertEquals("4329 Harbor St", at.getAddr1());
+        Assert.assertEquals("318-321-5432", at.getPhoneHome());
+
+        Assert.assertNotNull(person.getAddress().getZip());
+        ZipcodeType zt = person.getAddress().getZip();
+        Assert.assertEquals("Sheveport", zt.getCity());
+        Assert.assertEquals("LA", zt.getState());
+        Assert.assertEquals(BigInteger.valueOf(71106), zt.getZipcode());
     }
 }
