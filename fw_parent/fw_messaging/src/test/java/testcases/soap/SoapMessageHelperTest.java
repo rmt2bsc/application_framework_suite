@@ -37,6 +37,8 @@ import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.xml.jaxb.JaxbUtil;
 import com.util.RMT2File;
 
+import testcases.TestCaseConstants;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HttpVariableScopeFactory.class, SoapMessageHelper.class,
         RMT2SoapEngine.class })
@@ -72,7 +74,8 @@ public class SoapMessageHelperTest {
         // .thenReturn(mockSoapMsg);
         // } catch (Exception e) {
         // e.printStackTrace();
-        // Assert.fail("Unable to mock the construction of MessageRouterHelper class");
+        // Assert.fail("Unable to mock the construction of MessageRouterHelper
+        // class");
         // }
         //
         // try {
@@ -92,18 +95,23 @@ public class SoapMessageHelperTest {
         StringBuilder soapMsg = new StringBuilder();
         soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         soapMsg.append("<soapenv:Envelope ");
-        soapMsg.append("xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        soapMsg.append(
+                "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
         soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
-        soapMsg.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
+        soapMsg.append(
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
         soapMsg.append("<soapenv:Header> ");
         soapMsg.append("  <header1>abc</header1> ");
         soapMsg.append("  <header2>def</header2> ");
         soapMsg.append("  <header3>ghi</header3> ");
         soapMsg.append("</soapenv:Header> ");
         soapMsg.append("<soapenv:Body>");
-        soapMsg.append("<payload soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">");
-        soapMsg.append("  <username xsi:type=\"xsd:string\">rterrell</username>");
-        soapMsg.append("  <password xsi:type=\"xsd:string\">test1234</password>");
+        soapMsg.append(
+                "<payload soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">");
+        soapMsg.append(
+                "  <username xsi:type=\"xsd:string\">rterrell</username>");
+        soapMsg.append(
+                "  <password xsi:type=\"xsd:string\">test1234</password>");
         soapMsg.append("</payload>");
         soapMsg.append("</soapenv:Body>");
         soapMsg.append("</soapenv:Envelope>");
@@ -139,9 +147,11 @@ public class SoapMessageHelperTest {
         StringBuilder soapMsg = new StringBuilder();
         soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         soapMsg.append("<soapenv:Envelope ");
-        soapMsg.append("xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        soapMsg.append(
+                "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
         soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
-        soapMsg.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
+        soapMsg.append(
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
         soapMsg.append("<soapenv:Header> ");
         soapMsg.append("  <header1>person object</header1> ");
         soapMsg.append("  <header2>address object</header2> ");
@@ -266,16 +276,17 @@ public class SoapMessageHelperTest {
     @Test
     public void testGetSoapInstanceUsingRequestObject() {
         Request mockRequest = Mockito.mock(Request.class);
-        InputStream mockRequestInputStream = RMT2File.createInputStream(this
-                .buildSoapRequest());
-        Mockito.when(mockRequest.getHeaderNames()).thenReturn(
-                this.buildRequestHeaders());
+        InputStream mockRequestInputStream = RMT2File
+                .createInputStream(this.buildSoapRequest());
+        Mockito.when(mockRequest.getHeaderNames())
+                .thenReturn(this.buildRequestHeaders());
         try {
-            Mockito.when(mockRequest.getInputStream()).thenReturn(
-                    mockRequestInputStream);
+            Mockito.when(mockRequest.getInputStream())
+                    .thenReturn(mockRequestInputStream);
         } catch (IOException e) {
             e.printStackTrace();
-            Assert.fail("Unable to mock rquest's InputStream responsible for containing the SOAP message object");
+            Assert.fail(
+                    "Unable to mock rquest's InputStream responsible for containing the SOAP message object");
         }
         Mockito.when(mockRequest.getHeader("header1")).thenReturn("abc");
         Mockito.when(mockRequest.getHeader("header2")).thenReturn("def");
@@ -294,10 +305,10 @@ public class SoapMessageHelperTest {
     @Test
     public void testGetSoapInstanceUsingXMLStringAndAttachments() {
         String soapXml = this.buildSoapRequest();
-        InputStream attachment1 = ClassLoader
-                .getSystemResourceAsStream("data/receipt.jpg");
-        InputStream attachment2 = ClassLoader
-                .getSystemResourceAsStream("data/word_test.doc");
+        InputStream attachment1 = RMT2File
+                .getFileInputStream(TestCaseConstants.DATA_DIR + "receipt.jpg");
+        InputStream attachment2 = RMT2File.getFileInputStream(
+                TestCaseConstants.DATA_DIR + "word_test.doc");
         List<Object> attachments = new ArrayList<Object>();
         attachments.add(attachment1);
         attachments.add(attachment2);
@@ -336,7 +347,8 @@ public class SoapMessageHelperTest {
             Assert.assertEquals("ghi", val);
         } catch (SOAPException e) {
             e.printStackTrace();
-            Assert.fail("A server error occurred while testing SoapMessageHelper.getHeaderValue() method");
+            Assert.fail(
+                    "A server error occurred while testing SoapMessageHelper.getHeaderValue() method");
         }
     }
 
