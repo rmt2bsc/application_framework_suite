@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 
 import com.InvalidDataException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
+import com.api.messaging.webservice.soap.SoapServiceException;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
 import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
@@ -443,11 +444,134 @@ public class SoapMessageHelperTest {
         SoapMessageHelper h = new SoapMessageHelper();
         SOAPMessage obj = h.getSoapInstance(soapXml);
         Assert.assertNotNull(obj);
-        String jaxbXml = h.getBody(obj);
-        Assert.assertNotNull(jaxbXml);
+        String soapBodyXml = h.getBody(obj);
+        Assert.assertNotNull(soapBodyXml);
+    }
 
-        JaxbUtil jaxb = new JaxbUtil("org.rmt2.jaxb");
-        Object jaxbObj = jaxb.unMarshalMessage(jaxbXml);
+    /**
+     * Test converting the payload of the SOAP messagege to a JAXB object.
+     */
+    @Test
+    public void testBindSoapPayload() {
+        String soapXml = this.buildJaxbSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+        Object jaxbObj = h.getBodyInstance(obj, "org.rmt2.jaxb");
+        this.assertJaxbPersonTypeResponse(jaxbObj);
+    }
+
+    /**
+     * Test converting the SOAP payload with an invalid SOAP message object
+     */
+    @Test
+    public void testBindSoapPayloadWithNullSoapObject() {
+        SoapMessageHelper h = new SoapMessageHelper();
+        try {
+            h.getBodyInstance(null, "org.rmt2.jaxb");
+            Assert.fail(
+                    "Exception was expected to be thrown due to SOAP message object is null");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    /**
+     * Test converting the SOAP payload with an invalid JAXB package name
+     */
+    @Test
+    public void testBindSoapPayloadWithNullJaxbPackageName() {
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage mockSoapMsg = Mockito.mock(SOAPMessage.class);
+        try {
+            h.getBodyInstance(mockSoapMsg, null);
+            Assert.fail(
+                    "Exception was expected to be thrown due to JAXB package name is null");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    /**
+     * Test converting the SOAP payload with an invalid JAXB package name
+     */
+    @Test
+    public void testBindSoapPayloadWithEmptyJaxbPackageName() {
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage mockSoapMsg = Mockito.mock(SOAPMessage.class);
+        try {
+            h.getBodyInstance(mockSoapMsg, "");
+            Assert.fail(
+                    "Exception was expected to be thrown due to JAXB package name is empty");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    /**
+     * Test converting the payload of the SOAP messagege using an invalid SOAP
+     * message object.
+     */
+    @Test
+    public void testBindSoapPayloadWithInvalidSoapMessageObject() {
+        String soapXml = this.buildInvalidSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+        try {
+            h.getBodyInstance(obj, "org.rmt2.jaxb");
+            Assert.fail(
+                    "Exception was expected to be thrown due to an invalid SOAP message object");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    /**
+     * Test converting the payload of the SOAP messagege using an invalid JAXB
+     * package name.
+     */
+    @Test
+    public void testBindSoapPayloadWithInvalidPackageName() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+        try {
+            h.getBodyInstance(obj, "test.test.test");
+            Assert.fail(
+                    "Exception was expected to be thrown due to an invalid JAXB package name");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    /**
+     * Test converting the payload of the SOAP messagege in which the payload is
+     * unable to be bound by JAXB.
+     */
+    @Test
+    public void testBindSoapPayloadWithInvalidPayload() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+        try {
+            h.getBodyInstance(obj, "org.rmt2.jaxb");
+            Assert.fail(
+                    "Exception was expected to be thrown due to an invalid JAXB package name");
+        } catch (SoapServiceException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    private void assertJaxbPersonTypeResponse(Object jaxbObj) {
         Assert.assertNotNull(jaxbObj);
         Assert.assertTrue(jaxbObj instanceof PersonType);
         PersonType person = (PersonType) jaxbObj;
