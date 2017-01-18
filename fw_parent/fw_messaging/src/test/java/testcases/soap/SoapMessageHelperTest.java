@@ -30,6 +30,7 @@ import org.rmt2.jaxb.ZipcodeType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.InvalidDataException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
 import com.api.web.Request;
@@ -259,19 +260,35 @@ public class SoapMessageHelperTest {
     }
 
     /**
-     * Test converting SOAP object using invalid SOAP XML
+     * Test create SOAP message with an invalid SOAP XML String
      */
     @Test
     public void testInvalidSoapString() {
         String soapRequest = this.buildInvalidSoapRequest();
         SoapMessageHelper h = new SoapMessageHelper();
-        SOAPMessage obj = h.toInstance(soapRequest);
         try {
-            obj.getSOAPBody();
+            h.verifySoapMessage(soapRequest);
             Assert.fail(
                     "Test failed since an exception was not thrown attempting to extract the body from an invalid SOAP message object");
-        } catch (SOAPException e) {
+        } catch (InvalidDataException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Test create SOAP message with a valid SOAP XML String
+     */
+    @Test
+    public void testValidSoapString() {
+        String soapRequest = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        try {
+            SOAPMessage obj = h.verifySoapMessage(soapRequest);
+            Assert.assertNotNull(obj);
+        } catch (InvalidDataException e) {
+            e.printStackTrace();
+            Assert.fail(
+                    "Test failed valid XML SOAP String could not be deserialized to a SOAP object");
         }
     }
 
