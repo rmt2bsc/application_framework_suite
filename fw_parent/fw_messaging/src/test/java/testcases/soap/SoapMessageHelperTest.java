@@ -481,4 +481,32 @@ public class SoapMessageHelperTest {
         String msg = h.getErrorMessage(obj);
         Assert.assertNull(msg);
     }
+
+    /**
+     * Test SOAP message contains a fault.
+     */
+    @Test
+    public void testSoapMessageIsError() {
+        String soapXml = this.buildSoapResponseWithFault();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+
+        boolean error = h.isError(obj);
+        Assert.assertTrue(error);
+    }
+
+    /**
+     * Test getErrorMessage(SOAPMessage) with no SOAP Fault.
+     */
+    @Test
+    public void testSoapMessageIsNotError() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+
+        boolean error = h.isError(obj);
+        Assert.assertFalse(error);
+    }
 }
