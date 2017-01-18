@@ -91,6 +91,26 @@ public class SoapMessageHelperTest {
     public void tearDown() throws Exception {
     }
 
+    private String buildInvalidSoapRequest() {
+        StringBuilder soapMsg = new StringBuilder();
+        soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        soapMsg.append(
+                "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
+        soapMsg.append(
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
+        soapMsg.append("<soapenv:Body>");
+        soapMsg.append(
+                "<payload soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">");
+        soapMsg.append(
+                "  <username xsi:type=\"xsd:string\">rterrell</username>");
+        soapMsg.append(
+                "  <password xsi:type=\"xsd:string\">test1234</password>");
+        soapMsg.append("</payload>");
+        soapMsg.append("</soapenv:Body>");
+        return soapMsg.toString();
+    }
+
     private String buildSoapRequest() {
         StringBuilder soapMsg = new StringBuilder();
         soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -116,6 +136,34 @@ public class SoapMessageHelperTest {
         soapMsg.append("</soapenv:Body>");
         soapMsg.append("</soapenv:Envelope>");
         return soapMsg.toString();
+    }
+
+    private String buildSoapResponseWithFault() {
+        StringBuilder soapMsg = new StringBuilder();
+        soapMsg.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        soapMsg.append("<soapenv:Envelope ");
+        soapMsg.append(
+                "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        soapMsg.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
+        soapMsg.append(
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" >");
+        soapMsg.append("<soapenv:Header> ");
+        soapMsg.append("  <header1>abc</header1> ");
+        soapMsg.append("  <header2>def</header2> ");
+        soapMsg.append("  <header3>ghi</header3> ");
+        soapMsg.append("</soapenv:Header> ");
+        soapMsg.append("<soapenv:Body>");
+        soapMsg.append("<soapenv:Fault>");
+        soapMsg.append(
+                "<faultcode xsi:type=\"xsd:string\">soapenv:Client</faultcode>");
+        soapMsg.append("  <faultstring xsi:type=\"xsd:string\">");
+        soapMsg.append("This is an example SOAP fault message");
+        soapMsg.append("  </faultstring>");
+        soapMsg.append("</soapenv:Fault>");
+        soapMsg.append("</soapenv:Body>");
+        soapMsg.append("</soapenv:Envelope>");
+        return soapMsg.toString();
+
     }
 
     private String buildJaxbSoapRequest() {
@@ -205,6 +253,23 @@ public class SoapMessageHelperTest {
             val = node.getTextContent();
             Assert.assertNotNull(val);
             Assert.assertEquals("test1234", val);
+        } catch (SOAPException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Test toInstance method call.
+     */
+    @Test
+    public void testBuildSoapMessageInstanceFromInvalidString() {
+        String soapRequest = this.buildInvalidSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.toInstance(soapRequest);
+        try {
+            obj.getSOAPBody();
+            Assert.fail(
+                    "Test failed since an exception was not thrown attempting to extract the body from an invalid SOAP message object");
         } catch (SOAPException e) {
             e.printStackTrace();
         }
@@ -385,5 +450,29 @@ public class SoapMessageHelperTest {
         Assert.assertEquals("Sheveport", zt.getCity());
         Assert.assertEquals("LA", zt.getState());
         Assert.assertEquals(BigInteger.valueOf(71106), zt.getZipcode());
+    }
+
+    @Test
+    public void testGetSoapFaultMessage() {
+        String soapXml = this.buildSoapResponseWithFault();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+
+        String msg = h.getErrorMessage(obj);
+        Assert.assertNotNull(msg);
+        Assert.assertEquals("This is an example SOAP fault message",
+                msg.trim());
+    }
+
+    @Test
+    public void testGetEmptySoapFaultMessage() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper h = new SoapMessageHelper();
+        SOAPMessage obj = h.getSoapInstance(soapXml);
+        Assert.assertNotNull(obj);
+
+        String msg = h.getErrorMessage(obj);
+        Assert.assertNull(msg);
     }
 }
