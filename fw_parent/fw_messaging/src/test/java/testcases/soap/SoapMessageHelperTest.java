@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.activation.DataHandler;
 import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
@@ -406,6 +407,41 @@ public class SoapMessageHelperTest {
             count++;
         }
         Assert.assertEquals(2, count);
+    }
+
+    /**
+     * Test extract attachments from SOAP message containing zero attachments.
+     */
+    @Test
+    public void testExtractAttachments() {
+        String soapXml = this.buildSoapRequest();
+        InputStream attachment1 = RMT2File
+                .getFileInputStream(TestCaseConstants.DATA_DIR + "receipt.jpg");
+        InputStream attachment2 = RMT2File.getFileInputStream(
+                TestCaseConstants.DATA_DIR + "word_test.doc");
+        List<Object> items = new ArrayList<Object>();
+        items.add(attachment1);
+        items.add(attachment2);
+        SoapMessageHelper helper = new SoapMessageHelper();
+        SOAPMessage soapObj = helper.getSoapInstance(soapXml, items);
+        this.assertRequest(soapObj);
+
+        List<DataHandler> attachments = helper.extractAttachments(soapObj);
+        Assert.assertNotNull(attachments);
+        Assert.assertEquals(2, attachments.size());
+    }
+
+    /**
+     * Test extract attachments from SOAP message with zero attachments.
+     */
+    @Test
+    public void testExtractZeroAttachments() {
+        String soapXml = this.buildSoapRequest();
+        SoapMessageHelper helper = new SoapMessageHelper();
+        SOAPMessage soapObj = helper.getSoapInstance(soapXml);
+
+        List<DataHandler> attachments = helper.extractAttachments(soapObj);
+        Assert.assertNull(attachments);
     }
 
     /**
