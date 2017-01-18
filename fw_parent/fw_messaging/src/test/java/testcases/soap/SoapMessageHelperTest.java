@@ -259,10 +259,10 @@ public class SoapMessageHelperTest {
     }
 
     /**
-     * Test toInstance method call.
+     * Test converting SOAP object using invalid SOAP XML
      */
     @Test
-    public void testBuildSoapMessageInstanceFromInvalidString() {
+    public void testInvalidSoapString() {
         String soapRequest = this.buildInvalidSoapRequest();
         SoapMessageHelper h = new SoapMessageHelper();
         SOAPMessage obj = h.toInstance(soapRequest);
@@ -452,6 +452,9 @@ public class SoapMessageHelperTest {
         Assert.assertEquals(BigInteger.valueOf(71106), zt.getZipcode());
     }
 
+    /**
+     * Test getErrorMessage(SOAPMessage) with a valid SOAP Fault.
+     */
     @Test
     public void testGetSoapFaultMessage() {
         String soapXml = this.buildSoapResponseWithFault();
@@ -465,6 +468,9 @@ public class SoapMessageHelperTest {
                 msg.trim());
     }
 
+    /**
+     * Test getErrorMessage(SOAPMessage) with no SOAP Fault.
+     */
     @Test
     public void testGetEmptySoapFaultMessage() {
         String soapXml = this.buildSoapRequest();
