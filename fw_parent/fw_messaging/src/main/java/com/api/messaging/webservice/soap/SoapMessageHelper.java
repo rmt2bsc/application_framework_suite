@@ -38,9 +38,7 @@ import com.SystemException;
 import com.api.Product;
 import com.api.ProductBuilderException;
 import com.api.ProductDirector;
-import com.api.messaging.MessageBinder;
 import com.api.messaging.MessageException;
-import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.webservice.http.HttpConstants;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
 import com.api.messaging.webservice.soap.client.SoapClientFactory;
@@ -48,8 +46,10 @@ import com.api.messaging.webservice.soap.client.SoapProductBuilder;
 import com.api.web.Request;
 import com.api.web.Response;
 import com.api.xml.RMT2XmlUtility;
+import com.api.xml.jaxb.JaxbUtil;
 import com.constants.GeneralConst;
 import com.util.RMT2File;
+import com.util.RMT2String2;
 
 /**
  * Contains common SOAP Messaging functionality that both the SOAP client and
@@ -292,8 +292,8 @@ public class SoapMessageHelper extends RMT2Base {
      * @param details
      * @return
      */
-    public SOAPMessage createSoapFault(String code, String msgTxt,
-            String actor, Map<String, String> details) {
+    public SOAPMessage createSoapFault(String code, String msgTxt, String actor,
+            Map<String, String> details) {
         try {
             SoapProductBuilder builder = SoapClientFactory
                     .getSoapBuilderInstance(null, null, code, msgTxt, actor,
@@ -403,22 +403,39 @@ public class SoapMessageHelper extends RMT2Base {
     }
 
     /**
-     * Obtains the payload of the SOAP message as an instance.
+     * Obtains the payload of the SOAP message as an instance using JAXB.
      * 
      * @param soapObj
      *            the SOAP message instance.
+     * @param jaxbPackageName
+     *            the fully qualified package name where the SOAP payload's
+     *            corresponding binding class lives
      * @return a generic object repsenting the SOAP body. User is responsible
      *         for applying proper casting.
      * @throws SoapServiceException
      */
-    public Object getBodyInstance(SOAPMessage soapObj)
+    public Object getBodyInstance(SOAPMessage soapObj, String jaxbPackageName)
             throws SoapServiceException {
+        if (soapObj == null) {
+            throw new SoapServiceException(
+                    "SOAP message object cannot be null");
+        }
+        if (jaxbPackageName == null || RMT2String2.isEmpty(jaxbPackageName)) {
+            throw new SoapServiceException(
+                    "JAXB package name cannot by null or empty");
+        }
         SoapMessageHelper helper = new SoapMessageHelper();
         String payload = helper.getBody(soapObj);
-        // TODO: Change JAXB logic to utilize JaxbUtil class for fw_core project
-        MessageBinder binder = MessagingResourceFactory.getJaxbMessageBinder();
-        Object jaxbPayload = binder.unMarshalMessage(payload);
-        return jaxbPayload;
+
+        try {
+            JaxbUtil jaxb = new JaxbUtil(jaxbPackageName);
+            Object jaxbObj = jaxb.unMarshalMessage(payload);
+            return jaxbObj;
+        } catch (Exception e) {
+            throw new SoapServiceException(
+                    "A object binding error occured trying to unmarshall SOAP payload",
+                    e);
+        }
     }
 
     /**
@@ -516,8 +533,8 @@ public class SoapMessageHelper extends RMT2Base {
         try {
             MessageFactory f = MessageFactory.newInstance();
             sm = f.createMessage(mh, request.getInputStream());
-            logger.info("Total SOAP Attachments found: "
-                    + sm.countAttachments());
+            logger.info(
+                    "Total SOAP Attachments found: " + sm.countAttachments());
             return sm;
         } catch (Exception e) {
             this.msg = "Unable to obtain SOAP instance from request.  Verify that the content type is set correctly.  If any attachments were included, verify the validity of each attachment";
