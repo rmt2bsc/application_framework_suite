@@ -17,8 +17,7 @@ public class ServiceRegistryFactoryImpl implements ServiceRegistryFactory {
     }
 
     /**
-     * Create a ServiceRegistry instance from a SystemConfigurator
-     * implementation.
+     * Create a ServiceRegistry instance from a SystemConfigurator implementation.
      * 
      * @return {@link ServiceRegistry}
      */
@@ -27,7 +26,7 @@ public class ServiceRegistryFactoryImpl implements ServiceRegistryFactory {
         ServiceRegistry obj = new SystemConfiguratorServiceRegistryLoaderImpl();
         return obj;
     }
-
+    
     /**
      * Create a ServiceRegistry instance from a HTTP implementation.
      * 
@@ -72,4 +71,5 @@ public class ServiceRegistryFactoryImpl implements ServiceRegistryFactory {
         return obj;
     }
 
+  
 }
