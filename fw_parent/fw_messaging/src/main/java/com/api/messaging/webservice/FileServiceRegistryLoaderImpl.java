@@ -25,7 +25,7 @@ import com.util.RMT2File;
  * The XML file's location is expected to be specified at the time the
  * FileServiceRegistryLoaderImpl class is constructred.
  * 
- * @author roy terrell
+ * @author Roy Terrell
  * @deprecated Use the {@link SystemConfiguratorServiceRegistryLoaderImpl} class
  *             since service registry data is obtained from the
  *             SystemConfigurator object.
