@@ -83,7 +83,14 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @throws MessageRoutingException
      */
     protected void intitalizeRegistry() throws MessageRoutingException {
-        this.intitalizeLdapRegistry();
+        // Get SystemConfigurator Service Registry implementation
+        ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
+        this.register = f.getSystemConfiguratorServiceRegistryManager();
+
+        // Load the all service configurations
+        this.register.loadServices();
+
+        // this.intitalizeLdapRegistry();
 
         // try {
         // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
@@ -104,19 +111,20 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
         // this.intitalizeRegistryFromLdapSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
     }
 
-    /**
-     * Setup the service registry using LDAP implementation of
-     * {@link ServiceRegistry}.
-     * <p>
-     * Registry data should of already been loaded at server start up time from
-     * {@link com.api.config.SystemConfiguratorController}
-     * 
-     * @throws MessageRoutingException
-     */
-    protected void intitalizeLdapRegistry() throws MessageRoutingException {
-        ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-        this.register = f.getLdapServiceRegistryManager(null, null);
-    }
+    // /**
+    // * Setup the service registry using LDAP implementation of
+    // * {@link ServiceRegistry}.
+    // * <p>
+    // * Registry data should of already been loaded at server start up time
+    // from
+    // * {@link com.api.config.SystemConfiguratorController}
+    // *
+    // * @throws MessageRoutingException
+    // */
+    // protected void intitalizeLdapRegistry() throws MessageRoutingException {
+    // ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
+    // this.register = f.getLdapServiceRegistryManager(null, null);
+    // }
 
     /**
      * Create the input data for a specific message handler using the incoming

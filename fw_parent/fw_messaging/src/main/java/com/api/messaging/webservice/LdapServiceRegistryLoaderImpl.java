@@ -19,6 +19,9 @@ import com.api.messaging.MessageRoutingInfo;
  * entries are loaded from a Directory Service using the LDAP protocol.
  * 
  * @author Roy Terrell
+ * @deprecated Use the {@link SystemConfiguratorServiceRegistryLoaderImpl} class
+ *             since service registry data is obtained from the
+ *             SystemConfigurator object.
  * 
  */
 class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {

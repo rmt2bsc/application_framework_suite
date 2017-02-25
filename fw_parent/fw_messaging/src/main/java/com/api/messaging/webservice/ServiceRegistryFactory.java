@@ -9,6 +9,14 @@ package com.api.messaging.webservice;
 public interface ServiceRegistryFactory {
 
     /**
+     * Create a ServiceRegistry instance from a SystemConfigurator
+     * implementation.
+     * 
+     * @return {@link ServiceRegistry}
+     */
+    ServiceRegistry getSystemConfiguratorServiceRegistryManager();
+
+    /**
      * Create a ServiceRegistry instance from a HTTP implementation.
      * 
      * @return {@link ServiceRegistry}

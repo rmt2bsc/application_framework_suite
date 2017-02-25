@@ -28,6 +28,9 @@ import com.util.RMT2File;
  * are loaded from web service via the HTTP protocol.
  * 
  * @author Roy Terrell
+ * @deprecated Use the {@link SystemConfiguratorServiceRegistryLoaderImpl} class
+ *             since service registry data is obtained from the
+ *             SystemConfigurator object.
  * 
  */
 class HttpServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {

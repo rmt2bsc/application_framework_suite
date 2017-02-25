@@ -9,22 +9,31 @@ import com.RMT2Base;
  * @author appdev
  */
 public class MessageRoutingInfo extends RMT2Base {
-
     /**
-     * The server where the service resides.
+     * The name of the service
      */
-    private String host;
+    private String name;
 
     /**
-     * The name of the web service.
+     * This is equivalent to resource sub type name which represents the service
+     * transport type
+     */
+    private String routerType;
+
+    /**
+     * Application code
+     */
+    private String applicatoinId;
+
+    /**
+     * Module code
+     */
+    private String moduleId;
+
+    /**
+     * The name of the web service also known as the transaction id.
      */
     private String messageId;
-
-    /**
-     * The namd of the command the service that is used to identify the business
-     * API handler to choose for invocation.
-     */
-    private String command;
 
     /**
      * This can be a URL, remote object class name, JMS destination name, or
@@ -33,14 +42,25 @@ public class MessageRoutingInfo extends RMT2Base {
     private String destination;
 
     /**
+     * The description of the web service route.
+     */
+    private String description;
+
+    /**
      * Indicats whether or not the service requires authentication.
      */
     private boolean secured;
 
     /**
-     * This is equivalent to resource sub type name
+     * The server where the service resides.
      */
-    private String routerType;
+    private String host;
+
+    /**
+     * The namd of the command the service that is used to identify the business
+     * API handler to choose for invocation.
+     */
+    private String command;
 
     /**
      * The class name of the data handler that will manage the incoming message
@@ -181,6 +201,66 @@ public class MessageRoutingInfo extends RMT2Base {
      */
     public void setReplyMessageId(String replyMessageId) {
         this.replyMessageId = replyMessageId;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the applicatoinId
+     */
+    public String getApplicatoinId() {
+        return applicatoinId;
+    }
+
+    /**
+     * @param applicatoinId
+     *            the applicatoinId to set
+     */
+    public void setApplicatoinId(String applicatoinId) {
+        this.applicatoinId = applicatoinId;
+    }
+
+    /**
+     * @return the moduleId
+     */
+    public String getModuleId() {
+        return moduleId;
+    }
+
+    /**
+     * @param moduleId
+     *            the moduleId to set
+     */
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
