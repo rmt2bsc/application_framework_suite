@@ -7,12 +7,14 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.log4j.Logger;
 
 import com.RMT2Base;
+import com.api.config.ConfigConstants;
+import com.api.config.SystemConfigurator;
 import com.api.messaging.MessageRoutingException;
-import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.MessagingRouter;
 import com.api.messaging.handler.MessageHandlerResults;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
+import com.api.xml.jaxb.JaxbUtil;
 
 /**
  * Helper class for routing various types of messages from one API to another.
@@ -98,8 +100,11 @@ public class MessageRouterHelper extends RMT2Base {
         // Try to marshal response payload as XML and dump contents to logger
         // in the event it is a JAXB object.
         try {
-            xml = MessagingResourceFactory.getJaxbMessageBinder()
-                    .marshalMessage(jaxPayload);
+            JaxbUtil util = SystemConfigurator
+                    .getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            xml = util.marshalMessage(jaxPayload);
+            // xml = MessagingResourceFactory.getJaxbMessageBinder()
+            // .marshalMessage(jaxPayload);
             logger.info("Routing Response: ");
             logger.info(xml);
         } catch (Exception e) {
