@@ -147,7 +147,14 @@ public class MessageRouterHelper extends RMT2Base {
      * @throws MessageRoutingException
      */
     protected Serializable sendPayload(String messageId, Serializable payload) throws MessageRoutingException {
-        MessagingRouter router = MessageRouterFactory.createJaxbMessageRouter();
+        MessagingRouter router = null;
+        try {
+            router = MessageRouterFactory.createJaxbMessageRouter();
+        } catch (Exception e) {
+            this.msg = "Error creating Messaging Router instance";
+            logger.error(this.msg, e);
+            throw new MessageRoutingException(this.msg, e);
+        }
         // Route message to business server
         Serializable results = (Serializable) router.routeMessage(messageId, payload);
         Serializable jaxbPayload = null;
