@@ -8,6 +8,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.api.config.ConfigException;
 import com.api.config.SystemConfigurator;
 import com.api.config.jaxb.AppServerConfig.ServiceRegistry.Service;
 import com.api.messaging.MessageRoutingInfo;
@@ -19,11 +20,9 @@ import com.api.messaging.MessageRoutingInfo;
  * @author Roy Terrell
  * 
  */
-class SystemConfiguratorServiceRegistryLoaderImpl extends
-        AbstractServiceRegistryImpl {
+class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
 
-    private static Logger logger = Logger
-            .getLogger(SystemConfiguratorServiceRegistryLoaderImpl.class);
+    private static Logger logger = Logger.getLogger(SystemConfiguratorServiceRegistryLoaderImpl.class);
 
     /**
      * Create a HttpServiceRegistryLoaderImpl containing an uninitialized
@@ -54,8 +53,12 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends
 
         // get list of services from the service registry contained in the
         // SystemConfigurator
-        List<Service> services = SystemConfigurator.getConfig()
-                .getServiceRegistry().getService();
+        if (SystemConfigurator.getConfig() == null) {
+            this.msg = "Error building service registry due to Application Configuration is not available";
+            logger.error(this.msg);
+            throw new ConfigException(this.msg);
+        }
+        List<Service> services = SystemConfigurator.getConfig().getServiceRegistry().getService();
         return this.createMessageRoutingInfo(services);
     }
 
@@ -74,8 +77,7 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends
      *            pertaining to a service
      * @return Map of service name/service URL key/value pairs.
      */
-    private Map<String, MessageRoutingInfo> createMessageRoutingInfo(
-            List<Service> services) {
+    private Map<String, MessageRoutingInfo> createMessageRoutingInfo(List<Service> services) {
         Map<String, MessageRoutingInfo> routingMap = new HashMap<String, MessageRoutingInfo>();
         int loadCount = 0;
         for (Service item : services) {
@@ -93,8 +95,7 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends
             loadCount++;
         }
 
-        logger.log(Level.INFO,
-                "Total number of service registry entries loaded: " + loadCount);
+        logger.log(Level.INFO, "Total number of service registry entries loaded: " + loadCount);
         return routingMap;
     }
 
