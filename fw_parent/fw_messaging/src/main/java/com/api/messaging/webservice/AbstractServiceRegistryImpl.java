@@ -2,6 +2,8 @@ package com.api.messaging.webservice;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.RMT2Base;
 import com.api.messaging.MessageRoutingInfo;
 
@@ -12,9 +14,9 @@ import com.api.messaging.MessageRoutingInfo;
  * @author Roy Terrell
  * 
  */
-public abstract class AbstractServiceRegistryImpl extends RMT2Base implements
-        ServiceRegistry {
+public abstract class AbstractServiceRegistryImpl extends RMT2Base implements ServiceRegistry {
 
+    private Logger logger = Logger.getLogger(AbstractServiceRegistryImpl.class);
     private static Map<String, MessageRoutingInfo> SERVICES;
 
     /**
@@ -34,8 +36,8 @@ public abstract class AbstractServiceRegistryImpl extends RMT2Base implements
         if (AbstractServiceRegistryImpl.SERVICES == null) {
             this.loadServices();
         }
-        MessageRoutingInfo srvc = (MessageRoutingInfo) AbstractServiceRegistryImpl.SERVICES
-                .get(messageId);
+        logger.info("Attempting to fetch MessageRoutingInfo using message id, " + messageId);
+        MessageRoutingInfo srvc = (MessageRoutingInfo) AbstractServiceRegistryImpl.SERVICES.get(messageId);
         return srvc;
     }
 
