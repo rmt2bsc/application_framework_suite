@@ -84,6 +84,7 @@ public class SystemConfigurator extends RMT2Base {
 
         // Setup Logging environment
         String logPath = appConfig.getLoggerConfigPath();
+        System.out.println("Application configuration Logger path ==========> " + logPath);
         PropertyConfigurator.configure(logPath);
         logger = Logger.getLogger(SystemConfigurator.class);
         logger.info("\n\nBegin Application Configuration for " + appName + "...");
