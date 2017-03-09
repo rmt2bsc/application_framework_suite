@@ -385,6 +385,9 @@ public class RMT2File {
             while ((temp = buf.read()) != -1) {
                 fileContent.append((char) temp);
             }
+            logger.info("Fetching the contents of file, " + _filename + ", is complete!");
+            System.out.println("RMT2File.getTextFileContents()====> Fetching the contents of file, " + _filename
+                    + ", is complete!");
             return fileContent.toString();
         } catch (FileNotFoundException e) {
             msg = "File Not Found IO Exception for " + _filename;
