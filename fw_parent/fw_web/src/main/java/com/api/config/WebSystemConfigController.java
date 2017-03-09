@@ -35,8 +35,8 @@ public class WebSystemConfigController extends AbstractServlet {
         ServletContext ctx = config.getServletContext();
         String appName = ctx.getServletContextName();
 
-        String appServConfigFile = config
-                .getInitParameter("AppServerConfigSource");
+        String appServConfigFile = config.getInitParameter("AppServerConfigSource");
+        System.out.println("Application configuration file ========> " + appServConfigFile);
 
         String env = config.getInitParameter("Environment");
         SystemConfigurator configUtil = new SystemConfigurator(appName, env);
