@@ -349,11 +349,12 @@ public class RMT2File {
      * @throws SystemException
      *             if _filename is null, does not exist, or is inaccessible.
      */
-    public static String getTextFileContents(String _filename)
-            throws SystemException {
+    public static String getTextFileContents(String _filename) throws SystemException {
         String msg;
         FileReader fr = null;
         BufferedReader buf = null;
+        logger.info("Preparing to get the contents of file: " + _filename);
+        System.out.println("RMT2File.getTextFileContents()====> Preparing to get the contents of file: " + _filename);
         try {
             StringBuffer fileContent = new StringBuffer(100);
 
@@ -373,9 +374,13 @@ public class RMT2File {
             }
 
             // At this point we have a file that exist and is accessible.
+            logger.info("Createing FileReader for file: " + _filename);
+            System.out.println("RMT2File.getTextFileContents()====> Createing FileReader for file: " + _filename);
             fr = new FileReader(_filename);
             buf = new BufferedReader(fr);
 
+            logger.info("Fetching the contents of file: " + _filename);
+            System.out.println("RMT2File.getTextFileContents()====> Fetching the contents of file: " + _filename);
             int temp;
             while ((temp = buf.read()) != -1) {
                 fileContent.append((char) temp);
@@ -408,8 +413,7 @@ public class RMT2File {
      *             If the Properties file is incapable of being loaded as a
      *             ResourceBundle.
      */
-    public static Properties loadPropertiesFromClasspath(String propFileName)
-            throws SystemException {
+    public static Properties loadPropertiesFromClasspath(String propFileName) throws SystemException {
         ResourceBundle rb = null;
         String msg = null;
         try {
@@ -436,19 +440,16 @@ public class RMT2File {
      * @throws NotFoundException
      *             When propFileName cannot be found.
      */
-    public static ResourceBundle loadAppConfigProperties(String propFileName)
-            throws SystemException {
+    public static ResourceBundle loadAppConfigProperties(String propFileName) throws SystemException {
         ResourceBundle bundle;
 
         try {
             bundle = ResourceBundle.getBundle(propFileName);
             return bundle;
         } catch (MissingResourceException e) {
-            throw new NotFoundException("The properties file: " + propFileName
-                    + " could not be found", e);
+            throw new NotFoundException("The properties file: " + propFileName + " could not be found", e);
         } catch (ClassCastException e) {
-            throw new SystemException("The properties file: " + propFileName
-                    + " could not be cast", e);
+            throw new SystemException("The properties file: " + propFileName + " could not be cast", e);
         } catch (NullPointerException e) {
             throw new SystemException("The resource bundle name is null", e);
         }
@@ -467,8 +468,7 @@ public class RMT2File {
      *             When <i>propFile</i> cannot be found in the file system or
      *             the classpath of the JVM.
      */
-    public static Properties loadPropertiesObject(String propFile)
-            throws SystemException {
+    public static Properties loadPropertiesObject(String propFile) throws SystemException {
         InputStream is = null;
         Properties properties = null;
         String msg;
@@ -498,8 +498,7 @@ public class RMT2File {
             try {
                 properties.load(is);
             } catch (IOException e) {
-                msg = "The Properties file, "
-                        + propFile
+                msg = "The Properties file, " + propFile
                         + ", was found in the file system but an error occurred when reading from the input stream";
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new SystemException(msg, e);
@@ -510,8 +509,7 @@ public class RMT2File {
                 ResourceBundle rb = ResourceBundle.getBundle(propFile);
                 properties = RMT2File.convertResourceBundleToProperties(rb);
             } catch (MissingResourceException e) {
-                msg = "The Properties file, "
-                        + propFile
+                msg = "The Properties file, " + propFile
                         + ", is not accessible due to it could not be found in the file system or class path";
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new SystemException(msg, e);
@@ -530,8 +528,7 @@ public class RMT2File {
      * @throws SystemException
      *             Error obtaining a instance of ResourceBundle.
      */
-    public static Properties convertResourceBundleToProperties(String fileName)
-            throws SystemException {
+    public static Properties convertResourceBundleToProperties(String fileName) throws SystemException {
         ResourceBundle bundle = loadAppConfigProperties(fileName);
         return convertResourceBundleToProperties(bundle);
     }
@@ -543,8 +540,7 @@ public class RMT2File {
      *            ResourceBundle.
      * @return Properties
      */
-    public static Properties convertResourceBundleToProperties(
-            ResourceBundle resource) {
+    public static Properties convertResourceBundleToProperties(ResourceBundle resource) {
         Enumeration iter;
         if (resource == null) {
             return null;
@@ -604,8 +600,7 @@ public class RMT2File {
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         } catch (MissingResourceException e) {
-            msg = "Resource Bundle, " + bundleName
-                    + ", cannot be found in classpath ";
+            msg = "Resource Bundle, " + bundleName + ", cannot be found in classpath ";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         }
@@ -618,13 +613,11 @@ public class RMT2File {
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         } catch (MissingResourceException e) {
-            msg = "No value for key code, " + keyCode
-                    + ", of Resource Bundle file, " + bundleName
+            msg = "No value for key code, " + keyCode + ", of Resource Bundle file, " + bundleName
                     + ", could not be found";
             return null;
         } catch (ClassCastException e) {
-            msg = "Value returned for key code, " + keyCode
-                    + ", of Resource Bundle file, " + bundleName
+            msg = "Value returned for key code, " + keyCode + ", of Resource Bundle file, " + bundleName
                     + ", is not a string";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
@@ -641,8 +634,7 @@ public class RMT2File {
      * @param _keyCode
      * @return The value of key or null if key could not be found.
      */
-    public static String getPropertyValueBuffered(String _bundleName,
-            String _keyCode) {
+    public static String getPropertyValueBuffered(String _bundleName, String _keyCode) {
         // Get the value of _keycode
         try {
             return RMT2File.getPropertyValue(_bundleName, _keyCode);
@@ -662,8 +654,7 @@ public class RMT2File {
      * @throws SystemException
      *             General IO errors.
      */
-    public static String inputFile(String filename) throws NotFoundException,
-            SystemException {
+    public static String inputFile(String filename) throws NotFoundException, SystemException {
         File sourceFile = new File(filename);
         if (!sourceFile.exists()) {
             throw new NotFoundException("Input File not found: " + filename);
@@ -712,8 +703,7 @@ public class RMT2File {
      * @throws SystemException
      *             file destination is not found or general IO error.
      */
-    public static void outputFile(String data, String filename)
-            throws SystemException {
+    public static void outputFile(String data, String filename) throws SystemException {
         byte byteResulsts[] = data.getBytes();
         RMT2File.outputFile(byteResulsts, filename);
     }
@@ -728,8 +718,7 @@ public class RMT2File {
      * @return the total number of bytes written to disk.
      * @throws SystemException
      */
-    public static int outputFile(byte data[], String filename)
-            throws SystemException {
+    public static int outputFile(byte data[], String filename) throws SystemException {
         File destFile = new File(filename);
         String msg;
 
@@ -772,8 +761,7 @@ public class RMT2File {
      * @throws SystemException
      *             file destination is not found or general IO error.
      */
-    public static int outputFile(InputStream data, String filename)
-            throws SystemException {
+    public static int outputFile(InputStream data, String filename) throws SystemException {
         File destFile = new File(filename);
         String msg;
 
@@ -824,8 +812,7 @@ public class RMT2File {
                 return false;
             }
             else if (newDir.isFile()) {
-                msg = "Unable to create directory, " + dir
-                        + ",  because it already exists as a file";
+                msg = "Unable to create directory, " + dir + ",  because it already exists as a file";
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new SystemException(msg);
             }
@@ -836,8 +823,7 @@ public class RMT2File {
             boolean result = newDir.mkdir();
             return result;
         } catch (Exception e) {
-            msg = "Problem creating directory, " + dir
-                    + ",  due to general exception";
+            msg = "Problem creating directory, " + dir + ",  due to general exception";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         }
@@ -861,8 +847,7 @@ public class RMT2File {
                 RMT2File.logger.log(Level.WARN, msg);
             }
             else if (newDir.isFile()) {
-                msg = "Unable to create directory, " + dir
-                        + ",  because it already exists as a file";
+                msg = "Unable to create directory, " + dir + ",  because it already exists as a file";
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new SystemException(msg);
             }
@@ -873,8 +858,7 @@ public class RMT2File {
             boolean result = newDir.mkdirs();
             return result;
         } catch (Exception e) {
-            msg = "Problem creating multiple directories, " + dir
-                    + ",  due to general exception";
+            msg = "Problem creating multiple directories, " + dir + ",  due to general exception";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         }
@@ -891,8 +875,7 @@ public class RMT2File {
      * @throws SystemException
      *             I fileDestination is not found or general IO error.
      */
-    public static void createFile(String data, String filename)
-            throws SystemException {
+    public static void createFile(String data, String filename) throws SystemException {
         outputFile(data, filename);
     }
 
@@ -907,8 +890,7 @@ public class RMT2File {
      *            located in the SystemParms properties file.
      * @throws SystemException
      */
-    public static void serializeText(String data, String filename)
-            throws SystemException {
+    public static void serializeText(String data, String filename) throws SystemException {
         String msg = "File serialization failed for file " + filename + ": ";
         String filePath = RMT2File.getSerialLocation(filename);
         try {
@@ -930,10 +912,8 @@ public class RMT2File {
      *            The name of the file that will contain the serialized object.
      * @throws SystemException
      */
-    public static void serializeObject(Object _obj, String _destination)
-            throws SystemException {
-        String msg = "File serialization failed for file " + _destination
-                + ": ";
+    public static void serializeObject(Object _obj, String _destination) throws SystemException {
+        String msg = "File serialization failed for file " + _destination + ": ";
         String filename = RMT2File.getSerialLocation(_destination);
 
         try {
@@ -954,8 +934,7 @@ public class RMT2File {
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         } catch (NotSerializableException e) {
-            msg = msg
-                    + " Object is not serializable...Ensure that object implements java.io.Serializable interface";
+            msg = msg + " Object is not serializable...Ensure that object implements java.io.Serializable interface";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         } catch (IOException e) {
@@ -974,8 +953,7 @@ public class RMT2File {
      * @return the restored object
      * @throws SystemException
      */
-    public static Object deSerializeObject(String _source)
-            throws SystemException {
+    public static Object deSerializeObject(String _source) throws SystemException {
         Object obj = null;
         String msg = "File deserialization failed for file " + _source + ": ";
         String filename = RMT2File.getSerialLocation(_source);
@@ -1015,8 +993,7 @@ public class RMT2File {
      * @return The full path used to retreive or store a serialized file.
      * @throws SystemException
      */
-    public static String getSerialLocation(String _filename)
-            throws SystemException {
+    public static String getSerialLocation(String _filename) throws SystemException {
         String result = null;
         String msg;
         if (_filename == null || _filename.length() <= 0) {
@@ -1055,8 +1032,7 @@ public class RMT2File {
      *             <li>when the source file does not exist.</li>
      *             </ul>
      */
-    public static void copyFile(String fromFileName, String toFileName)
-            throws IOException {
+    public static void copyFile(String fromFileName, String toFileName) throws IOException {
         File fromFile = new File(fromFileName);
         File toFile = new File(toFileName);
         String msg;
@@ -1082,16 +1058,13 @@ public class RMT2File {
 
         if (toFile.exists()) {
             if (!toFile.canWrite()) {
-                msg = "FileCopy: " + "destination file is unwriteable: "
-                        + toFileName;
+                msg = "FileCopy: " + "destination file is unwriteable: " + toFileName;
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new IOException(msg);
             }
-            System.out.print("Overwrite existing file " + toFile.getName()
-                    + "? (Y/N): ");
+            System.out.print("Overwrite existing file " + toFile.getName() + "? (Y/N): ");
             System.out.flush();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    System.in));
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String response = in.readLine();
             if (!response.equals("Y") && !response.equals("y")) {
                 msg = "FileCopy: " + "existing file was not overwritten";
@@ -1106,20 +1079,17 @@ public class RMT2File {
             }
             File dir = new File(parent);
             if (!dir.exists()) {
-                msg = "FileCopy: " + "destination directory doesn't exist: "
-                        + parent;
+                msg = "FileCopy: " + "destination directory doesn't exist: " + parent;
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new IOException(msg);
             }
             if (dir.isFile()) {
-                msg = "FileCopy: " + "destination is not a directory: "
-                        + parent;
+                msg = "FileCopy: " + "destination is not a directory: " + parent;
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new IOException(msg);
             }
             if (!dir.canWrite()) {
-                msg = "FileCopy: " + "destination directory is unwriteable: "
-                        + parent;
+                msg = "FileCopy: " + "destination directory is unwriteable: " + parent;
                 RMT2File.logger.log(Level.ERROR, msg);
                 throw new IOException(msg);
             }
@@ -1175,8 +1145,7 @@ public class RMT2File {
      *             <li>when the source file does not exist.</li>
      *             </ul>
      */
-    public static void copyFileWithOverwrite(String fromFileName,
-            String toFileName) throws IOException {
+    public static void copyFileWithOverwrite(String fromFileName, String toFileName) throws IOException {
         File fromFile = new File(fromFileName);
         File toFile = new File(toFileName);
         String msg;
@@ -1206,8 +1175,7 @@ public class RMT2File {
         }
         File dir = new File(parent);
         if (!dir.exists()) {
-            msg = "FileCopy: " + "destination directory doesn't exist: "
-                    + parent;
+            msg = "FileCopy: " + "destination directory doesn't exist: " + parent;
             RMT2File.logger.log(Level.ERROR, msg);
             throw new IOException(msg);
         }
@@ -1217,8 +1185,7 @@ public class RMT2File {
             throw new IOException(msg);
         }
         if (!dir.canWrite()) {
-            msg = "FileCopy: " + "destination directory is unwriteable: "
-                    + parent;
+            msg = "FileCopy: " + "destination directory is unwriteable: " + parent;
             RMT2File.logger.log(Level.ERROR, msg);
             throw new IOException(msg);
         }
@@ -1290,14 +1257,12 @@ public class RMT2File {
         }
 
         if (!file.exists()) {
-            msg = "File Delete Problem: no such file or directory: "
-                    + file.getPath();
+            msg = "File Delete Problem: no such file or directory: " + file.getPath();
             logger.log(Level.WARN, msg);
             return 0;
         }
         if (!file.canWrite()) {
-            msg = "File Delete Problem: file or directory is write protected: "
-                    + file.getPath();
+            msg = "File Delete Problem: file or directory is write protected: " + file.getPath();
             logger.log(Level.WARN, msg);
             return 0;
         }
@@ -1337,8 +1302,7 @@ public class RMT2File {
      *             that of the sender, class of the target input object cannot
      *             found, dor when in is invalid.
      */
-    public static final Object getStreamObjectData(InputStream in)
-            throws SystemException {
+    public static final Object getStreamObjectData(InputStream in) throws SystemException {
         String msg;
         ObjectInputStream ois = null;
         if (in == null) {
@@ -1384,8 +1348,7 @@ public class RMT2File {
      *             General I/O errors, input stream type is conflicting with
      *             that of the sender, or when in is invalid.
      */
-    public static final String getStreamStringData(InputStream in)
-            throws SystemException {
+    public static final String getStreamStringData(InputStream in) throws SystemException {
         String msg;
         InputStreamReader isr = null;
         BufferedReader br = null;
@@ -1428,8 +1391,7 @@ public class RMT2File {
      * @return
      * @throws SystemException
      */
-    public static final long getStreamByteSize(InputStream is)
-            throws SystemException {
+    public static final long getStreamByteSize(InputStream is) throws SystemException {
         byte bytes[] = RMT2File.getStreamByteData(is);
         return bytes.length;
     }
@@ -1442,8 +1404,7 @@ public class RMT2File {
      * @return byte[]
      * @throws SystemException
      */
-    public static final byte[] getStreamByteData(InputStream is)
-            throws SystemException {
+    public static final byte[] getStreamByteData(InputStream is) throws SystemException {
         int byteSize = 1024;
         return RMT2File.getStreamByteData(is, byteSize);
     }
@@ -1459,10 +1420,8 @@ public class RMT2File {
      * @return byte[]
      * @throws SystemException
      */
-    public static final byte[] getStreamByteData(InputStream is, int byteSize)
-            throws SystemException {
-        ByteArrayOutputStream baos = RMT2File.createOutputByteStream(is,
-                byteSize);
+    public static final byte[] getStreamByteData(InputStream is, int byteSize) throws SystemException {
+        ByteArrayOutputStream baos = RMT2File.createOutputByteStream(is, byteSize);
         return baos.toByteArray();
     }
 
@@ -1478,8 +1437,8 @@ public class RMT2File {
      * @return ByteArrayOutputStream
      * @throws SystemException
      */
-    public static final ByteArrayOutputStream createOutputByteStream(
-            InputStream is, int byteSize) throws SystemException {
+    public static final ByteArrayOutputStream createOutputByteStream(InputStream is, int byteSize)
+            throws SystemException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(baos);
@@ -1617,8 +1576,7 @@ public class RMT2File {
      * @param fileName
      * @return
      */
-    public static final InputStream getFileInputStreamFromContextClassloader(
-            String fileName) {
+    public static final InputStream getFileInputStreamFromContextClassloader(String fileName) {
         InputStream in = null;
         URL url = null;
         File file = null;
@@ -1626,23 +1584,19 @@ public class RMT2File {
         try {
             // Try to load fileName directly as an InputStream using an absolute
             // resource path
-            in = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream(fileName);
+            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
             if (in == null) {
                 // Try to load fileName directly as an InputStream using an
                 // relative resource path
-                in = Thread.currentThread().getClass()
-                        .getResourceAsStream(fileName);
+                in = Thread.currentThread().getClass().getResourceAsStream(fileName);
             }
             if (in == null) {
                 // Try absolute resource path
-                url = Thread.currentThread().getContextClassLoader()
-                        .getResource(fileName);
+                url = Thread.currentThread().getContextClassLoader().getResource(fileName);
 
                 if (url == null) {
                     // Try relative resource path
-                    url = Thread.currentThread().getClass()
-                            .getResource(fileName);
+                    url = Thread.currentThread().getClass().getResource(fileName);
                 }
 
                 // Try loading fileName from the file system
@@ -1690,8 +1644,7 @@ public class RMT2File {
      * @param fileName
      * @return
      */
-    public static final InputStream getFileInputStreamFromAppContext(
-            String fileName) {
+    public static final InputStream getFileInputStreamFromAppContext(String fileName) {
         InputStream in = null;
         URL url = null;
         File file = null;
@@ -1708,12 +1661,10 @@ public class RMT2File {
             }
             if (in == null) {
                 if (classLoaderValid) {
-                    in = RMT2File.class.getClass().getClassLoader()
-                            .getResourceAsStream(fileName);
+                    in = RMT2File.class.getClass().getClassLoader().getResourceAsStream(fileName);
                 }
                 else {
-                    in = ClassLoader.getSystemClassLoader()
-                            .getSystemResourceAsStream(fileName);
+                    in = ClassLoader.getSystemClassLoader().getSystemResourceAsStream(fileName);
                 }
             }
             if (in == null) {
@@ -1722,12 +1673,10 @@ public class RMT2File {
                 if (url == null) {
                     // Try resource relative path
                     if (classLoaderValid) {
-                        url = RMT2File.class.getClass().getClassLoader()
-                                .getResource(fileName);
+                        url = RMT2File.class.getClass().getClassLoader().getResource(fileName);
                     }
                     else {
-                        url = ClassLoader.getSystemClassLoader()
-                                .getSystemResource(fileName);
+                        url = ClassLoader.getSystemClassLoader().getSystemResource(fileName);
                     }
                 }
                 if (url == null) {
@@ -1772,8 +1721,7 @@ public class RMT2File {
      * @return List<String> a list of all files found in the directory matching
      *         the selection criteria.
      */
-    public static final List<String> getDirectoryListing(String directory,
-            String fileNameCriteria) {
+    public static final List<String> getDirectoryListing(String directory, String fileNameCriteria) {
         String msg;
         File folder = null;
 
@@ -1803,21 +1751,17 @@ public class RMT2File {
                 throw new SystemException(msg, RMT2File.FILE_IO_INACCESSIBLE);
         }
 
-        RMT2FileDirectoryFilter filter = new RMT2FileDirectoryFilter(
-                fileNameCriteria);
+        RMT2FileDirectoryFilter filter = new RMT2FileDirectoryFilter(fileNameCriteria);
         File[] listOfFiles = folder.listFiles(filter);
 
         List<String> listing = new ArrayList<String>();
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 listing.add(listOfFiles[i].getName());
-                logger.log(Level.INFO,
-                        "Found file: " + listOfFiles[i].getName());
+                logger.log(Level.INFO, "Found file: " + listOfFiles[i].getName());
             }
             else if (listOfFiles[i].isDirectory()) {
-                logger.log(Level.INFO,
-                        "SubDirectory was found but not added to listing: "
-                                + listOfFiles[i].getName());
+                logger.log(Level.INFO, "SubDirectory was found but not added to listing: " + listOfFiles[i].getName());
             }
         }
         return listing;
@@ -1829,8 +1773,7 @@ public class RMT2File {
      * @param out
      * @throws IOException
      */
-    public static void writeString(String s, DataOutputStream out)
-            throws IOException {
+    public static void writeString(String s, DataOutputStream out) throws IOException {
         if (s != null) {
             out.writeUTF(s);
         }
@@ -1858,8 +1801,7 @@ public class RMT2File {
      *            file system or a resource found on the classpath
      * @throws SystemException
      */
-    public static void loadSystemProperties(String resourceName)
-            throws SystemException {
+    public static void loadSystemProperties(String resourceName) throws SystemException {
         // Locate and load properties to System properties collection
         String msg = null;
         Properties props = null;
@@ -1871,12 +1813,10 @@ public class RMT2File {
             logger.warn(msg);
             try {
                 // try to locate resource from the classpath
-                ResourceBundle r = RMT2File
-                        .loadAppConfigProperties(resourceName);
+                ResourceBundle r = RMT2File.loadAppConfigProperties(resourceName);
                 props = RMT2File.convertResourceBundleToProperties(r);
             } catch (Exception ee) {
-                msg = "Unable to load System properties using source Properties file, "
-                        + resourceName;
+                msg = "Unable to load System properties using source Properties file, " + resourceName;
                 throw new SystemException(msg, ee);
             }
         }
@@ -1898,8 +1838,7 @@ public class RMT2File {
      * @throws NotFoundException
      *             <i>srcFilePath</i> is not found in the file system.
      */
-    public static final byte[] getFileContentsAsBytes(String srcFilePath)
-            throws NotFoundException {
+    public static final byte[] getFileContentsAsBytes(String srcFilePath) throws NotFoundException {
         File file = new File(srcFilePath);
         FileInputStream fis = null;
         try {
@@ -1926,8 +1865,7 @@ public class RMT2File {
      * @throws NotFoundException
      *             <i>srcFilePath</i> is not found in the file system.
      */
-    public static final String getFileContentAsBase64(String srcFilePath)
-            throws NotFoundException {
+    public static final String getFileContentAsBase64(String srcFilePath) throws NotFoundException {
         byte binaryData[] = getFileContentsAsBytes(srcFilePath);
         String data = RMT2Base64Encoder.encode(binaryData);
         return data;
