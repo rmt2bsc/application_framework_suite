@@ -374,13 +374,9 @@ public class RMT2File {
             }
 
             // At this point we have a file that exist and is accessible.
-            logger.info("Createing FileReader for file: " + _filename);
-            System.out.println("RMT2File.getTextFileContents()====> Createing FileReader for file: " + _filename);
             fr = new FileReader(_filename);
             buf = new BufferedReader(fr);
 
-            logger.info("Fetching the contents of file: " + _filename);
-            System.out.println("RMT2File.getTextFileContents()====> Fetching the contents of file: " + _filename);
             int temp;
             while ((temp = buf.read()) != -1) {
                 fileContent.append((char) temp);
