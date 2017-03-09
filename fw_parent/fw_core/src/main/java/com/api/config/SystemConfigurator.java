@@ -66,10 +66,19 @@ public class SystemConfigurator extends RMT2Base {
         String msg = null;
 
         // Get application server configuration file
-        String xmlDoc = RMT2File.getTextFileContents(appServConfigFile);
+        String xmlDoc = null;
+        try {
+            xmlDoc = RMT2File.getTextFileContents(appServConfigFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msg = "Severe Error: Unable to load the contents of application configuration file, "
+                    + appServConfigFile;
+            System.out.println(this.msg);
+            throw new ConfigException(this.msg);
+        }
+
         JaxbUtil jaxb = new JaxbUtil(ConfigConstants.JAXB_CONFIG_PKG);
-        AppServerConfig appConfig = (AppServerConfig) jaxb
-                .unMarshalMessage(xmlDoc);
+        AppServerConfig appConfig = (AppServerConfig) jaxb.unMarshalMessage(xmlDoc);
 
         SystemConfigurator.config = appConfig;
 
@@ -77,14 +86,12 @@ public class SystemConfigurator extends RMT2Base {
         String logPath = appConfig.getLoggerConfigPath();
         PropertyConfigurator.configure(logPath);
         logger = Logger.getLogger(SystemConfigurator.class);
-        logger.info("\n\nBegin Application Configuration for " + appName
-                + "...");
+        logger.info("\n\nBegin Application Configuration for " + appName + "...");
 
         // Finish loading remaining JAXB contexts
         logger.info("Finish loading remaining JAXB contexts...");
         if (appConfig.getJaxbContexts() != null) {
-            List<JaxbContext> contexts = appConfig.getJaxbContexts()
-                    .getJaxbContext();
+            List<JaxbContext> contexts = appConfig.getJaxbContexts().getJaxbContext();
             for (JaxbContext item : contexts) {
                 try {
                     JaxbUtil util = new JaxbUtil(item.getValue());
@@ -122,8 +129,7 @@ public class SystemConfigurator extends RMT2Base {
      * @param config
      * @throws ConfigException
      */
-    protected void loadProperties(AppServerConfig config)
-            throws ConfigException {
+    protected void loadProperties(AppServerConfig config) throws ConfigException {
         this.loadSystemProperties(config);
         this.loadLocalProperties(config);
         return;
@@ -135,8 +141,7 @@ public class SystemConfigurator extends RMT2Base {
         if (sysProps != null) {
             if (RMT2String2.isEmpty(this.env)) {
                 // Depend on configuration file for this value
-                props.addSystemProperty("environment",
-                        sysProps.getEnvironment());
+                props.addSystemProperty("environment", sysProps.getEnvironment());
                 props.addSystemProperty("env", sysProps.getEnvironment());
             }
             else {
@@ -149,23 +154,17 @@ public class SystemConfigurator extends RMT2Base {
 
             EmailConfig emailProps = sysProps.getEmailConfig();
             if (emailProps != null) {
-                props.addSystemProperty("Authentication",
-                        emailProps.getAuthentication());
-                props.addSystemProperty("Defaultcontent",
-                        emailProps.getDefaultcontent());
+                props.addSystemProperty("Authentication", emailProps.getAuthentication());
+                props.addSystemProperty("Defaultcontent", emailProps.getDefaultcontent());
                 props.addSystemProperty("HostPop3", emailProps.getHostPop3());
                 props.addSystemProperty("HostSmtp", emailProps.getHostSmtp());
-                props.addSystemProperty("InternalSmtpDomain",
-                        emailProps.getInternalSmtpDomain());
+                props.addSystemProperty("InternalSmtpDomain", emailProps.getInternalSmtpDomain());
                 props.addSystemProperty("UserId", emailProps.getUserId());
                 props.addSystemProperty("Password", emailProps.getPassword());
-                props.addSystemProperty("Resourcetype",
-                        emailProps.getResourcetype());
-                props.addSystemProperty("TemplatePath",
-                        emailProps.getTemplatePath());
+                props.addSystemProperty("Resourcetype", emailProps.getResourcetype());
+                props.addSystemProperty("TemplatePath", emailProps.getTemplatePath());
             }
-            props.addSystemProperty(
-                    sysProps.getConsumerMsgHandlerMappingsKey(),
+            props.addSystemProperty(sysProps.getConsumerMsgHandlerMappingsKey(),
                     sysProps.getConsumerMsgHandlerMappingsLocation());
         }
         return;
@@ -174,23 +173,18 @@ public class SystemConfigurator extends RMT2Base {
     private void loadLocalProperties(AppServerConfig config) {
         AppPropertyPool props = AppPropertyPool.getInstance();
         props.addProperty("LoggerConfigPath", config.getLoggerConfigPath());
-        props.addProperty("ContainerManagedPool",
-                config.getContainerManagedPool());
-        props.addSystemProperty("PageLinkMax",
-                String.valueOf(config.getPageLinkMax()));
-        props.addSystemProperty("PaginationPageSize",
-                String.valueOf(config.getPaginationPageSize()));
+        props.addProperty("ContainerManagedPool", config.getContainerManagedPool());
+        props.addSystemProperty("PageLinkMax", String.valueOf(config.getPageLinkMax()));
+        props.addSystemProperty("PaginationPageSize", String.valueOf(config.getPaginationPageSize()));
         props.addSystemProperty("PollingPage", config.getPollingPage());
-        props.addSystemProperty("ProtocolInformation",
-                config.getProtocolInformation());
+        props.addSystemProperty("ProtocolInformation", config.getProtocolInformation());
         props.addSystemProperty("RemoteSrvcApp", config.getRemoteSrvcApp());
         props.addSystemProperty("RptFileExt", config.getRptFileExt());
         props.addSystemProperty("RptXsltPath", config.getRptXsltPath());
         props.addSystemProperty("SerialDrive", config.getSerialDrive());
         props.addSystemProperty("SerialExt", config.getSerialExt());
         props.addSystemProperty("SerialPath", config.getSerialPath());
-        props.addSystemProperty("TimeoutInterval",
-                String.valueOf(config.getTimeoutInterval()));
+        props.addSystemProperty("TimeoutInterval", String.valueOf(config.getTimeoutInterval()));
         props.addSystemProperty("WebAppMapping", config.getWebAppMapping());
         props.addSystemProperty("WebAppsDir", config.getWebAppsDir());
         props.addSystemProperty("WebAppsDrive", config.getWebAppsDrive());
@@ -203,8 +197,7 @@ public class SystemConfigurator extends RMT2Base {
      */
     private void setupDatabaseApi(AppServerConfig config) {
         // Determine if database pool is container managed.
-        boolean containerManagedPool = Boolean.parseBoolean(config
-                .getContainerManagedPool());
+        boolean containerManagedPool = Boolean.parseBoolean(config.getContainerManagedPool());
         if (containerManagedPool) {
             logger.info("Database pool is container managed.");
             logger.info("Bypass database pool initialization.");
@@ -227,12 +220,11 @@ public class SystemConfigurator extends RMT2Base {
      * @param config
      */
     private void setupApiCollection(AppServerConfig config) {
-        List<ApiConfigurator> list = config.getApiConfigurators()
-                .getApiConfigurator();
+        List<ApiConfigurator> list = config.getApiConfigurators().getApiConfigurator();
         for (ApiConfigurator apiConfig : list) {
             RMT2BeanUtility util = new RMT2BeanUtility();
-            com.api.config.ApiConfigurator configurator = (com.api.config.ApiConfigurator) util
-                    .createBean(apiConfig.getClassName());
+            com.api.config.ApiConfigurator configurator = (com.api.config.ApiConfigurator) util.createBean(apiConfig
+                    .getClassName());
             configurator.start();
         }
     }
