@@ -40,11 +40,9 @@ import com.util.RMT2String2;
  * @author Roy Terrell
  * 
  */
-public abstract class AbstractMessageRouterImpl extends RMT2Base implements
-        MessagingRouter {
+public abstract class AbstractMessageRouterImpl extends RMT2Base implements MessagingRouter {
 
-    private static final Logger logger = Logger
-            .getLogger(AbstractMessageRouterImpl.class);
+    private static final Logger logger = Logger.getLogger(AbstractMessageRouterImpl.class);
 
     // private static Map<String, MessageRoutingInfo> SERVICES;
 
@@ -137,8 +135,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      *             Routing information is unobtainable due to the occurrence of
      *             data access errors or etc.
      */
-    protected abstract MessageHandlerInput createReceptorInputData(
-            Object inMessage) throws MessageRoutingException;
+    protected abstract MessageHandlerInput createReceptorInputData(Object inMessage) throws MessageRoutingException;
 
     // /**
     // * Setup the service registry with data obtained from a HTTP resource
@@ -234,32 +231,34 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      *             using the supplied key, <i>messageId</i>.
      */
     public MessageRoutingInfo getRoutingInfo(String messageId)
-            throws InvalidDataException, NotFoundException,
-            MessageRoutingException {
+            throws InvalidDataException, NotFoundException, MessageRoutingException {
         if (this.register == null) {
             msg = "Unable to get message routing information due to the web service registry is not initialize";
+            logger.error(msg);
             throw new MessageRoutingException(msg);
         }
         // Validate the existence of Service Id
         if (messageId == null) {
             msg = "Unable to get message routing information due to required message id is null";
+            logger.error(msg);
             throw new InvalidDataException(msg);
         }
         MessageRoutingInfo srvc = this.register.getEntry(messageId);
         if (srvc == null) {
-            msg = "Routing information was not found in the web service registry for message id,  "
-                    + messageId;
+            msg = "Routing information was not found in the web service registry for message id,  " + messageId;
+            logger.error(msg);
             throw new NotFoundException(msg);
         }
         if (!messageId.equalsIgnoreCase(srvc.getMessageId())) {
-            msg = "A naming conflict exist between the requested message id ["
-                    + messageId
+            msg = "A naming conflict exist between the requested message id [" + messageId
                     + "] and the service name associated with the web service registry entry that was found";
+            logger.error(msg);
             throw new NotFoundException(msg);
         }
         if (srvc.getDestination() == null) {
             msg = "The required URL property of the matching message routing entry found in the web service registry for message id, "
                     + messageId + ", is null";
+            logger.error(msg);
             throw new InvalidDataException(msg);
         }
         return srvc;
@@ -279,10 +278,10 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @throws MessageRoutingException
      */
     @Override
-    public Object routeMessage(String messageId, Object message)
-            throws MessageRoutingException {
+    public Object routeMessage(String messageId, Object message) throws MessageRoutingException {
         MessageRoutingInfo routingInfo = null;
         try {
+            logger.info("Preparing to route message id: " + messageId);
             routingInfo = this.getRoutingInfo(messageId);
             return this.routeMessage(routingInfo, message);
         } catch (MessageRoutingException e) {
@@ -304,22 +303,17 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @throws MessageRoutingException
      */
     @Override
-    public Object routeMessage(MessageRoutingInfo srvc, Object message)
-            throws MessageRoutingException {
-        MessageHandlerInput handlerMessage = this
-                .createReceptorInputData(message);
+    public Object routeMessage(MessageRoutingInfo srvc, Object message) throws MessageRoutingException {
+        MessageHandlerInput handlerMessage = this.createReceptorInputData(message);
         MessageHandlerResults results = null;
 
-        if (srvc.getRouterType().equalsIgnoreCase(
-                WebServiceConstants.MSG_ROUTER_TYPE_HTTP)) {
+        if (srvc.getRouterType().equalsIgnoreCase(WebServiceConstants.MSG_ROUTER_TYPE_HTTP)) {
             results = this.routeMessageToHttpHandler(srvc, handlerMessage);
         }
-        else if (srvc.getRouterType().equalsIgnoreCase(
-                WebServiceConstants.MSG_ROUTER_TYPE_RMI)) {
+        else if (srvc.getRouterType().equalsIgnoreCase(WebServiceConstants.MSG_ROUTER_TYPE_RMI)) {
             results = this.routeMessageToRmiHandler(srvc, handlerMessage);
         }
-        else if (srvc.getRouterType().equalsIgnoreCase(
-                WebServiceConstants.MSG_ROUTER_TYPE_JMS)) {
+        else if (srvc.getRouterType().equalsIgnoreCase(WebServiceConstants.MSG_ROUTER_TYPE_JMS)) {
             results = this.routeMessageToJmsHandler(srvc, handlerMessage);
         }
 
@@ -350,8 +344,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @return
      * @throws MessageRoutingException
      */
-    protected MessageHandlerResults routeMessageToRmiHandler(
-            MessageRoutingInfo srvc, MessageHandlerInput message)
+    protected MessageHandlerResults routeMessageToRmiHandler(MessageRoutingInfo srvc, MessageHandlerInput message)
             throws MessageRoutingException {
         String remoteObj = srvc.getDestination();
         // Get host server where the intended web service implementation can be
@@ -367,8 +360,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
 
         // Make RMI call
         RmiClientSession client = new RmiClientSession();
-        MessageHandlerResults results = client.callRmi(remoteObj,
-                message.getMessageId(), message.getCommand(),
+        MessageHandlerResults results = client.callRmi(remoteObj, message.getMessageId(), message.getCommand(),
                 message.getPayload());
         client.close();
         return results;
@@ -394,12 +386,10 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @throws MessageRoutingException
      *             General errors pertaining to sending a message.
      */
-    protected MessageHandlerResults routeMessageToJmsHandler(
-            MessageRoutingInfo srvc, MessageHandlerInput message)
+    protected MessageHandlerResults routeMessageToJmsHandler(MessageRoutingInfo srvc, MessageHandlerInput message)
             throws MessageRoutingException {
 
-        JmsConnectionManager jmsConMgr = JmsConnectionManager
-                .getJmsConnectionManger();
+        JmsConnectionManager jmsConMgr = JmsConnectionManager.getJmsConnectionManger();
 
         // Get the appropriate JMS connection based on the messaging
         // system specified in transaction's configuration.
@@ -419,8 +409,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
             msg.setText(message.getPayload().toString());
             Destination replyToDest = null;
             if (!RMT2String2.isEmpty(srvc.getReplyMessageId())) {
-                replyToDest = jms.createReplyToDestination(
-                        srvc.getDestination(), msg);
+                replyToDest = jms.createReplyToDestination(srvc.getDestination(), msg);
             }
 
             jms.send(srvc.getDestination(), msg);
@@ -469,7 +458,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
         // }
         // } catch (JMSException e) {
         // this.msg =
-        // "A problem occurred trying to interrogate the existence of the reply destination of the submitted JMS message";
+        // "A problem occurred trying to interrogate the existence of the reply
+        // destination of the submitted JMS message";
         // throw new MessageRoutingException(this.msg, e);
         // }
         // return null;
@@ -530,7 +520,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
     // return results;
     // } catch (Exception e) {
     // this.msg =
-    // "A problem occurred setting up and/or blocking synchronous consumer targeting tempoary JMS destination,  "
+    // "A problem occurred setting up and/or blocking synchronous consumer
+    // targeting tempoary JMS destination, "
     // + destination;
     // logger.error(this.msg, e);
     // throw new MessageException(this.msg, e);
@@ -546,8 +537,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
      * @return
      * @throws MessageRoutingException
      */
-    protected MessageHandlerResults routeMessageToHttpHandler(
-            MessageRoutingInfo srvc, MessageHandlerInput message)
+    protected MessageHandlerResults routeMessageToHttpHandler(MessageRoutingInfo srvc, MessageHandlerInput message)
             throws MessageRoutingException {
         // Get host server where the intended web service implementation can be
         // found.
@@ -566,8 +556,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
 
         // Tack on the client action to the URL since we are posting a
         // SOAP message to the request and not Properties collection.
-        String url = server + "/" + srvc.getDestination() + "?clientAction="
-                + srvc.getMessageId();
+        String url = server + "/" + srvc.getDestination() + "?clientAction=" + srvc.getMessageId();
 
         // TODO: Potential problem using HttpMessageSender since it exclusively
         // manages messages
@@ -584,8 +573,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
             client.sendMessage(message);
             return (MessageHandlerResults) client.getMessage();
         } catch (MessageException e) {
-            msg = "Problem routing web service HTTP request to its destination.  The URL in error: "
-                    + url;
+            msg = "Problem routing web service HTTP request to its destination.  The URL in error: " + url;
             throw new MessageRoutingException(e);
         } catch (ProviderConnectionException e) {
             msg = "Problem routing web service HTTP request due to the inability to establish a connection to the HTTP resource via an erroneous ProviderConfig instance.  The URL in error: "
@@ -603,7 +591,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
         // }
         // catch (Exception e) {
         // msg =
-        // "Problem routing SOAP request to its destination.  The URL in error: "
+        // "Problem routing SOAP request to its destination. The URL in error: "
         // + url;
         // throw new MessageRoutingException(msg, e);
         // }
@@ -628,9 +616,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements
         // logic to convert RMI results to SOAP response.
         String xml;
         try {
-            xml = MessagingResourceFactory.getJaxbMessageBinder()
-                    .marshalMessage(results.getPayload(),
-                            results.getMessageId(), true);
+            xml = MessagingResourceFactory.getJaxbMessageBinder().marshalMessage(results.getPayload(),
+                    results.getMessageId(), true);
             return xml;
         } catch (Exception e) {
             this.msg = "Unable to marshal messaging handler results into a XML String due to an invalid JAXB object reference: "
