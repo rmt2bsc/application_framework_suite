@@ -15,8 +15,8 @@ public class MessageRouterFactory {
         return router;
     }
 
-    public static final MessagingRouter createJaxbMessageRouter() {
-        MessagingRouter router = new MessageRouterJaxbImpl();
+    public static final MessagingRouter createBasicMessageRouter() {
+        MessagingRouter router = new BasicMessageRouterImpl();
         return router;
     }
 }

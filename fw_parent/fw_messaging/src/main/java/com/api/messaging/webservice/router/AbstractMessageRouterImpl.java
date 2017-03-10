@@ -1,5 +1,7 @@
 package com.api.messaging.webservice.router;
 
+import java.io.Serializable;
+
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.Message;
@@ -44,11 +46,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
     private static final Logger logger = Logger.getLogger(AbstractMessageRouterImpl.class);
 
-    // private static Map<String, MessageRoutingInfo> SERVICES;
-
     protected ServiceRegistry register;
-
-    // protected int webServiceType;
 
     /**
      * Create a AbstractMessageRouterImpl with an initialized web service
@@ -87,42 +85,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
         // Load the all service configurations
         this.register.loadServices();
-
-        // this.intitalizeLdapRegistry();
-
-        // try {
-        // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
-        // String srvcRegClass = RMT2File.getPropertyValue(
-        // RMT2Utility.CONFIG_APP,
-        // WebServiceConstants.SERVICE_REGISTRY_SRC_KEY_NAME);
-        // this.register = (ServiceRegistry) beanUtil.createBean(srvcRegClass);
-        // } catch (Exception e) {
-        // String msg = "Unable to initialize service register Api";
-        // logger.fatal(msg, e);
-        // throw new MessageRoutingException(msg, e);
-        // }
-        // // Load the all service configurations
-        // this.register.loadServices();
-
-        // this.intitalizeRegistryFromFileSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
-        // this.intitalizeRegistryFromHttpSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
-        // this.intitalizeRegistryFromLdapSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
     }
-
-    // /**
-    // * Setup the service registry using LDAP implementation of
-    // * {@link ServiceRegistry}.
-    // * <p>
-    // * Registry data should of already been loaded at server start up time
-    // from
-    // * {@link com.api.config.SystemConfiguratorController}
-    // *
-    // * @throws MessageRoutingException
-    // */
-    // protected void intitalizeLdapRegistry() throws MessageRoutingException {
-    // ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-    // this.register = f.getLdapServiceRegistryManager(null, null);
-    // }
 
     /**
      * Create the input data for a specific message handler using the incoming
@@ -136,82 +99,6 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      *             data access errors or etc.
      */
     protected abstract MessageHandlerInput createReceptorInputData(Object inMessage) throws MessageRoutingException;
-
-    // /**
-    // * Setup the service registry with data obtained from a HTTP resource
-    // *
-    // * @param webServiceType
-    // * An integer representing the type of web service configuration to load
-    // into
-    // * the registry. Web service types are like SOAP, RMI, HTTP, REST, and
-    // etc.
-    // * @throws MessageRoutingException
-    // */
-    // protected void intitalizeRegistryFromHttpSource(int webServiceType)
-    // throws MessageRoutingException {
-    // this.webServiceType = webServiceType;
-    // try {
-    // // Verifiy if service registry is loaded with SOAP based web SERVICES. If
-    // not, then load
-    // if (AbstractMessageRouterImpl.SERVICES == null) {
-    // ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-    // ServiceRegistry regMgr = f.getHttpServiceRegistryManager();
-    // AbstractMessageRouterImpl.SERVICES = regMgr.loadServices(webServiceType);
-    // }
-    // }
-    // catch (Exception e) {
-    // String msg = "Failed to load web service registry using a HTTP source";
-    // throw new MessageRoutingException(msg, e);
-    // }
-    // }
-    //
-    // /**
-    // * Setup the service registry with data obtained from a LDAP server.
-    // *
-    // * @param webServiceType
-    // * An integer representing the type of web service configuration to load
-    // into
-    // * the registry. Web service types are like SOAP, RMI, HTTP, REST, and
-    // etc.
-    // * @throws MessageRoutingException
-    // */
-    // protected void intitalizeRegistryFromLdapSource(int webServiceType)
-    // throws MessageRoutingException {
-    // this.webServiceType = webServiceType;
-    // try {
-    // // Verifiy if service registry is loaded with SOAP based web SERVICES. If
-    // not, then load
-    // if (AbstractMessageRouterImpl.getServices() == null) {
-    // ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-    // ServiceRegistry regMgr = f.getLdapServiceRegistryManager();
-    // Map<String, MessageRoutingInfo> s = regMgr.loadServices(webServiceType);
-    // AbstractMessageRouterImpl.setServices(s);
-    // }
-    // }
-    // catch (Exception e) {
-    // String msg = "Failed to load web service registry using LDAP source";
-    // throw new MessageRoutingException(msg, e);
-    // }
-    // }
-    //
-    // protected void intitalizeRegistryFromFileSource(int webServiceType)
-    // throws MessageRoutingException {
-    // this.webServiceType = webServiceType;
-    // try {
-    // // Verifiy if service registry is loaded with SOAP based web SERVICES. If
-    // not, then load
-    // if (AbstractMessageRouterImpl.getServices() == null) {
-    // ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-    // ServiceRegistry regMgr = f.getFileServiceRegistryManager(null);
-    // Map<String, MessageRoutingInfo> s = regMgr.loadServices(webServiceType);
-    // AbstractMessageRouterImpl.setServices(s);
-    // }
-    // }
-    // catch (Exception e) {
-    // String msg = "Failed to load web service registry using XML file source";
-    // throw new MessageRoutingException(msg, e);
-    // }
-    // }
 
     /**
      * Obtain routing information for the target message id.
@@ -304,9 +191,18 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      */
     @Override
     public Object routeMessage(MessageRoutingInfo srvc, Object message) throws MessageRoutingException {
-        MessageHandlerInput handlerMessage = this.createReceptorInputData(message);
-        MessageHandlerResults results = null;
+        MessageHandlerInput handlerMessage = this.createReceptorInputData(srvc);
 
+        if (handlerMessage == null) {
+            throw new InvalidDataException("Unable to create an instance of MessageHandlerInput");
+        }
+        Serializable serialObj = null;
+        if (message instanceof Serializable) {
+            serialObj = (Serializable) message;
+            handlerMessage.setPayload(serialObj);
+        }
+
+        MessageHandlerResults results = null;
         if (srvc.getRouterType().equalsIgnoreCase(WebServiceConstants.MSG_ROUTER_TYPE_HTTP)) {
             results = this.routeMessageToHttpHandler(srvc, handlerMessage);
         }
@@ -319,7 +215,6 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
         // Need to obtain the message id for the response message instead of
         // sending null.
-        // String responseMessageId = "RS" + srvc.getMessageId().substring(2);
         try {
             // If reply message id is not available, then set it to the request
             // message
@@ -427,106 +322,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         } finally {
             jms.stop(srvc.getDestination());
         }
-
-        // logger.info(AbstractMessageDrivenBean.class.getName()
-        // + " message driven bean is instantiated!!!!!");
-        //
-        // JmsResourceFactory f = new JmsResourceFactory();
-        // ProducerMsgBean jmsMsgBean = null;
-        // MessageManager prod = null;
-        // // Setup message bean and producer
-        // try {
-        // jmsMsgBean = f.createMessage(srvc, message);
-        // prod = f.getProducerClientInstance();
-        // } catch (JmsResourceCreationException e) {
-        // throw new MessageRoutingException(e);
-        // }
-        // // Send message to its destination
-        // try {
-        // Message submittedMsg = (Message) prod.sendMessage(jmsMsgBean);
-        // // If submittedMsg has a reply destination and the
-        // // MessageHandlerInput object indicates that its delivery mode is
-        // // synchronous ("SYNC"), then add logic to receive the reply from
-        // // that destination and return the results to the caller as a
-        // // MessageHandlerResults object. Otherwise, return null.
-        // try {
-        // if (submittedMsg.getJMSReplyTo() != null
-        // && message.getDeliveryMode().equalsIgnoreCase(
-        // WebServiceConstants.MSG_TRANSPORT_MODE_SYNC)) {
-        // return this.waitForJmsReply(jmsMsgBean
-        // .getReplyDestination());
-        // }
-        // } catch (JMSException e) {
-        // this.msg =
-        // "A problem occurred trying to interrogate the existence of the reply
-        // destination of the submitted JMS message";
-        // throw new MessageRoutingException(this.msg, e);
-        // }
-        // return null;
-        // } catch (MessageException e) {
-        // this.msg =
-        // "A problem occurred trying to send JMS message to destination, "
-        // + jmsMsgBean.getDestination();
-        // throw new MessageRoutingException(this.msg, e);
-        // } finally {
-        // prod.close();
-        // prod = null;
-        // }
-
-        // JmsProducerClient client = new JmsProducerClient();
-        // return client.callProducer(srvc, message);
-
-        // JmsResourceFactory f = new JmsResourceFactory();
-        //
-        // // Setup producer
-        // ProducerClient prod;
-        // try {
-        // prod = f.getProducerInstance();
-        // }
-        // catch (JmsResourceCreationException e) {
-        // throw new MessageRoutingException(e);
-        // }
-        // ProducerMsgBean producerData = new ProducerMsgBean();
-        // producerData.setData(message.getPayload());
-        // producerData.setDestination(srvc.getDestination());
-        // producerData.setMessageId(message.getCommand());
-        // producerData.setMsgHandlerClass(srvc.getHandler());
-        //
-        // try {
-        // prod.sendMessage(producerData);
-        // return null;
-        // }
-        // catch (MessageException e) {
-        // this.msg =
-        // "A problem occurred trying to send JMS message to destination, " +
-        // srvc.getDestination();
-        // throw new MessageRoutingException(this.msg, e);
-        // }
-        // finally {
-        // prod.close();
-        // prod = null;
-        // }
     }
-
-    // private MessageHandlerResults waitForJmsReply(String destination)
-    // throws MessageException {
-    // JmsResourceFactory f = new JmsResourceFactory();
-    // ConsumerClient replyConsumer;
-    // try {
-    // replyConsumer = f.getConsumerClientInstance(destination);
-    // ConsumerMsgBean reply = (ConsumerMsgBean) replyConsumer
-    // .getMessage();
-    // MessageHandlerResults results = reply.getReplyPayload();
-    // return results;
-    // } catch (Exception e) {
-    // this.msg =
-    // "A problem occurred setting up and/or blocking synchronous consumer
-    // targeting tempoary JMS destination, "
-    // + destination;
-    // logger.error(this.msg, e);
-    // throw new MessageException(this.msg, e);
-    // }
-    // }
 
     /**
      * Uses a HTTP to route a message to the appropriate business API handler
@@ -580,21 +376,6 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
                     + url;
             throw new MessageRoutingException(e);
         }
-
-        // try {
-        // HttpClient client = new HttpClient(url);
-        // InputStream is = client.sendPostMessage(serialMessage);
-        // client.close();
-        //
-        // MessageHandlerResults response = null;
-        // return response;
-        // }
-        // catch (Exception e) {
-        // msg =
-        // "Problem routing SOAP request to its destination. The URL in error: "
-        // + url;
-        // throw new MessageRoutingException(msg, e);
-        // }
     }
 
     /**
@@ -626,38 +407,4 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
             throw new InvalidDataException(e);
         }
     }
-
-    // /* (non-Javadoc)
-    // * @see com.api.messaging.MessagingRouter#getServiceCount()
-    // */
-    // public Integer getServiceCount() {
-    // return (this.register == null ? null : this.register.getServiceCount());
-    // }
-
-    // /**
-    // * @return the SERVICES
-    // */
-    // protected static Map<String, MessageRoutingInfo> getServices() {
-    // return SERVICES;
-    // }
-    //
-    // /**
-    // * @param SERVICES the SERVICES to set
-    // */
-    // protected static void setServices(Map<String, MessageRoutingInfo>
-    // services) {
-    // AbstractMessageRouterImpl.SERVICES = services;
-    // }
-
-    // /**
-    // * Stub method.
-    // *
-    // * @param request
-    // * This paramter is not assigned to anything.
-    // */
-    // @Override
-    // public void setUserRequest(HttpServletRequest request) {
-    // return;
-    // }
-
 }

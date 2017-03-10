@@ -26,8 +26,7 @@ import com.api.messaging.MessageRoutingInfo;
  */
 class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
 
-    private static Logger logger = Logger
-            .getLogger(LdapServiceRegistryLoaderImpl.class);
+    private static Logger logger = Logger.getLogger(LdapServiceRegistryLoaderImpl.class);
 
     private String ldapMapperClass;
 
@@ -62,7 +61,7 @@ class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
             MessageRoutingInfo rec = new MessageRoutingInfo();
             rec.setCommand(item.getCn().get(0));
             rec.setDestination(item.getRequestUrl());
-            rec.setHandler(null);
+            // rec.setHandler(null);
             rec.setHost(item.getHost());
             rec.setMessageId(item.getCn().get(0));
             rec.setReplyMessageId(item.getReplyMsgId());
@@ -92,8 +91,7 @@ class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
         try {
             wsTypegList = this.fetchAllWebServiceTypes();
             for (String wsType : wsTypegList) {
-                List<LdapWebServiceConfig> results = this
-                        .fetchWebServices(wsType);
+                List<LdapWebServiceConfig> results = this.fetchWebServices(wsType);
                 if (results != null) {
                     srvc.addAll(results);
                 }
@@ -132,8 +130,7 @@ class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
         return list;
     }
 
-    private List<LdapWebServiceConfig> fetchWebServices(String wsType)
-            throws RMT2Exception {
+    private List<LdapWebServiceConfig> fetchWebServices(String wsType) throws RMT2Exception {
         if (wsType == null) {
             return null;
         }
@@ -164,8 +161,7 @@ class LdapServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
             item.setRsrcSubTypeName(wsType);
             // item.setRouterType(wsType);
         }
-        logger.info(queryResults + " entries fetched for web service type, "
-                + wsType);
+        logger.info(queryResults + " entries fetched for web service type, " + wsType);
         return queryResults;
     }
 }

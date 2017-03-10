@@ -94,6 +94,7 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistr
             srvc.setDescription(item.getDescription());
             srvc.setSecured(Boolean.parseBoolean(item.getSecure()));
             srvc.setHost(item.getHost());
+            srvc.setDeliveryMode(item.getDeliveryMode());
             routingMap.put(srvc.getMessageId(), srvc);
             logger.info("[Application=" + srvc.getApplicatoinId() + "] [Module=" + srvc.getModuleId()
                     + "] [Transaction=" + srvc.getMessageId() + "]");
