@@ -139,6 +139,7 @@
                     <xs:element type="xs:string" name="description"/>
                     <xs:element type="xs:string" name="secure"/>
                     <xs:element type="xs:string" name="host"/>
+                    <xs:element type="xs:string" name="deliveryMode"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

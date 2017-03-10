@@ -63,12 +63,18 @@ public class MessageRoutingInfo extends RMT2Base {
     private String command;
 
     /**
-     * The class name of the data handler that will manage the incoming message
-     * once the message has reached its destination.
-     * <p>
-     * This is usually needed for JMS type message processors.
+     * The mode in which the service is to be transported. Valid values are
+     * ASYNC and SYNC.
      */
-    private String handler;
+    private String deliveryMode;
+
+    public String getDeliveryMode() {
+        return deliveryMode;
+    }
+
+    public void setDeliveryMode(String deliveryMode) {
+        this.deliveryMode = deliveryMode;
+    }
 
     /**
      * The id of the reply message.
@@ -174,21 +180,6 @@ public class MessageRoutingInfo extends RMT2Base {
     }
 
     /**
-     * @return the handler
-     */
-    public String getHandler() {
-        return handler;
-    }
-
-    /**
-     * @param handler
-     *            the handler to set
-     */
-    public void setHandler(String handler) {
-        this.handler = handler;
-    }
-
-    /**
      * @return the replyMessageId
      */
     public String getReplyMessageId() {
@@ -211,7 +202,8 @@ public class MessageRoutingInfo extends RMT2Base {
     }
 
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name) {
         this.name = name;
@@ -225,7 +217,8 @@ public class MessageRoutingInfo extends RMT2Base {
     }
 
     /**
-     * @param applicatoinId the applicatoinId to set
+     * @param applicatoinId
+     *            the applicatoinId to set
      */
     public void setApplicatoinId(String applicatoinId) {
         this.applicatoinId = applicatoinId;
@@ -239,7 +232,8 @@ public class MessageRoutingInfo extends RMT2Base {
     }
 
     /**
-     * @param moduleId the moduleId to set
+     * @param moduleId
+     *            the moduleId to set
      */
     public void setModuleId(String moduleId) {
         this.moduleId = moduleId;
@@ -253,7 +247,8 @@ public class MessageRoutingInfo extends RMT2Base {
     }
 
     /**
-     * @param description the description to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
