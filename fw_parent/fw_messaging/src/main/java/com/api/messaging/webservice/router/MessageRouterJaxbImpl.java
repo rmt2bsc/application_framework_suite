@@ -7,12 +7,14 @@ import org.apache.log4j.Logger;
 import com.InvalidDataException;
 import com.NotFoundException;
 import com.api.DaoApi;
+import com.api.config.ConfigConstants;
+import com.api.config.SystemConfigurator;
 import com.api.messaging.MessageRoutingException;
-import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.handler.MessageHandlerInput;
 import com.api.messaging.handler.MessageHandlerResults;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.xml.XmlApiFactory;
+import com.api.xml.jaxb.JaxbUtil;
 
 /**
  * A JAXB implementation of {@link MessagingRouter} that provides functionality
@@ -24,8 +26,7 @@ import com.api.xml.XmlApiFactory;
  * <pre>
  * MessagingRouter router;
  * String jaxbXml = &quot;Some xml that can be unmarshalled as a JAXB object&quot;;
- * Object jaxbInstance = MessagingResourceFactory.getJaxbMessageBinder()
- *         .unMarshalMessage(jaxbXml);
+ * Object jaxbInstance = MessagingResourceFactory.getJaxbMessageBinder().unMarshalMessage(jaxbXml);
  * router = new MessageRouterJaxbImpl();
  * Object results = router.routeMessage(&quot;mesgid&quot;, jaxbInstance);
  * router = null;
@@ -36,8 +37,7 @@ import com.api.xml.XmlApiFactory;
  */
 class MessageRouterJaxbImpl extends AbstractMessageRouterImpl {
 
-    private static final Logger logger = Logger
-            .getLogger(MessageRouterJaxbImpl.class);
+    private static final Logger logger = Logger.getLogger(MessageRouterJaxbImpl.class);
 
     /**
      * Default constructor.
@@ -59,8 +59,7 @@ class MessageRouterJaxbImpl extends AbstractMessageRouterImpl {
      *             data access errors or etc.
      */
     @Override
-    protected MessageHandlerInput createReceptorInputData(Object inMessage)
-            throws MessageRoutingException {
+    protected MessageHandlerInput createReceptorInputData(Object inMessage) throws MessageRoutingException {
         Serializable serialObj = null;
         if (inMessage instanceof Serializable) {
             serialObj = (Serializable) inMessage;
@@ -70,16 +69,15 @@ class MessageRouterJaxbImpl extends AbstractMessageRouterImpl {
         String deliveryMode = null;
         String xml;
         try {
-            // xml =
-            // MessagingResourceFactory.getJaxbMessageBinder().marshalMessage(msg);
-            xml = MessagingResourceFactory.getJaxbMessageBinder()
-                    .marshalMessage(serialObj);
+            JaxbUtil jaxb = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            xml = jaxb.marshalMessage(serialObj);
+
             DaoApi api = XmlApiFactory.createXmlDao(xml);
             String query = "//header";
             api.retrieve(query);
             while (api.nextRow()) {
                 try {
-                    msgId = api.getColumnValue("message_id");
+                    msgId = api.getColumnValue("transaction");
                 } catch (NotFoundException e) {
                     this.msg = "Cannot find required header element, message_id, in XML payload...invalid XML structure";
                     throw new InvalidDataException(this.msg, e);
@@ -89,7 +87,7 @@ class MessageRouterJaxbImpl extends AbstractMessageRouterImpl {
                 } catch (NotFoundException e) {
                     this.msg = "Cannot find header element, delivery_mode.  Will default to ASYNCHRONOUS.";
                     logger.warn(this.msg);
-                    deliveryMode = WebServiceConstants.MSG_TRANSPORT_MODE_ASYNC;
+                    deliveryMode = WebServiceConstants.MSG_TRANSPORT_MODE_SYNC;
                 }
             }
         } catch (Exception e) {

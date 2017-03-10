@@ -59,7 +59,9 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistr
             throw new ConfigException(this.msg);
         }
         List<Service> services = SystemConfigurator.getConfig().getServiceRegistry().getService();
-        return this.createMessageRoutingInfo(services);
+        Map<String, MessageRoutingInfo> registeredServices = this.createMessageRoutingInfo(services);
+        SystemConfiguratorServiceRegistryLoaderImpl.setServices(registeredServices);
+        return registeredServices;
     }
 
     /**
@@ -80,6 +82,7 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistr
     private Map<String, MessageRoutingInfo> createMessageRoutingInfo(List<Service> services) {
         Map<String, MessageRoutingInfo> routingMap = new HashMap<String, MessageRoutingInfo>();
         int loadCount = 0;
+        logger.info("Loading Service Registry entries...");
         for (Service item : services) {
             MessageRoutingInfo srvc = new MessageRoutingInfo();
             srvc.setName(item.getName());
@@ -92,6 +95,8 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistr
             srvc.setSecured(Boolean.parseBoolean(item.getSecure()));
             srvc.setHost(item.getHost());
             routingMap.put(srvc.getMessageId(), srvc);
+            logger.info("[Application=" + srvc.getApplicatoinId() + "] [Module=" + srvc.getModuleId()
+                    + "] [Transaction=" + srvc.getMessageId() + "]");
             loadCount++;
         }
 

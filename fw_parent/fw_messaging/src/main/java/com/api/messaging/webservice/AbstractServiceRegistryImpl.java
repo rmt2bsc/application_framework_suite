@@ -36,13 +36,15 @@ public abstract class AbstractServiceRegistryImpl extends RMT2Base implements Se
     public MessageRoutingInfo getEntry(String messageId) {
         if (AbstractServiceRegistryImpl.SERVICES == null) {
             this.loadServices();
+            // throw exception if service registry still remains unintialized.
+            if (SERVICES == null) {
+                this.msg = "Failed to obtain MessageRoutingInfo for message id, " + messageId
+                        + ", due to the Services registry is invalid or empty";
+                logger.error(this.msg);
+                throw new SystemException(this.msg);
+            }
         }
-        if (SERVICES == null) {
-            this.msg = "Failed to obtain MessageRoutingInfo for message id, " + messageId
-                    + ", due to the Services registry is invalid or empty";
-            logger.error(this.msg);
-            throw new SystemException(this.msg);
-        }
+
         logger.info("Attempting to fetch MessageRoutingInfo using message id, " + messageId);
         MessageRoutingInfo srvc = (MessageRoutingInfo) AbstractServiceRegistryImpl.SERVICES.get(messageId);
         return srvc;
