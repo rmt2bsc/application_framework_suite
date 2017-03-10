@@ -23,9 +23,9 @@ import com.api.config.ConfigConstants;
  * <pre>
  *    JaxbUtil binder;
  *    // Create JaxbUtil containing in multiple ways.
- *    binder = new JaxbUtilJaxbUtil();
+ *    binder = new JaxbUtil();
  *    or
- *    binder = new JaxbUtilJaxbUtil("com.jaxb.package.one");
+ *    binder = new JaxbUtil("com.jaxb.package.one");
  *    or
  *    binder = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
  *    
@@ -71,8 +71,7 @@ public class JaxbUtil {
         try {
             this.createContext(jaxbPackage);
         } catch (JaxbUtilException e) {
-            throw new JaxbUtilException("Unable to create JAXB Utility object",
-                    e);
+            throw new JaxbUtilException("Unable to create JAXB Utility object", e);
         }
         return;
     }
@@ -81,9 +80,7 @@ public class JaxbUtil {
         try {
             this.context = JAXBContext.newInstance(jaxbPackage);
         } catch (JAXBException e) {
-            throw new JaxbUtilException(
-                    "Error occurred creating JAXB Context for package, "
-                            + jaxbPackage, e);
+            throw new JaxbUtilException("Error occurred creating JAXB Context for package, " + jaxbPackage, e);
         } catch (NullPointerException e) {
             throw new JaxbUtilException(
                     "Error: Input JAXB Package name must not be null when initializing JAXBUtil object");
@@ -122,7 +119,8 @@ public class JaxbUtil {
     // + jaxbPackage, e);
     // } catch (NullPointerException e) {
     // throw new JaxbUtilException(
-    // "Input JAXB Package name must not be null when initializing JAXBUtil object");
+    // "Input JAXB Package name must not be null when initializing JAXBUtil
+    // object");
     // }
     // return JaxbUtil.util;
     // }
@@ -157,8 +155,7 @@ public class JaxbUtil {
      */
     public String marshalMessage(Object source, boolean formatOutput) {
         if (this.context == null) {
-            throw new RuntimeException(
-                    "Unable to marshal object.  JAXB context is invalid or null");
+            throw new RuntimeException("Unable to marshal object.  JAXB context is invalid or null");
         }
         try {
             Marshaller m = context.createMarshaller();
@@ -210,13 +207,11 @@ public class JaxbUtil {
      */
     public Object unMarshalMessage(String xmlDoc) {
         if (this.context == null) {
-            throw new RuntimeException(
-                    "Unable to unmarshal object.  JAXB context is invalid or null");
+            throw new RuntimeException("Unable to unmarshal object.  JAXB context is invalid or null");
         }
         try {
             Unmarshaller u = context.createUnmarshaller();
-            ByteArrayInputStream bais = new ByteArrayInputStream(
-                    xmlDoc.getBytes());
+            ByteArrayInputStream bais = new ByteArrayInputStream(xmlDoc.getBytes());
             Object bindObj = u.unmarshal(bais);
             return bindObj;
         } catch (Throwable e) {
@@ -248,7 +243,8 @@ public class JaxbUtil {
     // this.context = JaxbUtil.contexts.get(targetContext);
     // } catch (NullPointerException e) {
     // throw new JaxbUtilException(
-    // "Input JAXB Package name must not be null when fetching JAXB context object from Map");
+    // "Input JAXB Package name must not be null when fetching JAXB context
+    // object from Map");
     // }
     // }
 
