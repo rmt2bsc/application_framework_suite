@@ -6,13 +6,13 @@
 	<name>fw-jsp</name>
 	<description>RMT2 JSP Framework</description>
 	<parent>
-		<groupId>com.rmt2.framework.suite</groupId>
+		<groupId>org.rmt2.framework</groupId>
 		<artifactId>fw-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>com.rmt2.framework.suite</groupId>
+			<groupId>org.rmt2.framework</groupId>
 			<artifactId>fw-messaging</artifactId>
 			<version>2.0.1-SNAPSHOT</version>
 			<scope>compile</scope>

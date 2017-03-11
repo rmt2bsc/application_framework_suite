@@ -5,13 +5,13 @@
   <name>fw-swing</name>
   <description>RMT2 Swing framework</description>
   <parent>
-       <groupId>com.rmt2.framework.suite</groupId>
+       <groupId>org.rmt2.framework</groupId>
        <artifactId>fw-parent</artifactId>
        <version>1.0.1-SNAPSHOT</version>
   </parent>
   <dependencies>
 		 <dependency>
-		    <groupId>com.rmt2.framework.suite</groupId>
+		    <groupId>org.rmt2.framework</groupId>
 		    <artifactId>fw-core</artifactId>
         <version>1.1-SNAPSHOT</version>
         <scope>compile</scope>
