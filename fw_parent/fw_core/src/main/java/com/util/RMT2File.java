@@ -395,7 +395,9 @@ public class RMT2File {
             throw new SystemException(msg);
         } finally {
             try {
-                buf.close();
+                if (buf != null) {
+                    buf.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1608,15 +1610,18 @@ public class RMT2File {
                 }
             }
         } catch (MalformedURLException e) {
-            logger.error("A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to its name malformation errors: "
-                    + e.getMessage());
+            logger.error(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to its name malformation errors: "
+                            + e.getMessage());
             in = null;
         } catch (IOException e) {
-            logger.warn("A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to a general I/O error occurred: "
-                    + e.getMessage());
+            logger.warn(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to a general I/O error occurred: "
+                            + e.getMessage());
             in = null;
         } catch (NullPointerException e) {
-            logger.error("A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to the input resource name is null");
+            logger.error(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the web context of the application due to the input resource name is null");
             in = null;
         }
 
@@ -1692,15 +1697,18 @@ public class RMT2File {
                 }
             }
         } catch (MalformedURLException e) {
-            logger.error("A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to its name malformation errors: "
-                    + e.getMessage());
+            logger.error(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to its name malformation errors: "
+                            + e.getMessage());
             in = null;
         } catch (IOException e) {
-            logger.warn("A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to a general I/O error occurred: "
-                    + e.getMessage());
+            logger.warn(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to a general I/O error occurred: "
+                            + e.getMessage());
             in = null;
         } catch (NullPointerException e) {
-            logger.error("A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to the input resource name is null");
+            logger.error(
+                    "A failed attempt was made to obtain a URL reference of the input file name on the standalone context of the application due to the input resource name is null");
             in = null;
         }
 
@@ -1871,4 +1879,3 @@ public class RMT2File {
     }
 
 } // end class
-
