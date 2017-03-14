@@ -4,6 +4,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+import java.util.List;
+
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.soap.SOAPMessage;
@@ -46,6 +49,7 @@ public class SoapEngineTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         Request mockGenericRequest = mock(Request.class);
+        String soapXml = "";
         SOAPMessage mockSoapMsg = mock(SOAPMessage.class);
 
         when(HttpVariableScopeFactory.createHttpRequest(mockRequest))
@@ -70,11 +74,12 @@ public class SoapEngineTest {
         when(mockRequest.getRequestURL()).thenReturn(
                 new StringBuffer("http://test/url"));
 
+        List<DataHandler> attachments = null;
         try {
             MessageRouterHelper mockMsgRouterHelper = mock(MessageRouterHelper.class);
             whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(
                     mockMsgRouterHelper);
-            when(mockMsgRouterHelper.routeSoapMessage(serviceId, mockSoapMsg))
+            when(mockMsgRouterHelper.routeSoapMessage(serviceId, soapXml, null))
                     .thenReturn(mockSoapMsg);
         } catch (Exception e) {
             e.printStackTrace();
