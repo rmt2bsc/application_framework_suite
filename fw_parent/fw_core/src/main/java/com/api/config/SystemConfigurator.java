@@ -47,9 +47,12 @@ public class SystemConfigurator extends RMT2Base {
 
     private static Map<String, JaxbUtil> jaxb;
 
+    private static Map<String, String> jaxbPackageName;
+
     public SystemConfigurator() {
         super();
         jaxb = new Hashtable<String, JaxbUtil>();
+        jaxbPackageName = new Hashtable<String, String>();
     }
 
     public SystemConfigurator(String appName, String env) {
@@ -97,6 +100,7 @@ public class SystemConfigurator extends RMT2Base {
                 try {
                     JaxbUtil util = new JaxbUtil(item.getValue());
                     SystemConfigurator.jaxb.put(item.getName(), util);
+                    SystemConfigurator.jaxbPackageName.put(item.getName(), item.getValue());
                 } catch (JaxbUtilException e) {
                     logger.fatal("Unable to setup JAXB context, " + item, e);
                 }
@@ -247,4 +251,13 @@ public class SystemConfigurator extends RMT2Base {
         return jaxb.get(contextName);
     }
 
+    /**
+     * Returns JAXB context package name associated with an JAXB instance based
+     * on the JAXB context name, <i>contextName</i>.
+     * 
+     * @return {@link JaxbUtil} or null of <i>contextName</i> does not exitst.
+     */
+    public static String getJaxbPackageName(String contextName) {
+        return jaxbPackageName.get(contextName);
+    }
 }
