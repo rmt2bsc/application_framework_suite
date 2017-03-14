@@ -4,23 +4,22 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.activation.DataHandler;
-import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
 import com.InvalidDataException;
-import com.NotFoundException;
+import com.api.config.ConfigConstants;
+import com.api.config.SystemConfigurator;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
-import com.api.messaging.MessagingResourceFactory;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.handler.MessageHandlerInput;
 import com.api.messaging.handler.MessageHandlerResults;
 import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
-import com.api.messaging.webservice.soap.SoapServiceException;
-import com.api.messaging.webservice.soap.client.SoapProductBuilder;
+import com.api.xml.jaxb.JaxbUtil;
 
 /**
  * A SOAP implementation of {@link MessagingRouter} providing common router
@@ -31,9 +30,9 @@ import com.api.messaging.webservice.soap.client.SoapProductBuilder;
  * 
  */
 class MessageRouterSoapImpl extends AbstractMessageRouterImpl {
-    private static final Logger logger = Logger
-            .getLogger(MessageRouterSoapImpl.class);
-
+    private static final Logger logger = Logger.getLogger(MessageRouterSoapImpl.class);
+    // get SOAP attachments, if applicable.
+    private List<DataHandler> attachments;
     /**
      * Default constructor.
      */
@@ -42,63 +41,25 @@ class MessageRouterSoapImpl extends AbstractMessageRouterImpl {
         return;
     }
 
-    // /**
-    // * Load the service registry with data
-    // * <p>
-    // * This implementation is capable of utilizing two types of input sources
-    // to load the data: a HTTP
-    // * or a LDAP source. The descendent can override if the source should be
-    // identified as something
-    // * other than a HTTP service.
-    // *
-    // * @throws MessageRoutingException
-    // */
-    // public void intitalizeRegistry() throws MessageRoutingException {
-    // this.intitalizeRegistryFromFileSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
-    //
-    // //
-    // this.intitalizeRegistryFromHttpSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
-    // //
-    // this.intitalizeRegistryFromLdapSource(WebServiceConstants.WEBSERV_TYPE_SOAP);
-    // }
-
-    private Object bindPayload(SOAPMessage message) {
-        Object payloadBinding;
-        try {
-            payloadBinding = this.getPayloadAsJaxbObject(message);
-            return payloadBinding;
-        } catch (MessageRoutingException e) {
-            return null;
-        }
-    }
-
     /**
+     * Routes an incoming web service message to its targeted destination.
+     * <p>
+     * This method will use <i>messageId</i> to obtain the message routing
+     * information.
      * 
-     * @param sm
-     * @return
+     * @param messageId
+     *            the identifier of the message to route.
+     * @param message
+     *            an arbitrary message that is to be processed
+     * @return a generic repsonse appropriate for the descendent implementation.
      * @throws MessageRoutingException
      */
-    private Object getPayloadAsJaxbObject(SOAPMessage sm)
+    public Object routeMessage(String messageId, String soapXml, List<DataHandler> attachments)
             throws MessageRoutingException {
-        SoapMessageHelper helper = new SoapMessageHelper();
-        String bodyXml;
-        Object bodyObj;
-        try {
-            bodyXml = helper.getBody(sm);
-            // TODO: might need to change this invocation to create binder with
-            // one class instead of the entire package in order to be
-            // performant.
-            bodyObj = MessagingResourceFactory.getJaxbMessageBinder()
-                    .unMarshalMessage(bodyXml);
-            return bodyObj;
-        } catch (SoapServiceException e) {
-            this.msg = "Unable to obtain payload as a String from the SOAP envelope instance";
-            throw new MessageRoutingException(this.msg, e);
-        } catch (Exception e) {
-            this.msg = "Error occurred trying to unmarshall the payload of the request SOAP envelope as a JAXB object";
-            throw new MessageRoutingException(this.msg, e);
-        }
+        this.attachments = attachments;
+        return super.routeMessage(messageId, soapXml);
     }
+
 
     /*
      * (non-Javadoc)
@@ -108,71 +69,41 @@ class MessageRouterSoapImpl extends AbstractMessageRouterImpl {
      * Object)
      */
     @Override
-    protected MessageHandlerInput createReceptorInputData(Object inMessage)
+    protected MessageHandlerInput prepareMessageForTransport(MessageRoutingInfo srvc, Object inMessage)
             throws MessageRoutingException {
-        SOAPMessage sm = null;
-        if (inMessage instanceof SOAPMessage) {
-            sm = (SOAPMessage) inMessage;
+        // Get payload...required to be serializable
+        String bodyXml = null;
+        if (inMessage instanceof String) {
+            bodyXml = (String) inMessage;
         }
         else {
             this.msg = "Unable to create messaging handler data object.  Incoming generic message data type must resolve to SOAPMessage";
-            throw new RuntimeException(this.msg);
+            throw new MessageRoutingException(this.msg);
         }
 
-        SoapMessageHelper helper = new SoapMessageHelper();
-
-        // Get message id and command name
-        String msgId = null;
-        String command = null;
-        String hdrElement = null;
+        Object bodyObj = null;
         try {
-            hdrElement = SoapProductBuilder.HEADER_NS + ":"
-                    + SoapConstants.SERVICEID_NAME;
-            msgId = helper.getHeaderValue(hdrElement, sm);
-        } catch (SOAPException e) {
-            this.msg = "A problem occurred accessing SOAP header element, "
-                    + hdrElement;
-            throw new MessageRoutingException(this.msg, e);
-        } catch (NotFoundException e) {
-            this.msg = "Required SOAP header element, " + hdrElement
-                    + " was not found as part of the SOAP header element";
+            JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            bodyObj = jaxbUtil.unMarshalMessage(bodyXml);
+        } catch (Exception e) {
+            this.msg = "Error occurred trying to unmarshall the payload of the request SOAP envelope as a JAXB object";
             throw new MessageRoutingException(this.msg, e);
         }
 
-        try {
-            hdrElement = SoapProductBuilder.HEADER_NS + ":"
-                    + SoapConstants.COMMAND_NAME;
-            command = helper.getHeaderValue(hdrElement, sm);
-        } catch (SOAPException e) {
-            this.msg = "A problem occurred accessing SOAP header element, "
-                    + hdrElement;
-            throw new MessageRoutingException(this.msg, e);
-        } catch (NotFoundException e) {
-            this.msg = "Optional SOAP header element, " + hdrElement
-                    + " was not found as part of the SOAP header element";
-            logger.warn(this.msg);
-        }
-
-        // Get payload...required to be serializable
-        Object boundData = this.bindPayload(sm);
         Serializable payload;
-        if (boundData != null && boundData instanceof Serializable) {
-            payload = (Serializable) boundData;
+        if (bodyObj != null && bodyObj instanceof Serializable) {
+            payload = (Serializable) bodyObj;
         }
         else {
             this.msg = "The payload of incoming message is required to be of Serializable type";
             throw new MessageRoutingException(this.msg);
         }
-
-        // get SOAP attachments, if applicable.
-        List<DataHandler> attachments = helper.extractAttachments(sm);
-
         // Create and initialize message handle input object
         MessageHandlerInput data = new MessageHandlerInput();
-        data.setMessageId(msgId);
-        data.setCommand(command);
+        data.setMessageId(srvc.getMessageId());
+        data.setCommand(null);
         data.setPayload(payload);
-        data.setAttachments(attachments);
+        data.setAttachments(this.attachments);
         return data;
     }
 
@@ -208,10 +139,8 @@ class MessageRouterSoapImpl extends AbstractMessageRouterImpl {
             if (results.getReturnCode() == SoapConstants.RETURNCODE_SUCCESS) {
                 // The business API hanlder processed the request successfully.
                 String payload = (String) super.getReceptorResults(results);
-                String xml = helper.createResponse(results.getMessageId(),
-                        payload);
-                if (results.getAttachments() != null
-                        && results.getAttachments().size() > 0) {
+                String xml = helper.createResponse(results.getMessageId(), payload);
+                if (results.getAttachments() != null && results.getAttachments().size() > 0) {
                     // Attachments were found...build SOAP message with
                     // attachments.
                     sm = helper.getSoapInstance(xml, results.getAttachments());
@@ -224,9 +153,8 @@ class MessageRouterSoapImpl extends AbstractMessageRouterImpl {
             else if (results.getReturnCode() == SoapConstants.RETURNCODE_FAILURE) {
                 // Create SOAP fault message since the business API handler
                 // returned an error.
-                sm = helper.createSoapFault(
-                        String.valueOf(SoapConstants.RETURNCODE_FAILURE),
-                        results.getErrorMsg(), null, null);
+                sm = helper.createSoapFault(String.valueOf(SoapConstants.RETURNCODE_FAILURE), results.getErrorMsg(),
+                        null, null);
             }
             else {
                 // The required return code was not set by the business API
