@@ -1,7 +1,9 @@
 package com.api.messaging.webservice.router;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.activation.DataHandler;
 import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
@@ -43,21 +45,24 @@ public class MessageRouterHelper extends RMT2Base {
      *            The message id of the service that requires the SOAP message
      *            to be routed to its destination.
      * @param payload
-     *            an instance of {@link SOAPMessage}
+     *            XML payload
+     * @param attachments
+     *            the SOAP attachments
      * @return an instance of {@link SOAPMessage} as the reply
      * @throws MessageRoutingException
      */
-    public SOAPMessage routeSoapMessage(String messageId, SOAPMessage payload) throws MessageRoutingException {
+    public SOAPMessage routeSoapMessage(String messageId, String payload, List<DataHandler> attachments)
+            throws MessageRoutingException {
         MessagingRouter router = MessageRouterFactory.createSoapMessageRouter();
         try {
-            SoapMessageHelper helper = new SoapMessageHelper();
-            String soapStr = helper.toString(payload);
             logger.info("Routing SOAP Request: ");
-            logger.info(soapStr);
-            SOAPMessage results = (SOAPMessage) router.routeMessage(messageId, payload);
-            soapStr = helper.toString(results);
+            logger.info(payload);
+            SOAPMessage results = (SOAPMessage) ((MessageRouterSoapImpl) router).routeMessage(messageId, payload,
+                    attachments);
+            SoapMessageHelper helper = new SoapMessageHelper();
+            String resultsSoapStr = helper.toString(results);
             logger.info("Received SOAP Response: ");
-            logger.info(soapStr);
+            logger.info(resultsSoapStr);
             return results;
         } catch (SoapBuilderException e) {
             this.msg = "An error occurred translating SOAP instance to String";
