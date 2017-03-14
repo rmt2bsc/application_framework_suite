@@ -454,21 +454,15 @@ public class SoapMessageHelperTest {
         SOAPMessage obj = h.getSoapInstance(soapXml);
         this.assertRequest(obj);
 
-        try {
-            String val = h.getHeaderValue("header1", obj);
-            Assert.assertNotNull(val);
-            Assert.assertEquals("abc", val);
-            val = h.getHeaderValue("header2", obj);
-            Assert.assertNotNull(val);
-            Assert.assertEquals("def", val);
-            val = h.getHeaderValue("header3", obj);
-            Assert.assertNotNull(val);
-            Assert.assertEquals("ghi", val);
-        } catch (SOAPException e) {
-            e.printStackTrace();
-            Assert.fail(
-                    "A server error occurred while testing SoapMessageHelper.getHeaderValue() method");
-        }
+        String val = h.getHeaderValue("header1", obj);
+        Assert.assertNotNull(val);
+        Assert.assertEquals("abc", val);
+        val = h.getHeaderValue("header2", obj);
+        Assert.assertNotNull(val);
+        Assert.assertEquals("def", val);
+        val = h.getHeaderValue("header3", obj);
+        Assert.assertNotNull(val);
+        Assert.assertEquals("ghi", val);
     }
 
     /**
