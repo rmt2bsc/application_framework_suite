@@ -1,42 +1,31 @@
 package com.api.messaging.webservice.soap.engine;
 
+import java.util.List;
+
+import javax.activation.DataHandler;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
-
-
-
-
-
-
-
-
-
-//import com.InvalidDataException;
+import com.InvalidDataException;
 import com.NotFoundException;
 import com.SystemException;
+import com.api.DaoApi;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
-//import com.api.messaging.MessageRoutingInfo;
-//import com.api.messaging.MessagingRouter;
-
 import com.api.messaging.webservice.router.MessageRouterHelper;
-//import com.api.messaging.webservice.router.MessageRouterSoapImpl;
-import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
-import com.api.messaging.webservice.soap.client.SoapProductBuilder;
 import com.api.web.Request;
 import com.api.web.Response;
 import com.api.web.controller.AbstractServlet;
 import com.api.web.controller.StatelessControllerProcessingException;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
+import com.api.xml.XmlApiFactory;
 
 /**
  * A servlet for accepting SOAP based web service requests, dispatching the web
@@ -45,17 +34,15 @@ import com.api.web.controller.scope.HttpVariableScopeFactory;
  * <p>
  * <b><u>Configuration notes</u></b><br>
  * <ul>
- * <li>
- * It is highly important that the concrete class implements method,
+ * <li>It is highly important that the concrete class implements method,
  * {@link RMT2SoapEngine#getMessageRoutingInfo(SOAPMessage, Object)
  * getMessageRoutingInfo} so that web service routing information is properly
  * obtained for the SOAP message.</li>
- * <li>
- * It is <b>no longer</b> a requirement for an application to identify the class
- * name of the SOAP messaging router in the AppParms.properties. </u>
+ * <li>It is <b>no longer</b> a requirement for an application to identify the
+ * class name of the SOAP messaging router in the AppParms.properties. </u>
  * 
  * 
- * @author appdev
+ * @author Roy TErrell
  * 
  */
 public class RMT2SoapEngine extends AbstractServlet {
@@ -63,17 +50,6 @@ public class RMT2SoapEngine extends AbstractServlet {
     private static final long serialVersionUID = 5433010431085175539L;
 
     private static Logger logger = Logger.getLogger(RMT2SoapEngine.class);
-
-    // /**
-    // * The message router that is used to contact the appropriate service
-    // handler for a
-    // * given web service.
-    // * <p>
-    // * An instance of {@link MessageRouterSoapImpl} is used as the
-    // implementation and
-    // * usually instantiated in the <i>initServlet</i> method..
-    // */
-    // protected MessagingRouter router;
 
     /**
      * 
@@ -98,20 +74,6 @@ public class RMT2SoapEngine extends AbstractServlet {
      */
     public void initServlet() throws StatelessControllerProcessingException {
         super.initServlet();
-        // this.router = new MessageRouterSoapImpl();
-        // try {
-        // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
-        // String routerClass =
-        // AppPropertyPool.getProperty(WebServiceConstants.MSG_ROUTER_KEY_SOAP);
-        // this.router = (MessagingRouter) beanUtil.createBean(routerClass);
-        // }
-        // catch (Exception e) {
-        // String msg = "Unable to instantiate SOAP Message Router Api";
-        // logger.fatal(msg, e);
-        // e.printStackTrace();
-        // throw new StatelessControllerProcessingException(msg, e);
-        // }
-        return;
     }
 
     /**
@@ -135,19 +97,15 @@ public class RMT2SoapEngine extends AbstractServlet {
      *             When a problem arises loading services list, validating input
      *             parameters, or invoking the service.
      */
-    public void processRequest(HttpServletRequest request,
-            HttpServletResponse response)
+    public void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws StatelessControllerProcessingException {
         super.processRequest(request, response);
         String msg = null;
         SOAPMessage results;
         String serviceId = null;
-        // MessageRoutingInfo routingInfo = null;
 
-        Request genericRequest = HttpVariableScopeFactory
-                .createHttpRequest(request);
-        Response genericResponse = HttpVariableScopeFactory
-                .createHttpResponse(response);
+        Request genericRequest = HttpVariableScopeFactory.createHttpRequest(request);
+        Response genericResponse = HttpVariableScopeFactory.createHttpResponse(response);
 
         SoapMessageHelper helper = new SoapMessageHelper();
 
@@ -157,59 +115,31 @@ public class RMT2SoapEngine extends AbstractServlet {
             // request
             sm = helper.getSoapInstance(genericRequest);
 
-            // Obtain the message id from the SOAP message header.
-            try {
-                serviceId = helper.getHeaderValue(SoapProductBuilder.HEADER_NS
-                        + ":" + SoapConstants.SERVICEID_NAME, sm);
-            } catch (SOAPException e) {
-                msg = "Error occurred attempting to obtain the Service/Message Id from the SOAP header of the request message";
-                throw new StatelessControllerProcessingException(msg, e);
-            } catch (NotFoundException e) {
-                msg = "Service/Message Id is a required element in the SOAP header but was not found";
-                throw new StatelessControllerProcessingException(msg, e);
-            }
+            // Extract SOAP Body
+            String xml = helper.getBody(sm);
 
-            // // Validate SOAP message and get routing information for message
-            // if (this.router == null) {
-            // msg = "The SOAP engine router object is invalid or null";
-            // logger.error(msg);
-            // throw new StatelessControllerProcessingException(msg);
-            // }
-            // routingInfo = this.router.getRoutingInfo(serviceId);
+            // get SOAP attachments, if applicable.
+            List<DataHandler> attachments = helper.extractAttachments(sm);
+
+            // Obtain the transaction id from the SOAP message header.
+            serviceId = this.extractTransactionId(xml);
 
             // Invoke the service. The consumer is required to send the response
             // as a valid SOAP String.
-            // results = this.invokeService(routingInfo, sm, request);
-            results = this.invokeService(serviceId, sm);
+            results = this.invokeService(serviceId, xml, attachments);
 
             // Return the results of the service invocation to the requestor.
             this.sendResponse(genericResponse, results);
         } catch (MessageException e) {
-            msg = "Error occurred processing incoming SOAP message. "
-                    + e.getMessage();
+            msg = "Error occurred processing incoming SOAP message. " + e.getMessage();
             this.sendErrorResponse(response, msg);
             throw new StatelessControllerProcessingException(msg, e);
         }
-        // catch (MessageRoutingException e) {
-        // msg =
-        // "General error occurred obtaining SOAP message routing information. "
-        // + e.getMessage();
-        // this.sendErrorResponse(response, msg);
-        // throw new StatelessControllerProcessingException(msg, e);
-        // }
         catch (NotFoundException e) {
-            msg = "Service was not found in service registry by message id, "
-                    + serviceId + ". " + e.getMessage();
+            msg = "Service was not found in service registry by message id, " + serviceId + ". " + e.getMessage();
             this.sendErrorResponse(response, msg);
             throw new StatelessControllerProcessingException(msg, e);
         }
-        // catch (InvalidDataException e) {
-        // msg =
-        // "Invalid data was discovered while obtaining SOAP message routing information. "
-        // + e.getMessage();
-        // this.sendErrorResponse(response, msg);
-        // throw new StatelessControllerProcessingException(msg, e);
-        // }
     }
 
     /**
@@ -218,64 +148,26 @@ public class RMT2SoapEngine extends AbstractServlet {
      * 
      * @param messageId
      *            The message Id of the service to invoke
-     * @param soapObj
-     *            The payload as an instance of {@link SOAPMessage}
+     * @param soapO
+     *            The payload as an XML String
      * @throws MessageException
      *             The routing of the message errored
      * @throws SoapEngineException
      *             The SOAP engine router is invalid or has not been
      *             initialized.
      */
-    private SOAPMessage invokeService(String messageId, SOAPMessage soapObj)
+    private SOAPMessage invokeService(String messageId, String soap, List<DataHandler> attachments)
             throws SoapEngineException, MessageException {
         String msg = null;
         MessageRouterHelper helper = new MessageRouterHelper();
         try {
-            return helper.routeSoapMessage(messageId, soapObj);
+            return helper.routeSoapMessage(messageId, soap, attachments);
         } catch (MessageRoutingException e) {
             msg = "Error occurred routing SOAP message to its designated handler";
             logger.error(msg);
             throw new MessageException(e);
         }
     }
-
-    // /**
-    // * Performs the invocation of a remote service and returns the results to
-    // the caller.
-    // *
-    // * @param url
-    // * The URL of the remote service to invoke.
-    // * @param parms
-    // * The parameters that are required to be assoicated with the remote
-    // service
-    // * URL.
-    // * @throws MessageException
-    // * The routing of the message errored
-    // * @throws SoapEngineException
-    // * The SOAP engine router is invalid or has not been initialized.
-    // */
-    // private SOAPMessage invokeService(MessageRoutingInfo srvc, SOAPMessage
-    // soapObj, HttpServletRequest request) throws SoapEngineException,
-    // MessageException {
-    // SOAPMessage reslults = null;
-    // String msg = null;
-    // try {
-    // SoapMessageHelper helper = new SoapMessageHelper();
-    // String soapStr = helper.toString(soapObj);
-    // logger.info("SOAP Request: ");
-    // logger.info(soapStr);
-    // reslults = (SOAPMessage) this.router.routeMessage(srvc, soapObj);
-    // soapStr = helper.toString(reslults);
-    // logger.info("SOAP Response: ");
-    // logger.info(soapStr);
-    // return reslults;
-    // }
-    // catch (MessageRoutingException e) {
-    // msg = "Error occurred routing SOAP message to its designated handler";
-    // logger.error(msg);
-    // throw new MessageException(e);
-    // }
-    // }
 
     /**
      * Sends a response to the client indicating that web service invocation was
@@ -294,8 +186,7 @@ public class RMT2SoapEngine extends AbstractServlet {
      * @throws IOException
      *             For general I/O errors with the output stream.
      */
-    protected void sendResponse(Response response, SOAPMessage soapObj)
-            throws SoapResponseException {
+    protected void sendResponse(Response response, SOAPMessage soapObj) throws SoapResponseException {
         SoapMessageHelper helper = new SoapMessageHelper();
         helper.sendSoapInstance(response, soapObj);
         return;
@@ -312,15 +203,11 @@ public class RMT2SoapEngine extends AbstractServlet {
      * @param errorMessage
      * @throws SoapResponseException
      */
-    protected void sendErrorResponse(HttpServletResponse response,
-            String errorMessage) throws SystemException {
-        Response genericResponse = HttpVariableScopeFactory
-                .createHttpResponse(response);
+    protected void sendErrorResponse(HttpServletResponse response, String errorMessage) throws SystemException {
+        Response genericResponse = HttpVariableScopeFactory.createHttpResponse(response);
         SoapMessageHelper helper = new SoapMessageHelper();
-        errorMessage = "SOAP Engine Failure.   " + errorMessage
-                + ".   Please contact Technical Support!";
-        SOAPMessage err = helper.createSoapFault("Server", errorMessage, null,
-                null);
+        errorMessage = "SOAP Engine Failure.   " + errorMessage + ".   Please contact Technical Support!";
+        SOAPMessage err = helper.createSoapFault("Server", errorMessage, null, null);
         try {
             this.sendResponse(genericResponse, err);
         } catch (SoapResponseException e) {
@@ -329,4 +216,38 @@ public class RMT2SoapEngine extends AbstractServlet {
         return;
     }
 
+    /**
+     * Create a MessageHandlerInput instance from an unknown JAXB object.
+     * 
+     * @param srvc
+     *            the routing information pertaining to the web service message
+     * @param inMessage
+     *            an arbitrary object that is required to translate to
+     *            Serializable JAXB object at runtime.
+     * @return an instance of {@link MessageHandlerInput}
+     * @throws MessageRoutingException
+     *             Routing information is unobtainable due to the occurrence of
+     *             data access errors or etc.
+     */
+    private String extractTransactionId(String soapXml) throws MessageRoutingException {
+        String tranId = null;
+        String msg = null;
+        try {
+            DaoApi api = XmlApiFactory.createXmlDao(soapXml);
+            String query = "//header";
+            api.retrieve(query);
+            while (api.nextRow()) {
+                try {
+                    tranId = api.getColumnValue("transaction");
+                } catch (NotFoundException e) {
+                    msg = "Cannot find required header element, message_id, in XML payload...invalid XML structure";
+                    throw new InvalidDataException(msg, e);
+                }
+            }
+            return tranId;
+        } catch (Exception e) {
+            msg = "Error occurred getting transaction id from payload";
+            throw new MessageRoutingException(msg, e);
+        }
+    }
 }
