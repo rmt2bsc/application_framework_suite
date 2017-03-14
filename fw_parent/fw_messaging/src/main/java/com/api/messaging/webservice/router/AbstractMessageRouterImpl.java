@@ -1,7 +1,5 @@
 package com.api.messaging.webservice.router;
 
-import java.io.Serializable;
-
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.Message;
@@ -91,6 +89,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      * Create the input data for a specific message handler using the incoming
      * generic message.
      * 
+     * @param srvc
+     *            the routing information pertaining to the web service message
      * @param inMessage
      *            an arbitrary object representing the incoming message data.
      * @return an instance of {@link MessageHandlerInput}
@@ -98,7 +98,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      *             Routing information is unobtainable due to the occurrence of
      *             data access errors or etc.
      */
-    protected abstract MessageHandlerInput createReceptorInputData(Object inMessage) throws MessageRoutingException;
+    protected abstract MessageHandlerInput prepareMessageForTransport(MessageRoutingInfo srvc, Object message)
+            throws MessageRoutingException;
 
     /**
      * Obtain routing information for the target message id.
@@ -184,22 +185,17 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      * 
      * @param srvc
      *            the routing information pertaining to the web service message
-     * @param message
+     * @param inMessage
      *            an arbitrary message that is to be processed
      * @return a generic repsonse appropriate for the descendent implementation.
      * @throws MessageRoutingException
      */
     @Override
-    public Object routeMessage(MessageRoutingInfo srvc, Object message) throws MessageRoutingException {
-        MessageHandlerInput handlerMessage = this.createReceptorInputData(srvc);
+    public Object routeMessage(MessageRoutingInfo srvc, Object inMessage) throws MessageRoutingException {
+        MessageHandlerInput handlerMessage = this.prepareMessageForTransport(srvc, inMessage);
 
         if (handlerMessage == null) {
             throw new InvalidDataException("Unable to create an instance of MessageHandlerInput");
-        }
-        Serializable serialObj = null;
-        if (message instanceof Serializable) {
-            serialObj = (Serializable) message;
-            handlerMessage.setPayload(serialObj);
         }
 
         MessageHandlerResults results = null;
