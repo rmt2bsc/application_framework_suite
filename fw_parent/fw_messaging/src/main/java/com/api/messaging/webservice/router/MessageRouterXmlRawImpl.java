@@ -10,6 +10,7 @@ import com.api.DaoApi;
 import com.api.config.ConfigConstants;
 import com.api.config.SystemConfigurator;
 import com.api.messaging.MessageRoutingException;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.handler.MessageHandlerInput;
 import com.api.messaging.handler.MessageHandlerResults;
 import com.api.messaging.webservice.WebServiceConstants;
@@ -50,6 +51,8 @@ class MessageRouterXmlRawImpl extends AbstractMessageRouterImpl {
     /**
      * Create a MessageHandlerInput instance from an unknown JAXB object.
      * 
+     * @param srvc
+     *            the routing information pertaining to the web service message
      * @param inMessage
      *            an arbitrary object that is required to translate to
      *            Serializable JAXB object at runtime.
@@ -59,7 +62,8 @@ class MessageRouterXmlRawImpl extends AbstractMessageRouterImpl {
      *             data access errors or etc.
      */
     @Override
-    protected MessageHandlerInput createReceptorInputData(Object inMessage) throws MessageRoutingException {
+    protected MessageHandlerInput prepareMessageForTransport(MessageRoutingInfo srvc, Object inMessage)
+            throws MessageRoutingException {
         Serializable serialObj = null;
         if (inMessage instanceof Serializable) {
             serialObj = (Serializable) inMessage;
