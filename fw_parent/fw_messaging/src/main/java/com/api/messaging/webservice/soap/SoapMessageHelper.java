@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import javax.xml.soap.Name;
 import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFault;
+import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.Source;
@@ -32,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.InvalidDataException;
-import com.NotFoundException;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.Product;
@@ -242,6 +243,65 @@ public class SoapMessageHelper extends RMT2Base {
     }
 
     /**
+     * Determines the existence of headers in the SOAP message instance.
+     * 
+     * @param soapObj
+     *            the SOAPMessage instance containing the headers to search
+     * @return true when headers exist and false otherwise. Returns false when
+     *         <i>soapObj</i> is null.
+     * @throws SOAPException
+     *             if a SOAP error occurs
+     */
+    public boolean hasHeaders(SOAPMessage soapObj) {
+        if (soapObj == null) {
+            return false;
+        }
+        SOAPHeader headerObj = null;
+        try {
+            headerObj = soapObj.getSOAPHeader();
+            if (headerObj == null) {
+                return false;
+            }
+        } catch (SOAPException e) {
+            return false;
+        }
+        Iterator<SOAPHeaderElement> iter = headerObj.examineAllHeaderElements();
+        return iter.hasNext();
+    }
+
+    /**
+     * Fetches all headers ontained in the SOAP message instance.
+     * 
+     * @param targetElementName
+     *            The element name to search. Can be a qualified or unqualified
+     *            header name.
+     * @param soapObj
+     *            the SOAPMessage instance containing the headers to search
+     * @return Map of the header values keyed by header element name. Return
+     *         null when no headers exist in the SOAP message object.
+     */
+    public Map<String, String> getHeaders(SOAPMessage soapObj) {
+        if (!this.hasHeaders(soapObj)) {
+            return null;
+        }
+        Map<String, String> headers = new HashMap<String, String>();
+        try {
+            Iterator<SOAPHeaderElement> iter = soapObj.getSOAPHeader().examineAllHeaderElements();
+            while (iter.hasNext()) {
+                SOAPHeaderElement item = iter.next();
+                Name n = item.getElementName();
+                String elementName = n.getQualifiedName();
+                String value = item.getTextContent();
+                headers.put(elementName, value);
+            }
+        } catch (SOAPException e) {
+            // should not happen since we checked the existence via hasHeaders
+            // method...
+        }
+        return headers;
+    }
+
+    /**
      * Obtains the value of an SOAP header element by header element name.
      * 
      * @param targetElementName
@@ -249,17 +309,20 @@ public class SoapMessageHelper extends RMT2Base {
      *            header name.
      * @param soapObj
      *            the SOAPMessage instance containing the headers to search
-     * @return String the value of the header element
-     * @throws SOAPException
-     *             if a SOAP error occurs
-     * @throws NotFoundException
-     *             if targetElementName does not exist.
+     * @return String the value of the header element or null when
+     *         <i>soapObj</i> does not contain any headers.
      */
-    public String getHeaderValue(String targetElementName, SOAPMessage soapObj)
-            throws SOAPException {
+    public String getHeaderValue(String targetElementName, SOAPMessage soapObj) {
+        if (!this.hasHeaders(soapObj)) {
+            return null;
+        }
         String value = null;
-        Iterator<SOAPHeaderElement> iter = soapObj.getSOAPHeader()
-                .examineAllHeaderElements();
+        Iterator<SOAPHeaderElement> iter = null;
+        try {
+            iter = soapObj.getSOAPHeader().examineAllHeaderElements();
+        } catch (SOAPException e) {
+            e.printStackTrace();
+        }
         while (iter.hasNext()) {
             SOAPHeaderElement item = iter.next();
             Name n = item.getElementName();
@@ -279,8 +342,7 @@ public class SoapMessageHelper extends RMT2Base {
                 }
             }
         }
-        throw new NotFoundException("Value for SOAP Header element, "
-                + targetElementName + ", was not found");
+        return null;
     }
 
     /**
