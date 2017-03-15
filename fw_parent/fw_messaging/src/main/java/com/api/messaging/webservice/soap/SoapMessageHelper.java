@@ -397,7 +397,7 @@ public class SoapMessageHelper extends RMT2Base {
     }
 
     /**
-     * Creates a SOAPMessage instance from a String SOAP message.
+     * Creates a SOAPMessage instance from a SOAP message String.
      * 
      * @param soapMessage
      * @return
@@ -581,9 +581,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @return
      * @throws MessageException
      */
-    public SOAPMessage getSoapInstance(Request request)
-            throws SoapRequestException {
-        System.out.println(request.getContentType());
+    public SOAPMessage getSoapInstance(Request request) throws SoapRequestException {
         Enumeration<Object> en = request.getHeaderNames();
         MimeHeaders mh = new MimeHeaders();
         while (en.hasMoreElements()) {
@@ -615,8 +613,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @return an instance of SOAP MEssage instance.
      * @throws MessageException
      */
-    public SOAPMessage getSoapInstance(Serializable msg,
-            List<Object> attachments) throws MessageException {
+    public SOAPMessage getSoapInstance(Serializable msg, List<Object> attachments) throws MessageException {
         String rawXml = null;
         if (msg instanceof String) {
             rawXml = msg.toString();
