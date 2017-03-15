@@ -17,7 +17,6 @@ import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
 import com.api.messaging.MessageRoutingInfo;
-import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.MessagingRouter;
 import com.api.messaging.handler.MessageHandlerInput;
 import com.api.messaging.handler.MessageHandlerResults;
@@ -162,11 +161,11 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      *            the identifier of the message to route.
      * @param message
      *            an arbitrary message that is to be processed
-     * @return a generic repsonse appropriate for the descendent implementation.
+     * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      */
     @Override
-    public Object routeMessage(String messageId, Object message) throws MessageRoutingException {
+    public MessageHandlerResults routeMessage(String messageId, Object message) throws MessageRoutingException {
         MessageRoutingInfo routingInfo = null;
         try {
             logger.info("Preparing to route message id: " + messageId);
@@ -187,11 +186,12 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      *            the routing information pertaining to the web service message
      * @param inMessage
      *            an arbitrary message that is to be processed
-     * @return a generic repsonse appropriate for the descendent implementation.
+     * @return an instance of {@linkMessageHandlerResults}
      * @throws MessageRoutingException
      */
     @Override
-    public Object routeMessage(MessageRoutingInfo srvc, Object inMessage) throws MessageRoutingException {
+    public MessageHandlerResults routeMessage(MessageRoutingInfo srvc, Object inMessage)
+            throws MessageRoutingException {
         MessageHandlerInput handlerMessage = this.prepareMessageForTransport(srvc, inMessage);
 
         if (handlerMessage == null) {
@@ -221,10 +221,10 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
             else {
                 results.setMessageId(srvc.getReplyMessageId());
             }
-            return this.getReceptorResults(results);
         } catch (InvalidDataException e) {
             throw new MessageRoutingException(e);
         }
+        return results;
     }
 
     /**
@@ -351,11 +351,9 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         String url = server + "/" + srvc.getDestination() + "?clientAction=" + srvc.getMessageId();
 
         // TODO: Potential problem using HttpMessageSender since it exclusively
-        // manages messages
-        // of a name/value pair nature. Will need to provide some enhancements
-        // to the
-        // implemetnation of HttpMessagSender to handle arbitary serializable
-        // Object types.
+        // manages messages of a name/value pair nature. Will need to provide
+        // some enhancements to the implemetnation of HttpMessagSender to handle
+        // arbitary serializable Object types.
         HttpMessageSender client = HttpClientResourceFactory.getHttpInstance();
         ProviderConfig config;
         try {
@@ -371,36 +369,6 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
             msg = "Problem routing web service HTTP request due to the inability to establish a connection to the HTTP resource via an erroneous ProviderConfig instance.  The URL in error: "
                     + url;
             throw new MessageRoutingException(e);
-        }
-    }
-
-    /**
-     * Extracts the payload from the business API handler's response, marshals
-     * it in the form of XML, and returns the XML to the client.
-     * <p>
-     * The payload is expected to be an object of JAXB nature. If <i>results</i>
-     * is not a valid JAXB object, then this method will fail.
-     * 
-     * @param results
-     *            An instance of {@link MessageHandlerResults} containing the
-     *            response payload of the business API handler, which is
-     *            expected to be a JAXB object.
-     * @return The response message as an XML String.
-     * @throws InvalidDataException
-     */
-    protected Object getReceptorResults(MessageHandlerResults results)
-            throws InvalidDataException, MessageRoutingException {
-        // logic to convert RMI results to SOAP response.
-        String xml;
-        try {
-            xml = MessagingResourceFactory.getJaxbMessageBinder().marshalMessage(results.getPayload(),
-                    results.getMessageId(), true);
-            return xml;
-        } catch (Exception e) {
-            this.msg = "Unable to marshal messaging handler results into a XML String due to an invalid JAXB object reference: "
-                    + results.getPayload().getClass().getName();
-            logger.error(this.msg, e);
-            throw new InvalidDataException(e);
         }
     }
 }

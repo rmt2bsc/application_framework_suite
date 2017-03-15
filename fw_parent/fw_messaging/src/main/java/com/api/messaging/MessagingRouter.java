@@ -2,6 +2,7 @@ package com.api.messaging;
 
 import com.InvalidDataException;
 import com.NotFoundException;
+import com.api.messaging.handler.MessageHandlerResults;
 
 /**
  * A messaging contract for routing a message to its destination independent of
@@ -16,14 +17,6 @@ import com.NotFoundException;
  * 
  */
 public interface MessagingRouter {
-
-    // /**
-    // * Setup the service registry.
-    // *
-    // * @throws MessageRoutingException
-    // */
-    // void intitalizeRegistry() throws MessageRoutingException;
-
     /**
      * Sends a message to its intended destination.
      * <p>
@@ -34,12 +27,11 @@ public interface MessagingRouter {
      *            the routing information pertaining to the SOAP message
      * @param message
      *            an arbitrary object as the message
-     * @return an arbitrary object as the results of the message being
-     *         processed.
+     * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      *             general message routing errors.
      */
-    Object routeMessage(MessageRoutingInfo srvc, Object message)
+    MessageHandlerResults routeMessage(MessageRoutingInfo srvc, Object message)
             throws MessageRoutingException;
 
     /**
@@ -52,11 +44,10 @@ public interface MessagingRouter {
      *            The id of the message to send.
      * @param message
      *            An arbitrary object representing the actual message payload
-     * @return an arbitrary object as the results of the message being
-     *         processed.
+     * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      */
-    Object routeMessage(String messageId, Object message)
+    MessageHandlerResults routeMessage(String messageId, Object message)
             throws MessageRoutingException;
 
     /**
@@ -68,8 +59,7 @@ public interface MessagingRouter {
      * 
      * @param messageId
      *            the message id to use to obtain message routing information.
-     * @return an instance of {@link com.api.messaging.MessageRoutingInfo
-     *         MessageRoutingInfo}
+     * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      *             Routing information is unobtainable due to the occurrence of
      *             data access errors or etc.

@@ -11,7 +11,7 @@ import com.api.messaging.MessagingRouter;
 public class MessageRouterFactory {
 
     public static final MessagingRouter createSoapMessageRouter() {
-        MessagingRouter router = new MessageRouterSoapImpl();
+        MessagingRouter router = new SoapMessageRouterImpl();
         return router;
     }
 

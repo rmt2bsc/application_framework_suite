@@ -8,13 +8,17 @@ import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
+import com.InvalidDataException;
 import com.RMT2Base;
 import com.api.config.ConfigConstants;
 import com.api.config.SystemConfigurator;
+import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
 import com.api.messaging.MessagingRouter;
 import com.api.messaging.handler.MessageHandlerResults;
+import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
+import com.api.messaging.webservice.soap.SoapResponseException;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
 import com.api.xml.jaxb.JaxbUtil;
 import com.google.gson.Gson;
@@ -55,15 +59,20 @@ public class MessageRouterHelper extends RMT2Base {
             throws MessageRoutingException {
         MessagingRouter router = MessageRouterFactory.createSoapMessageRouter();
         try {
+            // Output request to logger
             logger.info("Routing SOAP Request: ");
             logger.info(payload);
-            SOAPMessage results = (SOAPMessage) ((MessageRouterSoapImpl) router).routeMessage(messageId, payload,
+            MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(messageId, payload,
                     attachments);
+            // Convert results to SOAP Message
+            SOAPMessage soapResponse = this.createSoapResponse(results);
             SoapMessageHelper helper = new SoapMessageHelper();
-            String resultsSoapStr = helper.toString(results);
+
+            // Output response to logger
+            String resultsSoapStr = helper.toString(soapResponse);
             logger.info("Received SOAP Response: ");
             logger.info(resultsSoapStr);
-            return results;
+            return soapResponse;
         } catch (SoapBuilderException e) {
             this.msg = "An error occurred translating SOAP instance to String";
             throw new MessageRoutingException(this.msg, e);
@@ -167,5 +176,80 @@ public class MessageRouterHelper extends RMT2Base {
             jaxbPayload = ((MessageHandlerResults) results).getPayload();
         }
         return jaxbPayload;
+    }
+
+    /**
+     * Extended this method in order to build an instance of the SOAP response
+     * message envelope from the messaging handler's results, <i>results</i>.
+     * <p>
+     * This method undergoes the following process to create the SOAP message:
+     * <ol>
+     * <li>Extracts the response data from <i>results.</i></li>
+     * <li>Marshals the payload in the form of XML.</li>
+     * <li>Creates an instance of {@link SOAPMessage}.</li>
+     * <li>Returns the instance to the client.</li>
+     * </ol>
+     * 
+     * @param serviceId
+     *            The response service id.
+     * @param results
+     *            An instance of {@link MessageHandlerResults} containing the
+     *            results of the service handler processing.
+     * @return The response message as an XML String.
+     * @throws InvalidDataException
+     * @throws MessageRoutingException
+     */
+    private SOAPMessage createSoapResponse(MessageHandlerResults results)
+            throws InvalidDataException, MessageRoutingException {
+        SOAPMessage sm = null;
+        SoapMessageHelper helper = new SoapMessageHelper();
+
+        // Marshall payload
+        String bodyXml = null;
+        try {
+            JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            bodyXml = jaxbUtil.marshalMessage(results.getPayload());
+        } catch (Exception e) {
+            this.msg = "Error occurred trying to marshall the payload of the SOAP response";
+            throw new MessageRoutingException(this.msg, e);
+        }
+
+        // Build SOAP response instance.
+        try {
+            if (results.getReturnCode() == SoapConstants.RETURNCODE_SUCCESS) {
+                // The business API hanlder processed the request successfully.
+                String soapXml = helper.createResponse(results.getMessageId(), bodyXml);
+                
+                // Add attachments if available
+                if (results.getAttachments() != null && results.getAttachments().size() > 0) {
+                    // Attachments were found...build SOAP message with
+                    // attachments.
+                    sm = helper.getSoapInstance(soapXml, results.getAttachments());
+                }
+                else {
+                    // Build SOAP message without attachments.
+                    sm = helper.getSoapInstance(soapXml);
+                }
+            }
+            else if (results.getReturnCode() == SoapConstants.RETURNCODE_FAILURE) {
+                // Create SOAP fault message since the business API handler
+                // returned an error.
+                sm = helper.createSoapFault(String.valueOf(SoapConstants.RETURNCODE_FAILURE), results.getErrorMsg(),
+                        null, null);
+            }
+            else {
+                // The required return code was not set by the business API
+                // handler.
+                this.msg = "Unable to process the SOAP response.  The business service API handler must return an instance of MessageHandlerResults with the return code property set to 1 or -1.";
+                throw new InvalidDataException(this.msg);
+            }
+            return sm;
+        } catch (SoapResponseException e) {
+            this.msg = "Error occurred creating XML String during the process of packaging SOAP response via the SOAP router";
+            throw new MessageRoutingException(this.msg, e);
+        } catch (MessageException e) {
+            this.msg = "Error occurred creating SOAP envelope instance during the process of packaging the SOAP response via the SOAP router";
+            throw new MessageRoutingException(this.msg, e);
+        }
     }
 }

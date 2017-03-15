@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-import com.InvalidDataException;
 import com.api.messaging.MessageRoutingException;
 import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.handler.MessageHandlerInput;
-import com.api.messaging.handler.MessageHandlerResults;
 
 /**
  * A basic implementation of {@link AbstractMessageRouterImpl} that uses an
@@ -58,25 +56,4 @@ class BasicMessageRouterImpl extends AbstractMessageRouterImpl {
         handlerInputData.setAttachments(null);
         return handlerInputData;
     }
-
-    /**
-     * Verifies that the payload contained within <i>results</i> is a valid JAXB
-     * object.
-     * 
-     * @param results
-     *            An instance of {@link MessageHandlerResults} containing the
-     *            results of the service handler processing.
-     * @return Pending validation, <i>results</i> is returned.
-     * @throws InvalidDataException
-     * @throws MessageRoutingException
-     */
-    @Override
-    protected Object getReceptorResults(MessageHandlerResults results)
-            throws InvalidDataException, MessageRoutingException {
-        // Verify that results' payload is a valid JAXB object by trying to
-        // marshal it to an XML document.
-        super.getReceptorResults(results);
-        return results;
-    }
-
 }
