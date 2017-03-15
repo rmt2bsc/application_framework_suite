@@ -114,19 +114,20 @@ public class RMT2SoapEngine extends AbstractServlet {
             // Get SOAP message instance from the Object Input Stream of the
             // request
             sm = helper.getSoapInstance(genericRequest);
+            String soapXml = helper.toString(sm);
 
             // Extract SOAP Body
-            String xml = helper.getBody(sm);
+            String payloadXml = helper.getBody(sm);
 
             // get SOAP attachments, if applicable.
             List<DataHandler> attachments = helper.extractAttachments(sm);
 
             // Obtain the transaction id from the SOAP message header.
-            serviceId = this.extractTransactionId(xml);
+            serviceId = this.extractTransactionId(payloadXml);
 
             // Invoke the service. The consumer is required to send the response
             // as a valid SOAP String.
-            results = this.invokeService(serviceId, xml, attachments);
+            results = this.invokeService(serviceId, payloadXml, attachments);
 
             // Return the results of the service invocation to the requestor.
             this.sendResponse(genericResponse, results);
