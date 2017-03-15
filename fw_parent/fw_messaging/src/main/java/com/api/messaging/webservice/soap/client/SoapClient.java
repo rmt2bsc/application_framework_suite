@@ -21,41 +21,35 @@ public interface SoapClient extends MessageManager {
     /**
      * Creates a SOAP message for the client request.
      * 
-     * @param serviceId
-     *            The message id that will be assigned to the SOAP header.
-     * @param targetAction
-     *            The target action that will be assinged to the SOAP header.
-     *            This parameter is optional and can contain null.
-     * @param soapBody
+     * @param payload
      *            The XML String representing the payload of the SOAP Message.
      * @return An XML String of the entire SOAP message request.
      * @throws SoapRequestException
      */
-    String createRequest(String serviceId, String targetAction, String soapBody)
-            throws SoapRequestException;
+    String createRequest(String payload) throws SoapRequestException;
 
     /**
      * Creates a SOAP Response Message as a XML document.
      * 
-     * @param serviceId
-     *            the name of the requested service expecting the response
-     * @param soapBody
+     * @param payload
      *            a XML String representing the actual response data. This XML
      *            document will serve as the SOAP body.
      * @return String SOAP message as the response.
      * @throws SoapResponseException
      */
-    String createResponse(String serviceId, String soapBody)
+    String createResponse(String payload)
             throws SoapResponseException;
 
     /**
+     * Sends SOAP messages to designated endpoint.
      * 
-     * @param msg
+     * @param soapXml
+     *            XML as String
      * @param attachments
-     * @return
+     *            a List of Objects serving as attachments
+     * @return {@link SOAPMessage}
      * @throws MessageException
      */
-    SOAPMessage sendMessage(Serializable msg, List<Object> attachments)
+    SOAPMessage sendMessage(Serializable soapXml, List<Object> attachments)
             throws MessageException;
-
 }

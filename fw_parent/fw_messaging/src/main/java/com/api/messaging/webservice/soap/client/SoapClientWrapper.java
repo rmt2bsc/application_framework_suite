@@ -8,15 +8,14 @@ import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.SystemException;
-import com.api.DaoApi;
+import com.api.config.ConfigConstants;
+import com.api.config.SystemConfigurator;
 import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
-import com.api.messaging.MessageBinder;
 import com.api.messaging.MessageException;
-import com.api.messaging.MessagingResourceFactory;
-import com.api.messaging.webservice.soap.SoapConstants;
+import com.api.messaging.MessageRoutingException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
-import com.api.xml.XmlApiFactory;
+import com.api.xml.jaxb.JaxbUtil;
 
 /**
  * The web service client that acts as a wrapper for invoking various kinds of
@@ -87,23 +86,22 @@ public class SoapClientWrapper extends RMT2Base {
     }
 
     /**
-     * Calls a web service using SOAP XML as the request data. The invocation of
-     * the target web service can function sychronously and asynchronously.
+     * Calls a SOAP web service using XML that represents the SOAP message's
+     * payload.
+     * <p>
+     * This accepts only the XML that is to serve as the SOAP body of the
+     * message. The framework builds a standard SOAP envelope and inserts
+     * <i>payload</i> as the SOAP body.
      * 
-     * @param soapMessage
-     *            the raw XML in String. The format of the XML document should
-     *            follow the definition of the schema,
-     *            RMT2_Message_Payload_Request.xsd.
+     * @param payload
+     *            the raw XML in String that will serve as the SOAP body.
      * @return the response of the web service call or null if the call was
      *         performed asynchronously.
      * @throws MessageException
      */
-    public SOAPMessage callSoap(String soapMessage) throws MessageException {
+    public SOAPMessage callSoap(String payload) throws MessageException {
         SoapClient api = SoapClientFactory.getClient();
-        String serviceId = this.getServiceId(soapMessage);
-        String targetAction = this.getTargetAction(soapMessage);
-        String soapXml = api
-                .createRequest(serviceId, targetAction, soapMessage);
+        String soapXml = api.createRequest(payload);
         try {
             api.connect(this.config);
         } catch (ProviderConnectionException e) {
@@ -116,11 +114,14 @@ public class SoapClientWrapper extends RMT2Base {
     }
 
     /**
-     * Calls a web service using SOAP XML and a List of generic objects serving
-     * as attachments for the SOAP request. The invocation of the target web
-     * service can function sychronously and asynchronously.
+     * Calls a SOAP web service using XML that represents the SOAP message's
+     * payload and associates attachments with the SOAP message.
+     * <p>
+     * This accepts only the XML that is to serve as the SOAP body of the
+     * message. The framework builds a standard SOAP envelope and inserts
+     * <i>payload</i> as the SOAP body.
      * 
-     * @param soapMessage
+     * @param payload
      *            the raw XML in String. The format of the XML document should
      *            follow the definition of the schema,
      *            RMT2_Message_Payload_Request.xsd.
@@ -132,13 +133,10 @@ public class SoapClientWrapper extends RMT2Base {
      *         performed asynchronously.
      * @throws MessageException
      */
-    public SOAPMessage callSoap(String soapMessage, List<Object> attachments)
+    public SOAPMessage callSoap(String payload, List<Object> attachments)
             throws MessageException {
         SoapClient api = SoapClientFactory.getClient();
-        String serviceId = this.getServiceId(soapMessage);
-        String targetAction = this.getTargetAction(soapMessage);
-        String soapXml = api
-                .createRequest(serviceId, targetAction, soapMessage);
+        String soapXml = api.createRequest(payload);
         try {
             api.connect(this.config);
             if (attachments != null && attachments.size() > 0) {
@@ -165,8 +163,14 @@ public class SoapClientWrapper extends RMT2Base {
      */
     public Object getSoapResponsePayload() throws MessageException {
         String payload = this.getSoapResponsePayloadString();
-        MessageBinder binder = MessagingResourceFactory.getJaxbMessageBinder();
-        Object jaxbPayload = binder.unMarshalMessage(payload);
+        Object jaxbPayload = null;
+        try {
+            JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            jaxbPayload = jaxbUtil.unMarshalMessage(payload);
+        } catch (Exception e) {
+            this.msg = "Error occurred trying to unmarshall the payload of the response SOAP envelope as a JAXB object";
+            throw new MessageRoutingException(this.msg, e);
+        }
         return jaxbPayload;
     }
 
@@ -204,57 +208,6 @@ public class SoapClientWrapper extends RMT2Base {
         return xml;
     }
 
-    /**
-     * Obtains the service id from the web service request.
-     * 
-     * @param request
-     *            Raw XML document representing the web service request.
-     * @return
-     */
-    private String getServiceId(String request) {
-        DaoApi api = XmlApiFactory.createXmlDao(request);
-        try {
-            String serviceId = null;
-            api.retrieve("header");
-            // Navigate forward
-            if (api.nextRow()) {
-                serviceId = api.getColumnValue("message_id");
-            }
-            return serviceId;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        } finally {
-            api.close();
-            api = null;
-        }
-    }
-
-    /**
-     * Obtains the target action of the message from the web service request.
-     * 
-     * @param request
-     *            Raw XML document representing the web service request.
-     * @return
-     */
-    private String getTargetAction(String request) {
-        DaoApi api = XmlApiFactory.createXmlDao(request);
-        try {
-            String targetAction = null;
-            api.retrieve("header");
-            // Navigate forward
-            if (api.nextRow()) {
-                targetAction = api.getColumnValue(SoapConstants.COMMAND_NAME);
-            }
-            return targetAction;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        } finally {
-            api.close();
-            api = null;
-        }
-    }
 
     /**
      * Tests whether input SOAP message instance's body contains a SOAPFault.

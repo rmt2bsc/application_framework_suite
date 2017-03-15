@@ -99,15 +99,17 @@ class SoapTransportImpl extends AbstractSoapClientImpl implements SoapClient {
     }
 
     /**
+     * Sends SOAP messages to designated endpoint.
      * 
-     * @param data
-     * @return
+     * @param soapXml
+     *            XML String
+     * @return {@link SOAPMessage}
      * @throws MessageException
      */
-    public SOAPMessage sendMessage(Serializable data) throws MessageException {
+    public SOAPMessage sendMessage(Serializable soapXml) throws MessageException {
         String xml = null;
-        if (data instanceof String) {
-            xml = data.toString();
+        if (soapXml instanceof String) {
+            xml = soapXml.toString();
         }
         else {
             this.msg = "SOAP message send opertaion failed.  Incoming SOAP message must be a Serializable String";
@@ -131,24 +133,34 @@ class SoapTransportImpl extends AbstractSoapClientImpl implements SoapClient {
         // }
     }
 
-    public SOAPMessage sendMessage(Serializable msg, List<Object> attachments)
+    /**
+     * Sends SOAP messages to designated endpoint.
+     * 
+     * @param soapXml
+     *            XML as String
+     * @param attachments
+     *            a List of Objects serving as attachments
+     * @return {@link SOAPMessage}
+     * @throws MessageException
+     */
+    public SOAPMessage sendMessage(Serializable soapXml, List<Object> attachments)
             throws MessageException {
         try {
             SoapMessageHelper helper = new SoapMessageHelper();
-            SOAPMessage sm = helper.getSoapInstance(msg, attachments);
+            SOAPMessage sm = helper.getSoapInstance(soapXml, attachments);
             SOAPMessage response = this.sendMessage(sm);
             return response;
         } catch (Exception e) {
-            throw new SoapBuilderException(e);
+            throw new MessageException(e);
         }
     }
 
     /**
-     * Expects the consumer to send the response as a valid SOAP String so that
-     * "call" can return the SOAP String as a SOAPMessage instance.
+     * Sends SOAP messages to designated endpoint.
      * 
      * @param soapMsg
-     * @return
+     *            an instance of {@link SOAPMessage}
+     * @return {@link SOAPMessage}
      * @throws MessageException
      */
     private SOAPMessage sendMessage(SOAPMessage soapMsg)
@@ -167,7 +179,7 @@ class SoapTransportImpl extends AbstractSoapClientImpl implements SoapClient {
         } catch (SOAPException e) {
             this.msg = "Error occurred sending SOAP message at location: "
                     + this.endpoint.toString();
-            throw new SoapBuilderException(this.msg, e);
+            throw new MessageException(this.msg, e);
         }
 
         String resp = helper.getSoap(response);

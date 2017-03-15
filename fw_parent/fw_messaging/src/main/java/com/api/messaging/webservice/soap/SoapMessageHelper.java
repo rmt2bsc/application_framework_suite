@@ -36,6 +36,7 @@ import org.w3c.dom.Document;
 import com.InvalidDataException;
 import com.RMT2Base;
 import com.SystemException;
+import com.api.DaoApi;
 import com.api.Product;
 import com.api.ProductBuilderException;
 import com.api.ProductDirector;
@@ -47,6 +48,7 @@ import com.api.messaging.webservice.soap.client.SoapProductBuilder;
 import com.api.web.Request;
 import com.api.web.Response;
 import com.api.xml.RMT2XmlUtility;
+import com.api.xml.XmlApiFactory;
 import com.api.xml.jaxb.JaxbUtil;
 import com.constants.GeneralConst;
 import com.util.RMT2File;
@@ -70,12 +72,44 @@ public class SoapMessageHelper extends RMT2Base {
         super();
     }
 
+    public String createRequest(String soapBody) throws SoapRequestException {
+        // Construct SOAP request as an object
+        try {
+            return this.createEnvelopeString(soapBody);
+        } catch (SoapBuilderException e) {
+            throw new SoapRequestException(e);
+        }
+    }
+
+    /**
+     * 
+     * @param serviceId
+     * @param soapBody
+     * @return
+     * @throws SoapResponseException
+     */
+    public String createResponse(String soapBody) throws SoapResponseException {
+        if (soapBody == null || soapBody.length() == 0) {
+            String message = "Creation of SOAP response failed due to SOAP XML body is null or invalid";
+            logger.log(Level.ERROR, message);
+            throw new SoapResponseException(message);
+        }
+
+        // Construct SOAP response as an object
+        try {
+            return this.createEnvelopeString(soapBody);
+        } catch (SoapBuilderException e) {
+            throw new SoapResponseException(e);
+        }
+    }
+
     /**
      * 
      * @param serviceId
      * @param soapBody
      * @return
      * @throws SoapRequestException
+     * @deprecated no long used due to SOAP engine overhaul
      */
     public String createRequest(String serviceId, String targetAction,
             String soapBody) throws SoapRequestException {
@@ -104,6 +138,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @param soapBody
      * @return
      * @throws SoapResponseException
+     * @deprecated no long used due to SOAP engine overhaul
      */
     public String createResponse(String serviceId, String soapBody)
             throws SoapResponseException {
@@ -127,6 +162,32 @@ public class SoapMessageHelper extends RMT2Base {
     }
 
     /**
+     * Uses the raw XML to construct a SOAP message as a String.
+     * 
+     * @param soapBody
+     * @return
+     * @throws SoapBuilderException
+     */
+    private String createEnvelopeString(String soapBody) throws SoapBuilderException {
+        // Convert the SOAP message instance to String form
+        String xml = null;
+        try {
+            SOAPMessage sm = this.createEnvelopeInstance(soapBody);
+
+            // Deconstruct revised SOAP Message instance, that now contains the
+            // payload , back to a String.
+            SoapProductBuilder builder = SoapClientFactory.getSoapBuilderInstance();
+            Product xmlProd = null;
+            builder = SoapClientFactory.getSoapBuilderInstance(sm);
+            xmlProd = ProductDirector.deConstruct(builder);
+            xml = xmlProd.toString();
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+        return xml;
+    }
+
+    /**
      * Uses the service id and the raw XML to construct a SOAP message as a
      * String.
      * 
@@ -134,6 +195,7 @@ public class SoapMessageHelper extends RMT2Base {
      * @param soapBody
      * @return
      * @throws SoapBuilderException
+     * @deprecated no long used due to SOAP engine overhaul
      */
     private String createEnvelopeString(String serviceId, String targetAction,
             String soapBody) throws SoapBuilderException {
@@ -160,10 +222,32 @@ public class SoapMessageHelper extends RMT2Base {
     /**
      * Uses the service id and the raw XML to construct a SOAP message instance.
      * 
+     * @param soapBody
+     * @return
+     * @throws SoapBuilderException
+     */
+    private SOAPMessage createEnvelopeInstance(String soapBody) throws SoapBuilderException {
+        SOAPMessage sm = null;
+        SoapProductBuilder builder = SoapClientFactory.getSoapBuilderInstance();
+        Product xmlProd = null;
+        try {
+            builder.addBody(soapBody);
+            xmlProd = ProductDirector.construct(builder);
+            sm = (SOAPMessage) xmlProd.toObject();
+            return sm;
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    /**
+     * Uses the service id and the raw XML to construct a SOAP message instance.
+     * 
      * @param serviceId
      * @param soapBody
      * @return
      * @throws SoapBuilderException
+     * @deprecated no long used due to SOAP engine overhaul
      */
     private SOAPMessage createEnvelopeInstance(String serviceId,
             String targetAction, String soapBody) throws SoapBuilderException {
@@ -564,6 +648,26 @@ public class SoapMessageHelper extends RMT2Base {
     }
 
     /**
+     * Obtains the Fault's code.
+     * 
+     * @param soapObj
+     * @return fault code as String or null if Fault does not extis
+     */
+    public String getErrorCode(SOAPMessage soapObj) {
+        SOAPFault fault;
+        try {
+            fault = soapObj.getSOAPBody().getFault();
+            if (fault != null) {
+                return fault.getFaultCode();
+            }
+            return null;
+        } catch (SOAPException e) {
+            e.printStackTrace();
+            throw new SystemException(e);
+        }
+    }
+
+    /**
      * Get SOAP message object from String.
      * 
      * @param msg
@@ -724,4 +828,37 @@ public class SoapMessageHelper extends RMT2Base {
         return (count > 0 ? attachments : null);
     }
 
+    /**
+     * Obtains a header property value contained in the SOAP message header
+     * section.
+     * 
+     * @param request
+     *            Raw XML document representing the SOAP message which contains
+     *            the header properties.
+     * @param propertyName
+     *            the target property name
+     * @return property value as String or null when request and/or propertyName
+     *         is null.
+     */
+    public String getHeaderProperty(String request, String propertyName) {
+        if (RMT2String2.isEmpty(request) || RMT2String2.isEmpty(propertyName)) {
+            return null;
+        }
+        DaoApi api = XmlApiFactory.createXmlDao(request);
+        try {
+            String value = null;
+            api.retrieve("header");
+            // Navigate forward
+            if (api.nextRow()) {
+                value = api.getColumnValue("propertyName");
+            }
+            return value;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        } finally {
+            api.close();
+            api = null;
+        }
+    }
 }

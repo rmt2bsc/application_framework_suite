@@ -4,7 +4,8 @@ import java.util.Map;
 
 import javax.xml.soap.SOAPMessage;
 
-import com.api.config.ConfigConstants;
+import com.api.config.SystemConfigurator;
+import com.api.config.jaxb.AppServerConfig;
 import com.api.config.old.ProviderConfig;
 import com.api.messaging.MessagingResourceFactory;
 
@@ -24,17 +25,21 @@ public class SoapClientFactory extends MessagingResourceFactory {
     }
 
     /**
-     * Obtains the ProviderConfig instance for the SOAP processor. The only
-     * property set in the ProviderConfig instance will be the SOAP Host. The
-     * SOAP Host should be configured as the System property and can be fetched
-     * as {@link com.api.config.PropertyFileSystemResourceConfigImpl.SOAP_HOST
-     * SOAP_HOST}
+     * Obtains the ProviderConfig instance for the SOAP processor.
+     * <p>
+     * The only property set in the ProviderConfig instance will be the SOAP
+     * Host. The SOAP Host should be configured as the System property within
+     * the SystemConfigurator and can be fetched
+     * as<i>SystemConfigurator.getConfig()getSystemProperties().getSoaphost()</i>.
      * 
      * @return {@link com.api.messaging.ProviderConfig ProviderConfig}
      */
     public static ProviderConfig getSoapConfigInstance() {
         ProviderConfig config = MessagingResourceFactory.getConfigInstance();
-        String soapHost = System.getProperty(ConfigConstants.SOAP_HOST);
+
+        AppServerConfig appServConfig = SystemConfigurator.getConfig();
+        String soapHost = appServConfig.getSystemProperties().getSoaphost();
+        // String soapHost = System.getProperty(ConfigConstants.SOAP_HOST);
         config.setHost(soapHost);
         return config;
     }

@@ -22,7 +22,7 @@ public abstract class AbstractSoapClientImpl extends AbstractMessagingImpl {
     protected SoapMessageHelper soapHelper;
 
     /**
-     * 
+     * Creates a default AbstractSoapClientImpl
      */
     public AbstractSoapClientImpl() {
         super();
@@ -33,20 +33,13 @@ public abstract class AbstractSoapClientImpl extends AbstractMessagingImpl {
     /**
      * Creates a SOAP message for the client request.
      * 
-     * @param serviceId
-     *            The message id that will be assigned to the SOAP header.
-     * @param targetAction
-     *            The target action that will be assinged to the SOAP header.
-     *            This parameter is optional and can contain null.
      * @param soapBody
      *            The XML String representing the payload of the SOAP Message.
      * @return An XML String of the entire SOAP message request.
      * @throws SoapRequestException
      */
-    public String createRequest(String serviceId, String targetAction,
-            String soapBody) throws SoapRequestException {
-        logger.info("Creating SOAP request for service id, " + serviceId);
-        return this.soapHelper.createRequest(serviceId, targetAction, soapBody);
+    public String createRequest(String soapBody) throws SoapRequestException {
+        return this.soapHelper.createRequest(soapBody);
     }
 
     /**
@@ -60,10 +53,7 @@ public abstract class AbstractSoapClientImpl extends AbstractMessagingImpl {
      * @return An XML String of the entire SOAP message response.
      * @throws SoapResponseException
      */
-    public String createResponse(String serviceId, String soapBody)
-            throws SoapResponseException {
-        logger.info("Creating SOAP response for service id, " + serviceId);
-        return this.soapHelper.createResponse(serviceId, soapBody);
+    public String createResponse(String soapBody) throws SoapResponseException {
+        return this.soapHelper.createResponse(soapBody);
     }
-
 }
