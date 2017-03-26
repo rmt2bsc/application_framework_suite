@@ -99,7 +99,7 @@ public class MessageRouterHelper extends RMT2Base {
         logger.info(jsonReq);
 
         // Route message to business server
-        Serializable jaxPayload = this.sendPayload(messageId, payload);
+        Serializable jaxPayload = this.routeMessage(messageId, payload);
 
         // Try to marshal response payload as JSON and dump contents to logger
         String jsonResp = gson.toJson(jaxPayload);
@@ -134,7 +134,7 @@ public class MessageRouterHelper extends RMT2Base {
         }
 
         // Route message to business server
-        Serializable jaxPayload = this.sendPayload(messageId, payload);
+        Serializable jaxPayload = this.routeMessage(messageId, payload);
 
         // Try marshall response payload as XML and dump contents to logger
         try {
@@ -160,7 +160,7 @@ public class MessageRouterHelper extends RMT2Base {
      * @return Serializable object as the reply
      * @throws MessageRoutingException
      */
-    protected Serializable sendPayload(String messageId, Serializable payload) throws MessageRoutingException {
+    protected Serializable routeMessage(String messageId, Serializable payload) throws MessageRoutingException {
         MessagingRouter router = null;
         try {
             router = MessageRouterFactory.createBasicMessageRouter();
