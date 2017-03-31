@@ -169,6 +169,11 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         MessageRoutingInfo routingInfo = null;
         try {
             logger.info("Preparing to route message id: " + messageId);
+            // TODO: Move logic to obtain routing info to the respective
+            // messaging engine for the purpose of updating the message header
+            // with routing info prior to routing the message to its
+            // destination. This will require changing the above method
+            // signature to accept MessageRoutingInfo as a parameter.
             routingInfo = this.getRoutingInfo(messageId);
             return this.routeMessage(routingInfo, message);
         } catch (MessageRoutingException e) {
