@@ -903,6 +903,7 @@ public class RMT2XmlUtility {
      *         <i>elementName</i> is not found.
      * @throws DatabaseException
      * @throws SystemException
+     * @deprecated use getElementValue(String elementName, String xml)
      */
     public static List<String> getElementValue(String elementName,
             String xmlQuery, String xml) {
@@ -928,7 +929,49 @@ public class RMT2XmlUtility {
         } finally {
             dao.close();
         }
+    }
 
+    /**
+     * Obtain the value of a XML node belonging to a XML document.
+     * 
+     * @param elementName
+     *            the name of the element to retreive value.
+     * @param xml
+     *            XML document to query.
+     * @return The element's value as a String.
+     * @throws SystemException
+     */
+    public static String getElementValue(String elementName, String xml) {
+        org.w3c.dom.Document doc = null;
+        doc = RMT2XmlUtility.stringToDocument(xml);
+
+        // Get the target element element by tag name directly
+        Node targetNode = doc.getElementsByTagName(elementName).item(0);
+        String value = targetNode.getTextContent();
+        return value;
+    }
+
+    /**
+     * 
+     * @param elementName
+     * @param value
+     * @param xml
+     * @return
+     */
+    public static String setElementValue(String elementName, String value, String xml) {
+        org.w3c.dom.Document doc = null;
+        doc = RMT2XmlUtility.stringToDocument(xml);
+        // Get the root element
+        Node root = doc.getFirstChild();
+
+        // Get the target element element by tag name directly
+        Node targetNode = doc.getElementsByTagName(elementName).item(0);
+        targetNode.setTextContent(value);
+
+        // write the content to String
+        RMT2XmlUtility util = RMT2XmlUtility.getInstance();
+        String modifiedContent = util.transform(new DOMSource(doc));
+        return modifiedContent;
     }
 
     /**
