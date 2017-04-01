@@ -1350,38 +1350,9 @@ public class RMT2File {
      *             that of the sender, or when in is invalid.
      */
     public static final String getStreamStringData(InputStream in) throws SystemException {
-        String msg;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        if (in == null) {
-            msg = "Input Stream object is invalid";
-            RMT2File.logger.log(Level.ERROR, msg);
-            throw new SystemException(msg);
-        }
-        try {
-            isr = new InputStreamReader(in);
-            br = new BufferedReader(isr);
-            StringBuffer data = new StringBuffer(100);
-            String temp;
-            while ((temp = br.readLine()) != null) {
-                data.append(temp);
-            }
-            return data.toString();
-        } catch (StreamCorruptedException e) {
-            msg = "Stream Corrupted Error: " + e.getMessage();
-            RMT2File.logger.log(Level.ERROR, msg);
-            throw new SystemException(msg);
-        } catch (IOException e) {
-            msg = "General IO Error: " + e.getMessage();
-            RMT2File.logger.log(Level.ERROR, msg);
-            throw new SystemException(msg);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        byte bytes[] = RMT2File.getStreamByteData(in);
+        String content = new String(bytes);
+        return content;
     }
 
     /**
