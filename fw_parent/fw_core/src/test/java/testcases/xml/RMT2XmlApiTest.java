@@ -40,11 +40,26 @@ public class RMT2XmlApiTest {
     }
 
     @Test
-    public void queueApi() {
+    public void queryApi() {
         String xml = "<RQ_business_contact_search><header><message_id>RQ_business_contact_search</message_id><application>contacts</application><module>business</module><transaction>getBusiness</transaction><delivery_mode>SYNC</delivery_mode><message_mode>REQUEST</message_mode><delivery_date>02/13/2016 14:36:54</delivery_date><user_id>admin</user_id></header><criteria_data><business_id>1430</business_id><entity_type/><service_type/></criteria_data></RQ_business_contact_search>";
         List<String> value = RMT2XmlUtility.getElementValue("application",
                 "//header", xml);
         Assert.assertEquals(1, value.size());
+
+    }
+
+    @Test
+    public void updateXmlElement() {
+        String appChange = "xxxxxxx";
+        String xml = "<RQ_business_contact_search><header><message_id>RQ_business_contact_search</message_id><application>contacts</application><module>business</module><transaction>getBusiness</transaction><delivery_mode>SYNC</delivery_mode><message_mode>REQUEST</message_mode><delivery_date>02/13/2016 14:36:54</delivery_date><user_id>admin</user_id></header><criteria_data><business_id>1430</business_id><entity_type/><service_type/></criteria_data></RQ_business_contact_search>";
+        String modifiedXml = RMT2XmlUtility.setElementValue("application", appChange, xml);
+        List<String> value = RMT2XmlUtility.getElementValue("application", "//header", modifiedXml);
+        Assert.assertEquals(1, value.size());
+        Assert.assertEquals(appChange, value.get(0));
+
+        String singleValue = RMT2XmlUtility.getElementValue("application", modifiedXml);
+        Assert.assertNotNull(singleValue);
+        Assert.assertEquals(appChange, singleValue);
     }
 
     @Test
