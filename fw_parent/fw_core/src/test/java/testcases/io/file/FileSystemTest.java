@@ -1,6 +1,7 @@
 package testcases.io.file;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -8,12 +9,12 @@ import java.util.ResourceBundle;
 import org.junit.Assert;
 import org.junit.Test;
 
+import testcases.TestCaseConstants;
+
 import com.NotFoundException;
 import com.SystemException;
 import com.util.RMT2File;
 import com.util.RMT2FileDirectoryFilter;
-
-import testcases.TestCaseConstants;
 
 /**
  * Test file manipulation and MIME type identification
@@ -182,6 +183,39 @@ public class FileSystemTest {
         Assert.assertEquals("doc", ext);
         ext = RMT2File.getFileExt(TestCaseConstants.DATA_DIR + "test.xml");
         Assert.assertEquals("xml", ext);
+    }
+
+    @Test
+    public void testCreateInputStreamFromString() {
+        String xml = "<RQ_business_contact_search><header><message_id>RQ_business_contact_search</message_id><application>contacts</application><module>business</module><transaction>getBusiness</transaction><delivery_mode>SYNC</delivery_mode><message_mode>REQUEST</message_mode><delivery_date>02/13/2016 14:36:54</delivery_date><user_id>admin</user_id></header><criteria_data><business_id>1430</business_id><entity_type/><service_type/></criteria_data></RQ_business_contact_search>";
+        InputStream is = RMT2File.createInputStream(xml);
+        int streamLen = 0;
+        try {
+            streamLen = is.available();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Test Failed due to IO Error");
+        }
+        Assert.assertEquals(xml.length(), streamLen);
+    }
+
+    @Test
+    public void testInputStreamToString() {
+        String xml = "<RQ_business_contact_search><header><message_id>RQ_business_contact_search</message_id><application>contacts</application><module>business</module><transaction>getBusiness</transaction><delivery_mode>SYNC</delivery_mode><message_mode>REQUEST</message_mode><delivery_date>02/13/2016 14:36:54</delivery_date><user_id>admin</user_id></header><criteria_data><business_id>1430</business_id><entity_type/><service_type/></criteria_data></RQ_business_contact_search>";
+        InputStream is = RMT2File.createInputStream(xml);
+        int streamLen = 0;
+        try {
+            streamLen = is.available();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Test Failed due to IO Error");
+        }
+        Assert.assertEquals(xml.length(), streamLen);
+
+        String results = RMT2File.getStreamStringData(is);
+        Assert.assertNotNull(results);
+        Assert.assertEquals(xml.length(), results.length());
+        Assert.assertTrue(xml.contains(results));
     }
 
 }
