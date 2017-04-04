@@ -11,10 +11,8 @@ import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
-import com.InvalidDataException;
 import com.NotFoundException;
 import com.SystemException;
-import com.api.DaoApi;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
 import com.api.messaging.webservice.router.MessageRouterHelper;
@@ -25,7 +23,7 @@ import com.api.web.Response;
 import com.api.web.controller.AbstractServlet;
 import com.api.web.controller.StatelessControllerProcessingException;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
-import com.api.xml.XmlApiFactory;
+import com.api.xml.RMT2XmlUtility;
 
 /**
  * A servlet for accepting SOAP based web service requests, dispatching the web
@@ -123,7 +121,7 @@ public class RMT2SoapEngine extends AbstractServlet {
             List<DataHandler> attachments = helper.extractAttachments(sm);
 
             // Obtain the transaction id from the SOAP message header.
-            serviceId = this.extractTransactionId(payloadXml);
+            serviceId = RMT2XmlUtility.getElementValue("transaction", soapXml);
 
             // Invoke the service. The consumer is required to send the response
             // as a valid SOAP String.
@@ -215,40 +213,5 @@ public class RMT2SoapEngine extends AbstractServlet {
             throw new SystemException(e);
         }
         return;
-    }
-
-    /**
-     * Create a MessageHandlerInput instance from an unknown JAXB object.
-     * 
-     * @param srvc
-     *            the routing information pertaining to the web service message
-     * @param inMessage
-     *            an arbitrary object that is required to translate to
-     *            Serializable JAXB object at runtime.
-     * @return an instance of {@link MessageHandlerInput}
-     * @throws MessageRoutingException
-     *             Routing information is unobtainable due to the occurrence of
-     *             data access errors or etc.
-     */
-    private String extractTransactionId(String soapXml) throws MessageRoutingException {
-        String tranId = null;
-        String msg = null;
-        try {
-            DaoApi api = XmlApiFactory.createXmlDao(soapXml);
-            String query = "//header";
-            api.retrieve(query);
-            while (api.nextRow()) {
-                try {
-                    tranId = api.getColumnValue("transaction");
-                } catch (NotFoundException e) {
-                    msg = "Cannot find required header element, message_id, in XML payload...invalid XML structure";
-                    throw new InvalidDataException(msg, e);
-                }
-            }
-            return tranId;
-        } catch (Exception e) {
-            msg = "Error occurred getting transaction id from payload";
-            throw new MessageRoutingException(msg, e);
-        }
     }
 }
