@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.soap.SOAPMessage;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,11 +30,57 @@ import com.api.web.controller.scope.HttpVariableScopeFactory;
 public class SoapEngineTest {
 
     private static String REQUEST_SEARCH_SUCCESS;
+    private static String REQUEST_SEARCH_TRAN_ID_NOTFOUND;
     private static String REQUEST_SEARCH_PAYLOAD;
+    private static String REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD;
+
+    private HttpServletRequest mockHttpRequest;
+    private HttpServletResponse mockHttpResponse;
+    private Request mockGenericRequest;
+    private Response mockGenericResponse;
+    private SOAPMessage mockSoapMessage;
+    private SOAPMessage mockSoapMessageResponse;
+    private SoapMessageHelper mockSoapMessageHelper;
+    private MessageRouterHelper mockMessageRouter;
 
     @Before
     public void setUp() throws Exception {
+        this.createSuccessSearchRequest();
+        this.createTranIdNotfoundSearchRequest();
 
+        this.setupCommonMocks();
+    }
+
+    private void setupCommonMocks() {
+        mockHttpRequest = Mockito.mock(HttpServletRequest.class);
+        mockHttpResponse = Mockito.mock(HttpServletResponse.class);
+        mockGenericRequest = Mockito.mock(Request.class);
+        mockGenericResponse = Mockito.mock(Response.class);
+        mockSoapMessage = Mockito.mock(SOAPMessage.class);
+        mockSoapMessageResponse = Mockito.mock(SOAPMessage.class);
+        mockSoapMessageHelper = Mockito.mock(SoapMessageHelper.class);
+        mockMessageRouter = Mockito.mock(MessageRouterHelper.class);
+
+        try {
+            whenNew(SoapMessageHelper.class).withNoArguments().thenReturn(mockSoapMessageHelper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(mockMessageRouter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        when(mockHttpRequest.getRequestURL()).thenReturn(new StringBuffer("http://Test-URL"));
+        when(mockSoapMessageHelper.getSoapInstance(mockGenericRequest)).thenReturn(mockSoapMessage);
+
+        PowerMockito.mockStatic(HttpVariableScopeFactory.class);
+        when(HttpVariableScopeFactory.createHttpRequest(mockHttpRequest)).thenReturn(mockGenericRequest);
+        when(HttpVariableScopeFactory.createHttpResponse(mockHttpResponse)).thenReturn(mockGenericResponse);
+    }
+
+    private void createSuccessSearchRequest() {
         StringBuilder s = new StringBuilder();
         s.append("   <MultimediaRequest>");
         s.append("      <header>");
@@ -60,7 +107,36 @@ public class SoapEngineTest {
         s.append("</soapenv:Body>");
         s.append("</soapenv:Envelope>");
         REQUEST_SEARCH_SUCCESS = s.toString();
+    }
 
+    private void createTranIdNotfoundSearchRequest() {
+        StringBuilder s = new StringBuilder();
+        s.append("   <MultimediaRequest>");
+        s.append("      <header>");
+        s.append("         <routing>fkdkdfjdkd9dkd9d</routing>");
+        s.append("         <application>media</application>");
+        s.append("         <module>document</module>");
+        s.append("         <transaction_bad>getContent</transaction_bad>");
+        s.append("         <delivery_mode>SYNC</delivery_mode>");
+        s.append("         <message_mode>REQUEST</message_mode>");
+        s.append("         <delivery_date>2017-1-1</delivery_date>");
+        s.append("         <session_id>849032894329393939</session_id>");
+        s.append("         <user_id>test_user</user_id>");
+        s.append("      </header>");
+        s.append("      <content_id>1200</content_id>");
+        s.append("   </MultimediaRequest>");
+
+        REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD = s.toString().trim();
+
+        s.delete(0, s.length());
+
+        s.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+        s.append("<soapenv:Header/>");
+        s.append("<soapenv:Body>");
+        s.append(REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD);
+        s.append("</soapenv:Body>");
+        s.append("</soapenv:Envelope>");
+        REQUEST_SEARCH_TRAN_ID_NOTFOUND = s.toString();
     }
 
     @After
@@ -69,37 +145,13 @@ public class SoapEngineTest {
 
     @Test
     public void testSearchSuccess() {
-        HttpServletRequest mockHttpRequest = Mockito.mock(HttpServletRequest.class);
-        HttpServletResponse mockHttpResponse = Mockito.mock(HttpServletResponse.class);
-        Request mockGenericRequest = Mockito.mock(Request.class);
-        Response mockGenericResponse = Mockito.mock(Response.class);
-        SOAPMessage mockSoapMessage = Mockito.mock(SOAPMessage.class);
-        SOAPMessage mockSoapMessageResponse = Mockito.mock(SOAPMessage.class);
-        SoapMessageHelper mockSoapMessageHelper = Mockito.mock(SoapMessageHelper.class);
-        MessageRouterHelper mockMessageRouter = Mockito.mock(MessageRouterHelper.class);
-
-        try {
-            whenNew(SoapMessageHelper.class).withNoArguments().thenReturn(mockSoapMessageHelper);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(mockMessageRouter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        when(mockHttpRequest.getRequestURL()).thenReturn(new StringBuffer("http://Test-URL"));
-        when(mockSoapMessageHelper.getSoapInstance(mockGenericRequest)).thenReturn(mockSoapMessage);
         when(mockSoapMessageHelper.toString(mockSoapMessage)).thenReturn(REQUEST_SEARCH_SUCCESS);
         when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_PAYLOAD);
         when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
         when(mockMessageRouter.routeSoapMessage("getContent", REQUEST_SEARCH_PAYLOAD, null))
                 .thenReturn(mockSoapMessageResponse);
-        
-        PowerMockito.mockStatic(HttpVariableScopeFactory.class);
-        when(HttpVariableScopeFactory.createHttpRequest(mockHttpRequest)).thenReturn(mockGenericRequest);
-        when(HttpVariableScopeFactory.createHttpResponse(mockHttpResponse)).thenReturn(mockGenericResponse);
 
+        // THIS IS OLDER COMMENTS
         // Hashtable ht = new Hashtable();
         // Enumeration mockEnumeration = ht.keys();
         //
@@ -160,4 +212,20 @@ public class SoapEngineTest {
         String soapXml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"> <soapenv:Header/> <soapenv:Body> <MultimediaRequest> <header> <routing>fkdkdfjdkd9dkd9d</routing> <application>media</application> <module>document</module> <transaction>getContent</transaction> <delivery_mode>SYNC</delivery_mode> <message_mode>REQUEST</message_mode> <delivery_date>2017-1-1</delivery_date> <session_id>849032894329393939</session_id> <user_id>test_user</user_id> </header> <content_id>1200</content_id> </MultimediaRequest> </soapenv:Body> </soapenv:Envelope>";
     }
 
+    @Test
+    public void testSearchTransactionIdTagNotFound() {
+        when(mockSoapMessageHelper.toString(mockSoapMessage)).thenReturn(REQUEST_SEARCH_TRAN_ID_NOTFOUND);
+        when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD);
+        when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
+        when(mockMessageRouter.routeSoapMessage("getContent", REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD, null))
+                .thenReturn(mockSoapMessageResponse);
+
+        RMT2SoapEngine eng = new RMT2SoapEngine();
+        try {
+            eng.processRequest(mockHttpRequest, mockHttpResponse);
+            Assert.fail("Expected thrown exception due to transation XML tag name is invalid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
