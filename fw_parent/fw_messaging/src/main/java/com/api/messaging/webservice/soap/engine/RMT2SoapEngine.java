@@ -15,6 +15,7 @@ import com.NotFoundException;
 import com.SystemException;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.webservice.router.MessageRouterHelper;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
@@ -160,7 +161,8 @@ public class RMT2SoapEngine extends AbstractServlet {
         String msg = null;
         MessageRouterHelper helper = new MessageRouterHelper();
         try {
-            return helper.routeSoapMessage(messageId, soap, attachments);
+            MessageRoutingInfo routeInfo = helper.getRoutingInfo(messageId);
+            return helper.routeSoapMessage(routeInfo, soap, attachments);
         } catch (MessageRoutingException e) {
             msg = "Error occurred routing SOAP message to its designated handler";
             logger.error(msg);
