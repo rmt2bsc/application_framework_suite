@@ -8,7 +8,6 @@ import javax.jms.TextMessage;
 import org.apache.log4j.Logger;
 
 import com.InvalidDataException;
-import com.NotFoundException;
 import com.RMT2Base;
 import com.RMT2RuntimeException;
 import com.api.config.ConfigConstants;
@@ -24,8 +23,6 @@ import com.api.messaging.jms.JmsClientManager;
 import com.api.messaging.jms.JmsConnectionManager;
 import com.api.messaging.jms.JmsConstants;
 import com.api.messaging.rmi.client.RmiClientSession;
-import com.api.messaging.webservice.ServiceRegistry;
-import com.api.messaging.webservice.ServiceRegistryFactoryImpl;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.messaging.webservice.http.client.HttpClientResourceFactory;
 import com.api.messaging.webservice.http.client.HttpMessageSender;
@@ -43,7 +40,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
     private static final Logger logger = Logger.getLogger(AbstractMessageRouterImpl.class);
 
-    protected ServiceRegistry register;
+    // protected ServiceRegistry register;
 
     /**
      * Create a AbstractMessageRouterImpl with an initialized web service
@@ -53,35 +50,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      *             Web service registry could not be created.
      */
     public AbstractMessageRouterImpl() {
-        this.register = null;
-        try {
-            this.intitalizeRegistry();
-        } catch (MessageRoutingException e) {
-            this.msg = "Unable to initialize web service router due to error creating SERVICES registry";
-            logger.error(this.msg, e);
-        }
         return;
-    }
-
-    /**
-     * Load the service registry with data by dynamically determining the
-     * <i>ServiceRegistry</i> implementation to use based on its declaration
-     * found in <i>AppParms.properties</i>.
-     * <p>
-     * This implementation is capable of utilizing different types of input
-     * sources to load the data such as HTTP or a LDAP source. The descendent
-     * can override if the source should be identified as something other than a
-     * HTTP service.
-     * 
-     * @throws MessageRoutingException
-     */
-    protected void intitalizeRegistry() throws MessageRoutingException {
-        // Get SystemConfigurator Service Registry implementation
-        ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
-        this.register = f.getSystemConfiguratorServiceRegistryManager();
-
-        // Load the all service configurations
-        this.register.loadServices();
     }
 
     /**
@@ -99,89 +68,6 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
      */
     protected abstract MessageHandlerInput prepareMessageForTransport(MessageRoutingInfo srvc, Object message)
             throws MessageRoutingException;
-
-    /**
-     * Obtain routing information for the target message id.
-     * 
-     * @param messageId
-     *            the message id to use to obtain message routing information.
-     * @return an instance of {@link com.api.messaging.MessageRoutingInfo
-     *         MessageRoutingInfo}
-     * @throws MessageRoutingException
-     *             Routing information is unobtainable due to the occurrence of
-     *             data access errors or etc.
-     * @throws InvalidDataException
-     *             <i>messageId</i> is null or the routing information obtained
-     *             does not contain a URL.
-     * @throws NotFoundException
-     *             Routing information is not found in the service registry
-     *             using the supplied key, <i>messageId</i>.
-     */
-    public MessageRoutingInfo getRoutingInfo(String messageId)
-            throws InvalidDataException, NotFoundException, MessageRoutingException {
-        if (this.register == null) {
-            msg = "Unable to get message routing information due to the web service registry is not initialize";
-            logger.error(msg);
-            throw new MessageRoutingException(msg);
-        }
-        // Validate the existence of Service Id
-        if (messageId == null) {
-            msg = "Unable to get message routing information due to required message id is null";
-            logger.error(msg);
-            throw new InvalidDataException(msg);
-        }
-        MessageRoutingInfo srvc = this.register.getEntry(messageId);
-        if (srvc == null) {
-            msg = "Routing information was not found in the web service registry for message id,  " + messageId;
-            logger.error(msg);
-            throw new NotFoundException(msg);
-        }
-        if (!messageId.equalsIgnoreCase(srvc.getMessageId())) {
-            msg = "A naming conflict exist between the requested message id [" + messageId
-                    + "] and the service name associated with the web service registry entry that was found";
-            logger.error(msg);
-            throw new NotFoundException(msg);
-        }
-        if (srvc.getDestination() == null) {
-            msg = "The required URL property of the matching message routing entry found in the web service registry for message id, "
-                    + messageId + ", is null";
-            logger.error(msg);
-            throw new InvalidDataException(msg);
-        }
-        return srvc;
-    }
-
-    /**
-     * Routes an incoming web service message to its targeted destination.
-     * <p>
-     * This method will use <i>messageId</i> to obtain the message routing
-     * information.
-     * 
-     * @param messageId
-     *            the identifier of the message to route.
-     * @param message
-     *            an arbitrary message that is to be processed
-     * @return an instance of {@link MessageHandlerResults}
-     * @throws MessageRoutingException
-     */
-    @Override
-    public MessageHandlerResults routeMessage(String messageId, Object message) throws MessageRoutingException {
-        MessageRoutingInfo routingInfo = null;
-        try {
-            logger.info("Preparing to route message id: " + messageId);
-            // TODO: Move logic to obtain routing info to the respective
-            // messaging engine for the purpose of updating the message header
-            // with routing info prior to routing the message to its
-            // destination. This will require changing the above method
-            // signature to accept MessageRoutingInfo as a parameter.
-            routingInfo = this.getRoutingInfo(messageId);
-            return this.routeMessage(routingInfo, message);
-        } catch (MessageRoutingException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new MessageRoutingException(e);
-        }
-    }
 
     /**
      * Routes an incoming web service message to its targeted destination.
@@ -218,8 +104,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         // sending null.
         try {
             // If reply message id is not available, then set it to the request
-            // message
-            // id with the String, "_RESPONSE", appended to it.
+            // message id with the String, "_RESPONSE", appended to it.
             if (srvc.getReplyMessageId() == null) {
                 results.setMessageId(srvc.getMessageId() + "_RESPONSE");
             }
@@ -248,9 +133,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         String server = srvc.getHost();
         if (server == null) {
             // The web service's implementation was not specified in resource
-            // configuration...
-            // assume implementation lives on the same server as the SOAP
-            // router.
+            // configuration...assume implementation lives on the same server as
+            // the SOAP router.
             server = System.getProperty(ConfigConstants.PROPNAME_SERVER);
         }
 
@@ -341,9 +225,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         String server = srvc.getHost();
         if (server == null) {
             // The web service's implementation was not specified in resource
-            // configuration...
-            // assume implementation lives on the same server as the SOAP
-            // router.
+            // configuration...assume implementation lives on the same server as
+            // the SOAP router.
             server = System.getProperty(ConfigConstants.PROPNAME_SERVER);
         }
         // Ensure that the protocol is prefixed to host name
