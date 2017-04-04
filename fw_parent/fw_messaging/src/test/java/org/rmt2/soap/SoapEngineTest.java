@@ -17,6 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.webservice.router.MessageRouterHelper;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
@@ -41,7 +42,7 @@ public class SoapEngineTest {
     private SOAPMessage mockSoapMessage;
     private SOAPMessage mockSoapMessageResponse;
     private SoapMessageHelper mockSoapMessageHelper;
-    private MessageRouterHelper mockMessageRouter;
+    private MessageRouterHelper mockMessageRouterHelper;
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +60,7 @@ public class SoapEngineTest {
         mockSoapMessage = Mockito.mock(SOAPMessage.class);
         mockSoapMessageResponse = Mockito.mock(SOAPMessage.class);
         mockSoapMessageHelper = Mockito.mock(SoapMessageHelper.class);
-        mockMessageRouter = Mockito.mock(MessageRouterHelper.class);
+        mockMessageRouterHelper = Mockito.mock(MessageRouterHelper.class);
 
         try {
             whenNew(SoapMessageHelper.class).withNoArguments().thenReturn(mockSoapMessageHelper);
@@ -67,7 +68,7 @@ public class SoapEngineTest {
             e.printStackTrace();
         }
         try {
-            whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(mockMessageRouter);
+            whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(mockMessageRouterHelper);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,10 +146,12 @@ public class SoapEngineTest {
 
     @Test
     public void testSearchSuccess() {
+        MessageRoutingInfo mockMessageRoutingInfo = Mockito.mock(MessageRoutingInfo.class);
         when(mockSoapMessageHelper.toString(mockSoapMessage)).thenReturn(REQUEST_SEARCH_SUCCESS);
         when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_PAYLOAD);
         when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
-        when(mockMessageRouter.routeSoapMessage("getContent", REQUEST_SEARCH_PAYLOAD, null))
+        when(mockMessageRouterHelper.getRoutingInfo("getContent")).thenReturn(mockMessageRoutingInfo);
+        when(mockMessageRouterHelper.routeSoapMessage(mockMessageRoutingInfo, REQUEST_SEARCH_PAYLOAD, null))
                 .thenReturn(mockSoapMessageResponse);
 
         // THIS IS OLDER COMMENTS
@@ -214,10 +217,13 @@ public class SoapEngineTest {
 
     @Test
     public void testSearchTransactionIdTagNotFound() {
+        MessageRoutingInfo mockMessageRoutingInfo = Mockito.mock(MessageRoutingInfo.class);
         when(mockSoapMessageHelper.toString(mockSoapMessage)).thenReturn(REQUEST_SEARCH_TRAN_ID_NOTFOUND);
         when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD);
         when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
-        when(mockMessageRouter.routeSoapMessage("getContent", REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD, null))
+        when(mockMessageRouterHelper.getRoutingInfo("getContent")).thenReturn(mockMessageRoutingInfo);
+        when(mockMessageRouterHelper.routeSoapMessage(mockMessageRoutingInfo, REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD,
+                null))
                 .thenReturn(mockSoapMessageResponse);
 
         RMT2SoapEngine eng = new RMT2SoapEngine();
