@@ -9,13 +9,17 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.log4j.Logger;
 
 import com.InvalidDataException;
+import com.NotFoundException;
 import com.RMT2Base;
 import com.api.config.ConfigConstants;
 import com.api.config.SystemConfigurator;
 import com.api.messaging.MessageException;
 import com.api.messaging.MessageRoutingException;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.MessagingRouter;
 import com.api.messaging.handler.MessageHandlerResults;
+import com.api.messaging.webservice.ServiceRegistry;
+import com.api.messaging.webservice.ServiceRegistryFactoryImpl;
 import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
@@ -35,19 +39,101 @@ public class MessageRouterHelper extends RMT2Base {
 
     private static final Logger logger = Logger.getLogger(MessageRouterHelper.class);
 
+    protected ServiceRegistry register;
+
     /**
-     * Create a MessageRouterHelper object
+     * Create a MessageRouterHelper object which initializes the Service
+     * Registry.
      */
     public MessageRouterHelper() {
         super();
+        this.register = null;
+        try {
+            this.intitalizeRegistry();
+        } catch (MessageRoutingException e) {
+            this.msg = "Unable to initialize web service router due to error creating SERVICES registry";
+            logger.error(this.msg, e);
+        }
+        return;
+    }
+
+    /**
+     * Load the service registry with data by dynamically determining the
+     * <i>ServiceRegistry</i> implementation to use based on its declaration
+     * found in <i>AppParms.properties</i>.
+     * <p>
+     * This implementation is capable of utilizing different types of input
+     * sources to load the data such as HTTP or a LDAP source. The descendent
+     * can override if the source should be identified as something other than a
+     * HTTP service.
+     * 
+     * @throws MessageRoutingException
+     */
+    protected void intitalizeRegistry() throws MessageRoutingException {
+        // Get SystemConfigurator Service Registry implementation
+        ServiceRegistryFactoryImpl f = new ServiceRegistryFactoryImpl();
+        this.register = f.getSystemConfiguratorServiceRegistryManager();
+
+        // Load the all service configurations
+        this.register.loadServices();
+    }
+
+    /**
+     * Obtain routing information for the target message id.
+     * 
+     * @param messageId
+     *            the message id to use to obtain message routing information.
+     * @return an instance of {@link com.api.messaging.MessageRoutingInfo
+     *         MessageRoutingInfo}
+     * @throws MessageRoutingException
+     *             Routing information is unobtainable due to the occurrence of
+     *             data access errors or etc.
+     * @throws InvalidDataException
+     *             <i>messageId</i> is null or the routing information obtained
+     *             does not contain a URL.
+     * @throws NotFoundException
+     *             Routing information is not found in the service registry
+     *             using the supplied key, <i>messageId</i>.
+     */
+    public MessageRoutingInfo getRoutingInfo(String messageId)
+            throws InvalidDataException, NotFoundException, MessageRoutingException {
+        if (this.register == null) {
+            msg = "Unable to get message routing information due to the web service registry is not initialize";
+            logger.error(msg);
+            throw new MessageRoutingException(msg);
+        }
+        // Validate the existence of Service Id
+        if (messageId == null) {
+            msg = "Unable to get message routing information due to required message id is null";
+            logger.error(msg);
+            throw new InvalidDataException(msg);
+        }
+        MessageRoutingInfo srvc = this.register.getEntry(messageId);
+        if (srvc == null) {
+            msg = "Routing information was not found in the web service registry for message id,  " + messageId;
+            logger.error(msg);
+            throw new NotFoundException(msg);
+        }
+        if (!messageId.equalsIgnoreCase(srvc.getMessageId())) {
+            msg = "A naming conflict exist between the requested message id [" + messageId
+                    + "] and the service name associated with the web service registry entry that was found";
+            logger.error(msg);
+            throw new NotFoundException(msg);
+        }
+        if (srvc.getDestination() == null) {
+            msg = "The required URL property of the matching message routing entry found in the web service registry for message id, "
+                    + messageId + ", is null";
+            logger.error(msg);
+            throw new InvalidDataException(msg);
+        }
+        return srvc;
     }
 
     /**
      * Route a SOAP message to its appropriate destination.
      * 
-     * @param messageId
-     *            The message id of the service that requires the SOAP message
-     *            to be routed to its destination.
+     * @param routeInfo
+     *            An instance of {@link MessageRoutingInfo}
      * @param payload
      *            XML payload
      * @param attachments
@@ -55,14 +141,14 @@ public class MessageRouterHelper extends RMT2Base {
      * @return an instance of {@link SOAPMessage} as the reply
      * @throws MessageRoutingException
      */
-    public SOAPMessage routeSoapMessage(String messageId, String payload, List<DataHandler> attachments)
+    public SOAPMessage routeSoapMessage(MessageRoutingInfo routeInfo, String payload, List<DataHandler> attachments)
             throws MessageRoutingException {
         MessagingRouter router = MessageRouterFactory.createSoapMessageRouter();
         try {
             // Output request to logger
             logger.info("Routing SOAP Request: ");
             logger.info(payload);
-            MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(messageId, payload,
+            MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(routeInfo, payload,
                     attachments);
             // Convert results to SOAP Message
             SOAPMessage soapResponse = this.createSoapResponse(results);
@@ -82,8 +168,8 @@ public class MessageRouterHelper extends RMT2Base {
     /**
      * Route a JSON message to its appropriate destination.
      * 
-     * @param messageId
-     *            The message id of the service to route payload.
+     * @param routeInfo
+     *            An instance of {@link MessageRoutingInfo}
      * @param payload
      *            The payload is a Serializable object that can be
      *            marshalled/unmarshalled as JSON
@@ -91,7 +177,7 @@ public class MessageRouterHelper extends RMT2Base {
      *         object that can be marshalled/unmarshalled via JAXB.
      * @throws MessageRoutingException
      */
-    public Object routeJsonMessage(String messageId, Serializable payload) throws MessageRoutingException {
+    public Object routeJsonMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
         // Try to marshal request payload as JSON and dump contents to logger
         final Gson gson = new GsonBuilder().create();
         String jsonReq = gson.toJson(payload);
@@ -99,7 +185,7 @@ public class MessageRouterHelper extends RMT2Base {
         logger.info(jsonReq);
 
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(messageId, payload);
+        Serializable jaxPayload = this.routeMessage(routeInfo, payload);
 
         // Try to marshal response payload as JSON and dump contents to logger
         String jsonResp = gson.toJson(jaxPayload);
@@ -112,8 +198,8 @@ public class MessageRouterHelper extends RMT2Base {
     /**
      * Route a XML message object to its appropriate destination.
      * 
-     * @param messageId
-     *            The message id of the service to route payload.
+     * @param routeInfo
+     *            An instance of {@link MessageRoutingInfo}
      * @param payload
      *            The payload is a Serializable object that can be
      *            marshalled/unmarshalled as XML
@@ -121,7 +207,7 @@ public class MessageRouterHelper extends RMT2Base {
      *         object that can be marshalled/unmarshalled via JAXB.
      * @throws MessageRoutingException
      */
-    public Object routeXmlMessage(String messageId, Serializable payload) throws MessageRoutingException {
+    public Object routeXmlMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
         JaxbUtil util = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
         String xml = null;
         // Try to marshal request payload as XML and dump contents to logger
@@ -134,7 +220,7 @@ public class MessageRouterHelper extends RMT2Base {
         }
 
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(messageId, payload);
+        Serializable jaxPayload = this.routeMessage(routeInfo, payload);
 
         // Try marshall response payload as XML and dump contents to logger
         try {
@@ -153,14 +239,15 @@ public class MessageRouterHelper extends RMT2Base {
      * The payload is expcected to be in the form of a serializable object that
      * can be marshalled and unmarshalled via JAXB implementation.
      * 
-     * @param messageId
-     *            The message id of the service to route payload.
+     * @param routeInfo
+     *            An instance of {@link MessageRoutingInfo}
      * @param payload
      *            The message payload
      * @return Serializable object as the reply
      * @throws MessageRoutingException
      */
-    protected Serializable routeMessage(String messageId, Serializable payload) throws MessageRoutingException {
+    protected Serializable routeMessage(MessageRoutingInfo routeInfo, Serializable payload)
+            throws MessageRoutingException {
         MessagingRouter router = null;
         try {
             router = MessageRouterFactory.createBasicMessageRouter();
@@ -170,7 +257,7 @@ public class MessageRouterHelper extends RMT2Base {
             throw new MessageRoutingException(this.msg, e);
         }
         // Route message to business server
-        Serializable results = (Serializable) router.routeMessage(messageId, payload);
+        Serializable results = (Serializable) router.routeMessage(routeInfo, payload);
         Serializable jaxbPayload = null;
         if (results instanceof MessageHandlerResults) {
             jaxbPayload = ((MessageHandlerResults) results).getPayload();
