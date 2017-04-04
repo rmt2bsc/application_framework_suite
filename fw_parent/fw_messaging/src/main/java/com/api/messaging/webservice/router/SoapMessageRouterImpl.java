@@ -41,17 +41,18 @@ class SoapMessageRouterImpl extends AbstractMessageRouterImpl {
      * This method will use <i>messageId</i> to obtain the message routing
      * information.
      * 
-     * @param messageId
-     *            the identifier of the message to route.
+     * @param routeInfo
+     *            An instance of {@link MessageRoutingInfo}
      * @param message
      *            an arbitrary message that is to be processed
      * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      */
-    public MessageHandlerResults routeMessage(String messageId, String soapXml, List<DataHandler> attachments)
+    public MessageHandlerResults routeMessage(MessageRoutingInfo routeInfo, String soapXml,
+            List<DataHandler> attachments)
             throws MessageRoutingException {
         this.attachments = attachments;
-        return super.routeMessage(messageId, soapXml);
+        return super.routeMessage(routeInfo, soapXml);
     }
 
 
