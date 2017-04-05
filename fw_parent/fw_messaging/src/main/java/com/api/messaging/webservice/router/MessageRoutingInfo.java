@@ -1,4 +1,4 @@
-package com.api.messaging;
+package com.api.messaging.webservice.router;
 
 import com.RMT2Base;
 
