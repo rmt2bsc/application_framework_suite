@@ -12,7 +12,7 @@ import com.api.ldap.LdapClient;
 import com.api.ldap.LdapFactory;
 import com.api.ldap.beans.LdapWebServiceConfig;
 import com.api.ldap.operation.LdapSearchOperation;
-import com.api.messaging.webservice.router.MessageRoutingInfo;
+import com.api.messaging.MessageRoutingInfo;
 
 /**
  * A JNDI implementation of the ServiceRegistry interface where the service

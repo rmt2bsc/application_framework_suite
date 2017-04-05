@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
+import com.api.messaging.MessageRoutingException;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.messaging.handler.MessageHandlerInput;
 
 /**

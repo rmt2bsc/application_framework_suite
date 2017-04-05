@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import com.api.config.ConfigException;
 import com.api.config.SystemConfigurator;
 import com.api.config.jaxb.AppServerConfig.ServiceRegistry.Service;
-import com.api.messaging.webservice.router.MessageRoutingInfo;
+import com.api.messaging.MessageRoutingInfo;
 
 /**
  * An implementation of the ServiceRegistry interface where the service entries

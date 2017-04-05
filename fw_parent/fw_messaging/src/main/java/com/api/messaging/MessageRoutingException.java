@@ -1,4 +1,4 @@
-package com.api.messaging.webservice.router;
+package com.api.messaging;
 
 import com.RMT2RuntimeException;
 

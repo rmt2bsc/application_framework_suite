@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import com.NotFoundException;
 import com.SystemException;
 import com.api.DaoApi;
-import com.api.messaging.webservice.router.MessageRoutingInfo;
+import com.api.messaging.MessageRoutingInfo;
 import com.api.persistence.DatabaseException;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.XmlApiFactory;

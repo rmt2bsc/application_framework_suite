@@ -2,7 +2,7 @@ package com.api.messaging.webservice;
 
 import java.util.Map;
 
-import com.api.messaging.webservice.router.MessageRoutingInfo;
+import com.api.messaging.MessageRoutingInfo;
 
 /**
  * A contract for loading the services registry for a given application.

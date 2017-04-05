@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.api.messaging.MessageException;
+import com.api.messaging.MessageRoutingException;
 import com.api.messaging.handler.MessageHandlerResults;
-import com.api.messaging.webservice.router.MessageRoutingException;
 
 /**
  * A class for establishing a connection to a RMI server and invoking one or

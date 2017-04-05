@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.SystemException;
-import com.api.messaging.webservice.router.MessageRoutingInfo;
+import com.api.messaging.MessageRoutingInfo;
 
 /**
  * An class providing common functionality to access maintain the actual service
