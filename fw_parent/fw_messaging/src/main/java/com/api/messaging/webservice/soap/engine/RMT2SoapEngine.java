@@ -148,7 +148,7 @@ public class RMT2SoapEngine extends AbstractServlet {
      * 
      * @param messageId
      *            The message Id of the service to invoke
-     * @param soapO
+     * @param payload
      *            The payload as an XML String
      * @throws MessageException
      *             The routing of the message errored
@@ -156,13 +156,18 @@ public class RMT2SoapEngine extends AbstractServlet {
      *             The SOAP engine router is invalid or has not been
      *             initialized.
      */
-    private SOAPMessage invokeService(String messageId, String soap, List<DataHandler> attachments)
+    private SOAPMessage invokeService(String messageId, String payload, List<DataHandler> attachments)
             throws SoapEngineException, MessageException {
         String msg = null;
         MessageRouterHelper helper = new MessageRouterHelper();
         try {
             MessageRoutingInfo routeInfo = helper.getRoutingInfo(messageId);
-            return helper.routeSoapMessage(routeInfo, soap, attachments);
+            String modifiedPayload = RMT2XmlUtility.setElementValue("routing", routeInfo.getRouterType() + ": "
+                    + routeInfo.getDestination(), payload);
+            modifiedPayload = RMT2XmlUtility.setElementValue("delivery_mode", routeInfo.getDeliveryMode(),
+                    modifiedPayload);
+            modifiedPayload = RMT2XmlUtility.setElementValue("message_mode", "REQUEST", modifiedPayload);
+            return helper.routeSoapMessage(routeInfo, modifiedPayload, attachments);
         } catch (MessageRoutingException e) {
             msg = "Error occurred routing SOAP message to its designated handler";
             logger.error(msg);
