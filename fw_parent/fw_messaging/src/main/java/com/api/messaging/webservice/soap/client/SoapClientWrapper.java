@@ -13,7 +13,7 @@ import com.api.config.SystemConfigurator;
 import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.MessageException;
-import com.api.messaging.MessageRoutingException;
+import com.api.messaging.webservice.router.MessageRoutingException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.xml.jaxb.JaxbUtil;
 

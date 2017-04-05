@@ -1,6 +1,5 @@
 package com.api.messaging.webservice.router;
 
-import com.api.messaging.MessagingRouter;
 
 /**
  * Factory for creating message routers.
