@@ -146,10 +146,15 @@ public class SoapEngineTest {
 
     @Test
     public void testSearchSuccess() {
-        MessageRoutingInfo mockMessageRoutingInfo = Mockito.mock(MessageRoutingInfo.class);
+        MessageRoutingInfo mockMessageRoutingInfo = new MessageRoutingInfo();
         when(mockSoapMessageHelper.toString(mockSoapMessage)).thenReturn(REQUEST_SEARCH_SUCCESS);
         when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_PAYLOAD);
         when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
+
+        mockMessageRoutingInfo.setDeliveryMode("SYNC");
+        mockMessageRoutingInfo.setDestination("TEST_QUEUE");
+        mockMessageRoutingInfo.setRouterType("JMS");
+
         when(mockMessageRouterHelper.getRoutingInfo("getContent")).thenReturn(mockMessageRoutingInfo);
         when(mockMessageRouterHelper.routeSoapMessage(mockMessageRoutingInfo, REQUEST_SEARCH_PAYLOAD, null))
                 .thenReturn(mockSoapMessageResponse);
