@@ -123,15 +123,15 @@ public class SystemConfigurator extends RMT2Base {
         this.setupDatabaseApi(appConfig);
         logger.info("Database initialization complete.");
 
-        // Initialize each API.
-        logger.info("Begin initialization of all API collection...");
-        this.setupApiCollection(appConfig);
-        logger.info("Initialization of API collection complete.");
-
         // Build destinaion mappings has
         logger.info("Begin building destination mappings hash...");
         this.setupDestinationMappings(appConfig);
         logger.info("Building of destinaion mappings hash complete.");
+
+        // Initialize each API.
+        logger.info("Begin initialization of all API collection...");
+        this.setupApiCollection(appConfig);
+        logger.info("Initialization of API collection complete.");
 
         // Configuration process complete...
         logger.info("Application initialization complete");
@@ -239,7 +239,11 @@ public class SystemConfigurator extends RMT2Base {
             RMT2BeanUtility util = new RMT2BeanUtility();
             com.api.config.ApiConfigurator configurator = (com.api.config.ApiConfigurator) util.createBean(apiConfig
                     .getClassName());
-            configurator.start();
+            try {
+                configurator.start();
+            } catch (Exception e) {
+                logger.error(e);
+            }
         }
     }
 
