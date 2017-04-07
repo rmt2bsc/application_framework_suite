@@ -90,7 +90,12 @@ class SystemConfiguratorServiceRegistryLoaderImpl extends AbstractServiceRegistr
             srvc.setApplicatoinId(item.getApplication());
             srvc.setModuleId(item.getModule());
             srvc.setMessageId(item.getTransaction());
-            srvc.setDestination(item.getDestination());
+
+            // Use RMT2 internal destination name to obtain the actual JNDI
+            // destination name.
+            String jndiDestName = SystemConfigurator.getJndiDestinationName(item.getDestination());
+            srvc.setDestination(jndiDestName);
+
             srvc.setDescription(item.getDescription());
             srvc.setSecured(Boolean.parseBoolean(item.getSecure()));
             srvc.setHost(item.getHost());
