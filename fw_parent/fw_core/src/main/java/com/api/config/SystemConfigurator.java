@@ -1,5 +1,6 @@
 package com.api.config;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.RMT2Base;
+import com.SystemException;
 import com.api.ConnectionProvider;
 import com.api.config.jaxb.AppServerConfig;
 import com.api.config.jaxb.AppServerConfig.ApiConfigurators.ApiConfigurator;
@@ -44,6 +46,8 @@ public class SystemConfigurator extends RMT2Base {
     private String env;
 
     private static AppServerConfig config;
+
+    private static Map<String, AppServerConfig.DestinationMappings.Destination> destinationXref;
 
     private static Map<String, JaxbUtil> jaxb;
 
@@ -123,6 +127,11 @@ public class SystemConfigurator extends RMT2Base {
         logger.info("Begin initialization of all API collection...");
         this.setupApiCollection(appConfig);
         logger.info("Initialization of API collection complete.");
+
+        // Build destinaion mappings has
+        logger.info("Begin building destination mappings hash...");
+        this.setupDestinationMappings(appConfig);
+        logger.info("Building of destinaion mappings hash complete.");
 
         // Configuration process complete...
         logger.info("Application initialization complete");
@@ -235,6 +244,20 @@ public class SystemConfigurator extends RMT2Base {
     }
 
     /**
+     * Build destination mapping hash
+     * 
+     * @param config
+     */
+    private void setupDestinationMappings(AppServerConfig config) {
+        List<AppServerConfig.DestinationMappings.Destination> list = config.getDestinationMappings().getDestination();
+        destinationXref = new HashMap<String, AppServerConfig.DestinationMappings.Destination>();
+        for (AppServerConfig.DestinationMappings.Destination item : list) {
+            destinationXref.put(item.getRmt2Name(), item);
+            logger.info("Destination mapping created for " + item.getRmt2Name() + "==>" + item.getJndiName());
+        }
+    }
+
+    /**
      * @return the config
      */
     public static AppServerConfig getConfig() {
@@ -259,5 +282,26 @@ public class SystemConfigurator extends RMT2Base {
      */
     public static String getJaxbPackageName(String contextName) {
         return jaxbPackageName.get(contextName);
+    }
+
+    /**
+     * Get JNDI destinaion name that is mapped to <i>rmt2DestName</i>.
+     * 
+     * @param rmt2DestName
+     *            the internal destinaion name.
+     * @return the JNDI name or null if it does not exist in the Map
+     * @throws SystemException
+     *             when the destination mappings cross reference map is not
+     *             initialized.
+     */
+    public static String getJndiDestinationName(String rmt2DestName) {
+        if (destinationXref == null) {
+            throw new SystemException("Destination Mappings cross reference Map is not initialized");
+        }
+        AppServerConfig.DestinationMappings.Destination item = destinationXref.get(rmt2DestName);
+        if (item == null) {
+            return null;
+        }
+        return item.getJndiName();
     }
 }
