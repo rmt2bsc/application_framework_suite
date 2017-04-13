@@ -173,6 +173,8 @@ public class MessageRouterHelper extends RMT2Base {
      * @return Serializable object as the reply which is expected to be an
      *         object that can be marshalled/unmarshalled via JAXB.
      * @throws MessageRoutingException
+     *             Error converting <i>Payload</i> to JSON or the inability to
+     *             route the message to its destination.
      */
     public Object routeJsonMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
         // Try to marshal request payload as JSON and dump contents to logger
@@ -181,8 +183,11 @@ public class MessageRouterHelper extends RMT2Base {
         logger.info("Routing Request: ");
         logger.info(jsonReq);
 
+        // Convert JSON to XML which is to be routed to the destination
+        String xml = this.convertPayloadToXml(payload);
+
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(routeInfo, payload);
+        Serializable jaxPayload = this.routeMessage(routeInfo, xml);
 
         // Try to marshal response payload as JSON and dump contents to logger
         String jsonResp = gson.toJson(jaxPayload);
@@ -205,23 +210,16 @@ public class MessageRouterHelper extends RMT2Base {
      * @throws MessageRoutingException
      */
     public Object routeXmlMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
-        JaxbUtil util = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
-        String xml = null;
-        // Try to marshal request payload as XML and dump contents to logger
-        try {
-            xml = util.marshalMessage(payload);
-            logger.info("Routing Response: ");
-            logger.info(xml);
-        } catch (Exception e) {
-            // Do nothing...not a JAXB object
-        }
+        String xml = this.convertPayloadToXml(payload);
+        logger.info("Routing Response: ");
+        logger.info(xml);
 
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(routeInfo, payload);
+        Serializable jaxPayload = this.routeMessage(routeInfo, xml);
 
         // Try marshall response payload as XML and dump contents to logger
         try {
-            xml = util.marshalMessage(jaxPayload);
+            xml = this.convertPayloadToXml(jaxPayload);
             logger.info("Routing Response: ");
             logger.info(xml);
         } catch (Exception e) {
@@ -260,6 +258,17 @@ public class MessageRouterHelper extends RMT2Base {
             jaxbPayload = ((MessageHandlerResults) results).getPayload();
         }
         return jaxbPayload;
+    }
+
+    private String convertPayloadToXml(Serializable payload) {
+        // Convert JSON to XML which is to be routed to the destination
+        try {
+            JaxbUtil util = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+            String xml = util.marshalMessage(payload);
+            return xml;
+        } catch (Exception e) {
+            throw new MessageRoutingException("Unable to convert payload to XML String");
+        }
     }
 
     /**
