@@ -5,7 +5,6 @@ import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +32,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -42,10 +40,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -463,115 +457,6 @@ public class RMT2XmlUtility {
         return out;
     }
 
-    /**
-     * Renders a XSLT Formatted Object document to a file in PDF format.
-     * 
-     * @param srcFileName
-     *            The XSLT-FO document to be rendered.
-     * @param destFileName
-     *            The path where the PDF results will be stored on the file
-     *            system.
-     * @throws SystemException
-     */
-    public void renderPdf(String srcFileName, String destFileName)
-            throws SystemException {
-        File outFile = new File(destFileName);
-        OutputStream outFileStream = null;
-        try {
-            outFileStream = new BufferedOutputStream(new FileOutputStream(
-                    outFile));
-            this.generateXsltPdf(srcFileName, outFileStream);
-            outFileStream.flush();
-            outFileStream.close();
-        } catch (FileNotFoundException e) {
-            this.msg = "Output file is a directory rather than a regular file, does not exist, cannot be created, or cannot be opened for some other reason";
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        } catch (IOException e) {
-            this.msg = "IOException:  A problem occurred closing either the XSLT, XML, or output files";
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        }
-    }
-
-    /**
-     * Generates a PDF document from a XSLT Formatted Object document,
-     * <i>srcFileName</i>, using Apache Formatted Object Processeor.
-     * 
-     * @param srcFileName
-     *            The XSLT-FO document to be rendered.
-     * @return ByteArrayOutputStream representing the PDF results.
-     * @throws SystemException
-     */
-    protected ByteArrayOutputStream generateXsltPdf(String srcFileName)
-            throws SystemException {
-        // Setup a buffer to obtain the content length
-        ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
-        this.generateXsltPdf(srcFileName, pdfStream);
-        return pdfStream;
-    }
-
-    /**
-     * Generates a PDF document from a XSLT Formatted Object document using
-     * Apache Formatted Object Processeor to a generic output stream
-     * 
-     * @param srcFileName
-     *            the filename of the XSL-FO document acting as the source of
-     *            the generated PDF.
-     * @param pdfStream
-     *            a generic output stream for direciting the generated results.
-     * @throws SystemException
-     */
-    protected void generateXsltPdf(String srcFileName, OutputStream outStream)
-            throws SystemException {
-
-        try {
-            // Set up input and output streams.
-            // Note: Using BufferedOutputStream for performance reasons (helpful
-            // with FileOutputStreams).
-            File inFile = new File(srcFileName);
-
-            // Setup input and output for XSLT transformation
-            // Setup input stream
-            Source source = new StreamSource(inFile);
-
-            // Resulting SAX events (the generated FO) must be piped through to
-            // FOP
-            // Construct fop with desired output format
-            // (reuse if you plan to render multiple documents!)
-            FopFactory fopFactory = FopFactory.newInstance();
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, outStream);
-            Result result = new SAXResult(fop.getDefaultHandler());
-
-            // Setup JAXP using identity transformer
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-
-            // Start XSLT transformation and FOP processing
-            transformer.transform(source, result);
-            return;
-        } catch (TransformerConfigurationException e) {
-            this.msg = "TransformerConfigurationException: " + e.getMessage();
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        } catch (TransformerException e) {
-            this.msg = "TransformerException: " + e.getMessage();
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        } catch (FOPException e) {
-            this.msg = "FOPException: " + e.getMessage();
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        } finally {
-            try {
-                outStream.close();
-            } catch (IOException e) {
-                this.msg = "IOException: " + e.getMessage();
-                logger.log(Level.ERROR, this.msg);
-                throw new SystemException(this.msg);
-            }
-        }
-    }
 
     public void serialize(Object obj, String filePath) throws SystemException {
         XMLEncoder out = null;
