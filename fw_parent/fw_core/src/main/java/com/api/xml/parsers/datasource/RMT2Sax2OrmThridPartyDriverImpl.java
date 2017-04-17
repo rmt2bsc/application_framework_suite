@@ -4,6 +4,10 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
@@ -13,7 +17,6 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.SystemException;
 import com.api.persistence.db.DbSqlConst;
@@ -21,7 +24,6 @@ import com.api.persistence.db.orm.bean.DataSourceColumn;
 import com.api.persistence.db.orm.bean.ObjectMapperAttrib;
 import com.api.persistence.db.orm.bean.TableUsageBean;
 import com.api.xml.RMT2SaxAttributesBean;
-import com.api.xml.RMT2XmlUtility;
 import com.util.RMT2File;
 import com.util.RMT2Utility;
 
@@ -64,8 +66,6 @@ class RMT2Sax2OrmThridPartyDriverImpl extends DefaultHandler implements
 
     private String dsName;
 
-    protected String saxDriver;
-
     protected XMLReader parser;
 
     protected Object obj;
@@ -103,7 +103,7 @@ class RMT2Sax2OrmThridPartyDriverImpl extends DefaultHandler implements
      *            The XML Document
      * @throws SystemException
      *             Illegal access or resources, problem instatitating document,
-     *             SAX driver cannot be found or general errors.
+     *             SAX driver cannot be obtained, or general errors.
      */
     public RMT2Sax2OrmThridPartyDriverImpl(String doc) throws SystemException {
         this();
@@ -112,12 +112,14 @@ class RMT2Sax2OrmThridPartyDriverImpl extends DefaultHandler implements
         try {
             this.docName = doc;
             this.getResources();
-            // Create the parser
-            if (this.saxDriver == null || this.saxDriver.equals("")) {
-                this.parser = XMLReaderFactory.createXMLReader();
-            }
-            else {
-                this.parser = XMLReaderFactory.createXMLReader(this.saxDriver);
+            try {
+                SAXParserFactory spf = SAXParserFactory.newInstance();
+                spf.setNamespaceAware(true);
+                SAXParser saxParser = spf.newSAXParser();
+                this.parser = saxParser.getXMLReader();
+            } catch (ParserConfigurationException e) {
+                logger.error("Unable to obtain SAX Driver", e);
+                throw new SystemException("Unable to obtain SAX Driver", e);
             }
 
             // Specify that we don't want validation. This is the SAX2
@@ -191,19 +193,7 @@ class RMT2Sax2OrmThridPartyDriverImpl extends DefaultHandler implements
      * @throws SystemException
      */
     public void getResources() throws SystemException {
-        try {
-            this.saxDriver = RMT2XmlUtility.getSaxDriver();
-            // These two lines are commented out since the location of the
-            // datasource XML file is based on classpath instead of file
-            // directory path.
-
-            // this.docName = OrmConfigHelper
-            // .getOrmDatasourceFullDirPath(this.docName);
-            return;
-        } catch (Throwable e) {
-            throw new SystemException(e);
-        }
-
+        return;
     }
 
     /**
@@ -495,15 +485,6 @@ class RMT2Sax2OrmThridPartyDriverImpl extends DefaultHandler implements
      */
     public int getDocType() {
         return this.docType;
-    }
-
-    /**
-     * Get SAX Driver.
-     * 
-     * @return Driver name.
-     */
-    public String getSaxDriver() {
-        return this.saxDriver;
     }
 
     /**
