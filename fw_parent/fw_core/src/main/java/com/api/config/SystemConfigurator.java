@@ -285,6 +285,16 @@ public class SystemConfigurator extends RMT2Base {
      * @return {@link JaxbUtil} or null of <i>contextName</i> does not exitst.
      */
     public static JaxbUtil getJaxb(String contextName) {
+        if (jaxb == null) {
+            String msg = "The JAXB context registry is not initialized.  Verify that the SystemConfigurator is working properly.";
+            if (logger != null) {
+                logger.error(msg);
+            }
+            else {
+                System.out.println(msg);
+            }
+            return null;
+        }
         return jaxb.get(contextName);
     }
 
