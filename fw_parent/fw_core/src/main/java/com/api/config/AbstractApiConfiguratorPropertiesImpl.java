@@ -1,15 +1,14 @@
 package com.api.config;
 
-import java.util.Enumeration;
 import java.util.ResourceBundle;
-
-import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.util.RMT2File;
 
 /**
- * @author appdev
+ * Common processes for configuring an individual API
+ * 
+ * @author Roy Terrell
  *
  */
 public abstract class AbstractApiConfiguratorPropertiesImpl extends RMT2Base
@@ -43,16 +42,7 @@ public abstract class AbstractApiConfiguratorPropertiesImpl extends RMT2Base
         this.appName = this.config.getString(ConfigConstants.API_APP_TITLE_KEY);
 
         // See if we need to to setup logger locally
-        Logger rootLogger = Logger.getRootLogger();
-        Enumeration appenders = rootLogger.getAllAppenders();
-        if (!appenders.hasMoreElements()) {
-            this.setupLogger();
-        }
-        else {
-            rootLogger
-                    .info(this.appName
-                            + ": is configured to output logging statements to the container's log file");
-        }
+        this.setupLogger();
     }
 
     /**

@@ -1,15 +1,11 @@
 package com.api.foundation;
 
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import com.RMT2Base;
 import com.api.ApiInitException;
 import com.api.persistence.DaoClient;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2File;
 
 /**
  * Abstract transaction API class that provides common functionality.
@@ -81,26 +77,14 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements
      *             genreal IO errors
      */
     public boolean initLogger() throws ApiInitException {
-        if (LOGGER_LOADED) {
-            return true;
-        }
-
-        // Load logger configuration.
-        String msg = null;
         try {
-            Properties props = RMT2File
-                    .loadPropertiesObject(AbstractTransactionApiImpl.LOG_API_PATH);
-            PropertyConfigurator.configure(props);
-            AbstractTransactionApiImpl.logger = Logger
-                    .getLogger(AbstractTransactionApiImpl.class);
+            logger = Logger.getLogger(AbstractTransactionApiImpl.class);
             logger.info("Logger initialized for API successfully");
-            LOGGER_LOADED = true;
-            return LOGGER_LOADED;
         } catch (Exception e) {
-            msg = "Unable to locate log4j configuration, "
-                    + AbstractTransactionApiImpl.LOG_API_PATH;
+            msg = "Unable to locate log4j configuration, " + AbstractTransactionApiImpl.LOG_API_PATH;
             throw new ApiInitException(msg, e);
         }
+        return (logger == null ? false : true);
     }
 
     /*
