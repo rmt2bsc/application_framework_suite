@@ -185,7 +185,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
             TextMessage msg = jms.createTextMessage(srvc.getDestination());
             msg.setText(message.getPayload().toString());
             Destination replyToDest = null;
-            if (!RMT2String2.isEmpty(srvc.getReplyMessageId())) {
+            if (!RMT2String2.isEmpty(srvc.getDeliveryMode()) && srvc.getDeliveryMode().equalsIgnoreCase("SYNC")) {
                 replyToDest = jms.createReplyToDestination(srvc.getDestination(), msg);
             }
 

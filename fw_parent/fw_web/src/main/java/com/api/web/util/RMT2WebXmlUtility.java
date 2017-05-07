@@ -1,16 +1,7 @@
 package com.api.web.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.SystemException;
-import com.api.web.Request;
-import com.api.web.Response;
 import com.api.xml.RMT2XmlUtility;
 
 /**
@@ -49,8 +40,6 @@ import com.api.xml.RMT2XmlUtility;
 public class RMT2WebXmlUtility extends RMT2XmlUtility {
     public static Logger logger = Logger.getLogger("RMT2XmlUtility");
 
-    private String msg;
-
     /**
      * Privately constructs a RMT2XmlUtility object.
      * 
@@ -66,39 +55,6 @@ public class RMT2WebXmlUtility extends RMT2XmlUtility {
      */
     public static RMT2WebXmlUtility getInstance() {
         return new RMT2WebXmlUtility();
-    }
-
-    /**
-     * Renders a XSLT Formatted Object document to the client's browser in PDF
-     * format.
-     * 
-     * @param srcFileName
-     *            The XSLT-FO document to be rendered.
-     * @param request
-     *            The HTTP request object that may contain data needed to
-     *            process PDF document.
-     * @param response
-     *            The HTTP response object used to send the PDF result to the
-     *            browser.
-     * @throws SystemException
-     */
-    public void renderPdf(String srcFileName, Request request, Response response)
-            throws SystemException {
-        ByteArrayOutputStream stream = this.generateXsltPdf(srcFileName);
-        try {
-            // Prepare response
-            response.setContentType("application/pdf");
-            response.setContentLength(stream.size());
-
-            // Send content to Browser
-            ((ServletOutputStream) response.getOutputStream()).write(stream
-                    .toByteArray());
-            ((ServletOutputStream) response.getOutputStream()).flush();
-        } catch (IOException e) {
-            this.msg = "IOException:  A problem occurred redering PDF output to browser";
-            logger.log(Level.ERROR, this.msg);
-            throw new SystemException(this.msg);
-        }
     }
 
 } // end class

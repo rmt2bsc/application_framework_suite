@@ -37,10 +37,10 @@ public abstract class RMT2Base {
     public static final int FAILURE = -1;
 
     /** Messages hash */
-    protected Hashtable<String, String> messages;
+    protected transient Hashtable<String, String> messages;
 
     /** Used to contain a single message */
-    protected String msg;
+    protected transient String msg;
 
     /**
      * Constructs a RMT2Base object

@@ -135,29 +135,7 @@ public class DatabaseConnectionFactory extends RMT2Base {
      * @throws DatabaseException
      *             database access error
      */
-    public DatabaseConnectionBean getProviderConnection()
-            throws DatabaseException {
-        // String msg = null;
-        // ResourceBundle rb = RMT2File
-        // .loadAppConfigProperties(DatabaseConnectionConstants.CONNECTION_CONFIG);
-        // String className = rb
-        // .getString(DatabaseConnectionFactory.CONNECTION_PROVIDER_CLASS);
-        // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
-
-        // // The implementation of ConnectionProvider should be able to
-        // initialize
-        // // itself when instantiated.
-        // ConnectionProvider api = null;
-        // try {
-        // String className = this.getImplementingClassName();
-        // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
-        // api = (ConnectionProvider) beanUtil.createBean(className);
-        // } catch (Exception e) {
-        // this.msg =
-        // "Unable to discover or obtain the appropriate implementation of the ConnectionProvider interface needed to establish a viable database connection";
-        // throw new DatabaseException(this.msg, e);
-        // }
-
+    public DatabaseConnectionBean getProviderConnection() throws DatabaseException {
         // The implementation of ConnectionProvider should be able to initialize
         // itself when instantiated.
         ConnectionProvider api = this.getEnvConnectionProviderApi(null);
@@ -190,28 +168,7 @@ public class DatabaseConnectionFactory extends RMT2Base {
      * @return
      * @throws DatabaseException
      */
-    public DatabaseConnectionBean getProviderConnection(String contextName)
-            throws DatabaseException {
-        // String msg = null;
-        // ResourceBundle rb = RMT2File
-        // .loadAppConfigProperties(DatabaseConnectionConstants.CONNECTION_CONFIG);
-        // String className = rb
-        // .getString(DatabaseConnectionFactory.CONNECTION_PROVIDER_CLASS);
-        // RMT2BeanUtility beanUtil = new RMT2BeanUtility();
-        //
-        // // The implementation of ConnectionProvider should be able to
-        // initialize
-        // // itself when instantiated.
-        // ConnectionProvider api = null;
-
-        // try {
-        // api = (ConnectionProvider) beanUtil.createBean(className);
-        // } catch (Exception e) {
-        // msg =
-        // "Unable to discover or obtain the appropriate implementation of the ConnectionProvider interface needed to establish a viable database connection";
-        // throw new DatabaseException(msg, e);
-        // }
-
+    public DatabaseConnectionBean getProviderConnection(String contextName) throws DatabaseException {
         // The implementation of ConnectionProvider should be able to initialize
         // itself when instantiated.
         ConnectionProvider api = this.getEnvConnectionProviderApi(contextName);

@@ -35,8 +35,6 @@ public abstract class AbstractDaoClientImpl extends RMT2Base implements
      */
     public AbstractDaoClientImpl() {
         super();
-        // this.client = Rmt2OrmClientFactory
-        // .createOrmClientInstance(this.apiName);
         this.borrowedPersistClient = false;
         return;
     }
@@ -153,15 +151,4 @@ public abstract class AbstractDaoClientImpl extends RMT2Base implements
     public PersistenceClient getClient() {
         return this.client;
     }
-
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see com.api.persistence.DaoClient#getApiName()
-    // */
-    // @Override
-    // public String getApiName() {
-    // return null;
-    // }
-
 }

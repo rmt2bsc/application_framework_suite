@@ -237,8 +237,18 @@ public class SystemConfigurator extends RMT2Base {
         List<ApiConfigurator> list = config.getApiConfigurators().getApiConfigurator();
         for (ApiConfigurator apiConfig : list) {
             RMT2BeanUtility util = new RMT2BeanUtility();
-            com.api.config.ApiConfigurator configurator = (com.api.config.ApiConfigurator) util.createBean(apiConfig
-                    .getClassName());
+
+            // Instantiate application's configurator
+            com.api.config.ApiConfigurator configurator = null;
+            try {
+                configurator = (com.api.config.ApiConfigurator) util.createBean(apiConfig.getClassName());
+            } catch (SystemException e) {
+                this.msg = "Error initializing application, " + apiConfig.getClassName() + ", during server start up";
+                logger.error(this.msg, e);
+                continue;
+            }
+
+            // Initialize application via its confugrator
             try {
                 configurator.start();
             } catch (Exception e) {
@@ -275,6 +285,16 @@ public class SystemConfigurator extends RMT2Base {
      * @return {@link JaxbUtil} or null of <i>contextName</i> does not exitst.
      */
     public static JaxbUtil getJaxb(String contextName) {
+        if (jaxb == null) {
+            String msg = "The JAXB context registry is not initialized.  Verify that the SystemConfigurator is working properly.";
+            if (logger != null) {
+                logger.error(msg);
+            }
+            else {
+                System.out.println(msg);
+            }
+            return null;
+        }
         return jaxb.get(contextName);
     }
 

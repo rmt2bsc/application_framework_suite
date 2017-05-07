@@ -56,13 +56,23 @@ public abstract class AbstractConnectionProviderImpl extends RMT2Base implements
      * @throws SystemException
      */
     public void init() throws DatabaseException, SystemException {
-        // this.config = RMT2File
-        // .loadAppConfigProperties(DatabaseConnectionConstants.CONNECTION_CONFIG);
         logger.info(AbstractConnectionProviderImpl.class.getName()
                 + " is initialized");
     }
 
+    /**
+     * Obtains the Datasource resource name which associates the physical
+     * database connection to the database connection API implementation.
+     * 
+     * @return the datasource name
+     * @throws DatabaseException
+     *             Problem loading DB-ORM-Config, DB-ORM-Config cannot be found,
+     *             or <i>environment</i> variable is not set in application
+     *             configuration.
+     */
     protected String getEnvDbResourceName() {
+        // Identify either the general purpose or application specific
+        // DB-ORM-Config file.
         String ormConfigFile = null;
         if (contextName == null) {
             ormConfigFile = DatabaseConnectionConstants.CONNECTION_CONFIG;
@@ -73,8 +83,17 @@ public abstract class AbstractConnectionProviderImpl extends RMT2Base implements
                     contextName,
                     DatabaseConnectionConstants.API_CONNECTION_PLACEHOLDER);
         }
-        this.config = RMT2File.loadAppConfigProperties(ormConfigFile);
 
+        // Load DB-ORM-Config file
+        try {
+            this.config = RMT2File.loadAppConfigProperties(ormConfigFile);
+        } catch (Exception e) {
+            this.msg = "Error loading DB-ORM-Config file: " + ormConfigFile;
+            logger.fatal(this.msg);
+            throw new DatabaseException(this.msg, e);
+        }
+
+        // Get the datasource resouce name based on platform environment
         String env = System.getProperty(ConfigConstants.PROPNAME_ENV);
         if (env == null) {
             this.msg = "Error obtaining DB ORM ResourceName Key.  Unable to determine the environment of application (Test, Production, or Development)";
@@ -83,7 +102,7 @@ public abstract class AbstractConnectionProviderImpl extends RMT2Base implements
         }
         String key = env.toLowerCase() + "." + RESOURCE_KEY_NAME;
         logger.info("The selected DB ORM Resource Name Key is, " + key);
-        String resourceName = this.getConfig().getString(key);
+        String resourceName = this.config.getString(key);
         return resourceName;
     }
 
@@ -114,6 +133,5 @@ public abstract class AbstractConnectionProviderImpl extends RMT2Base implements
     public String getContextName() {
         return contextName;
     }
-
-} // End of Class
+}
 
