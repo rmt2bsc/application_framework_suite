@@ -681,9 +681,12 @@ public class RMT2Utility {
      * @param ipAddr
      *            The IP address represented in IPv4 format
      * @return a long representation of the IPv4 address
-     * @throws InvalidDataException
+     * @throws InvalidDataException <i>ipAddr</i> is null or invalid
      */
     public static long convertIp(String ipAddr) throws InvalidDataException {
+        if (ipAddr == null) {
+            throw new InvalidDataException("IP address cannot be null");
+        }
         String msg = null;
         String ipDiv[] = ipAddr.split("\\.");
         if (ipDiv.length != 4) {
