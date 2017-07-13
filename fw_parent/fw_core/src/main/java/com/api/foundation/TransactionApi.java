@@ -1,5 +1,7 @@
 package com.api.foundation;
 
+import com.api.persistence.DaoClient;
+
 /**
  * A base interface designed to track the activity of the user currently in
  * control of a transaction API instance.
@@ -9,6 +11,13 @@ package com.api.foundation;
  */
 public interface TransactionApi {
 
+    /**
+     * Get the DAO instance that is assoicated with this API
+     * 
+     * @return {@link DaoClient}
+     */
+    DaoClient getSharedDao();
+    
     /**
      * Get the login id of the user in controll of the API.
      * 
