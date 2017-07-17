@@ -1,6 +1,7 @@
 package com.api.persistence.db.orm;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
 import com.api.config.old.AbstractSystemConfigImpl;
+import com.util.RMT2BeanUtility;
 import com.util.RMT2Date;
 import com.util.RMT2File;
 import com.util.RMT2String;
@@ -219,7 +221,7 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
      */
     public void resetCriteria() {
         this.criteria = null;
-        this.criteria = new Hashtable();
+        this.criteria = new HashMap();
     }
 
     /**
@@ -293,6 +295,13 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
         return false;
     }
 
+    private void createCriteria(String _property, String _criteria) {
+        // Take care of escaping any occurrences of single quote literals
+        String val = RMT2String.replaceAll2(_criteria, "''", "'");
+        this.criteria.put(_property, val);
+    }
+    
+    
     /**
      * Adds equality-only selection criteria as key/value pairs to a collection.
      * The collection of key/value pairs represent equality-only selection
@@ -317,10 +326,14 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
         if (_criteria == null) {
             return;
         }
-
-        // Take care of escaping any occurrences of single quote literals
-        String val = RMT2String.replaceAll2(_criteria, "''", "'");
-        this.criteria.put(_property, val);
+        this.createCriteria(_property, _criteria);
+        RMT2BeanUtility util = new RMT2BeanUtility(this);
+        if (_criteria.equals("null")) {
+            util.setPropertyValue(_property, null);
+        }
+        else {
+            util.setPropertyValue(_property, _criteria);    
+        }
     }
 
     /**
@@ -334,7 +347,9 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
      */
     public void addCriteria(String _property, int _criteria) {
         String temp = String.valueOf(_criteria);
-        this.addCriteria(_property, temp);
+        this.createCriteria(_property, temp);
+        RMT2BeanUtility util = new RMT2BeanUtility(this);
+        util.setPropertyValue(_property, _criteria);
     }
 
     /**
@@ -348,7 +363,9 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
      */
     public void addCriteria(String _property, boolean _criteria) {
         String temp = String.valueOf(_criteria);
-        this.addCriteria(_property, temp);
+        this.createCriteria(_property, temp);
+        RMT2BeanUtility util = new RMT2BeanUtility(this);
+        util.setPropertyValue(_property, _criteria);
     }
 
     /**
@@ -362,7 +379,9 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
      */
     public void addCriteria(String _property, double _criteria) {
         String temp = String.valueOf(_criteria);
-        this.addCriteria(_property, temp);
+        this.createCriteria(_property, temp);
+        RMT2BeanUtility util = new RMT2BeanUtility(this);
+        util.setPropertyValue(_property, _criteria);
     }
 
     /**
@@ -400,7 +419,10 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
             else if (dbmsVal.equals(ConfigConstants.DBMSTYPE_ASA)) {
                 temp = RMT2Date.formatDate(criteria, "yyyy/MM/dd HH:mm:ss");
             }
-            this.addCriteria(property, temp);
+            
+            this.createCriteria(property, temp);
+            RMT2BeanUtility util = new RMT2BeanUtility(this);
+            util.setPropertyValue(property, criteria);
         } catch (SystemException e) {
 
         }
@@ -806,6 +828,9 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
         // Take care of escaping any occurrences of single quote literals
         String modValue = RMT2String.replaceAll2(value, "''", "'");
 
+        RMT2BeanUtility util = new RMT2BeanUtility(this);
+        util.setPropertyValue(property, value);
+        
         switch (conditionType) {
             case OrmBean.LIKE_BEGIN:
                 this.likeClauseBegin.put(property, modValue);
