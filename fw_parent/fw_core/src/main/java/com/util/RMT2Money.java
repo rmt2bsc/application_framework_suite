@@ -657,7 +657,12 @@ public class RMT2Money {
             throw new InvalidDataException(msg);
         }
         if (value.indexOf(".") == -1) {
-            String msg = "Please enter an amount in dollars and cents.Be sure to use a decimal point. For example: 1234.56 or 413.00 or 1,234.78 or 345,678.00";
+            String msg = "Please enter an amount in dollars and cents. Be sure to use a decimal point. For example: 1234.56 or 413.00 or 1,234.78 or 345,678.00";
+            throw new InvalidDataException(msg);
+        }
+        // Ensure value contains at least 2 digits to the right of decimal.
+        if (value.substring(value.indexOf(".") + 1).length() < 2) {
+            String msg = "Money value should contain at least two digits to the right of the decimal";
             throw new InvalidDataException(msg);
         }
     }
