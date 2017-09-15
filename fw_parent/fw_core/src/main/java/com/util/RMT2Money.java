@@ -646,22 +646,33 @@ public class RMT2Money {
      *             <li><i>value</i> does not contain a decimal point</li>
      *             </ul>
      */
-    public final static void validateMoney(String value)
+    public final static void validateMoney(Double value)
             throws InvalidDataException {
         if (value == null) {
             String msg = "Input is invalid";
             throw new InvalidDataException(msg);
         }
-        if (!RMT2Money.isNumeric(value)) {
+
+        String temp = value.toString();
+        // This logic is used in casses where xact amound is a decimal but
+        // probably was entered as xxx.00. Java has a tendency to strip away the
+        // last zero to the right of the decimal when evaluating doubles to
+        // String.
+        if ((value % 1) == 0) {
+            // This is a whole number
+            temp += "0";
+        }
+
+        if (!RMT2Money.isNumeric(temp)) {
             String msg = "Input is not numeric";
             throw new InvalidDataException(msg);
         }
-        if (value.indexOf(".") == -1) {
+        if (temp.indexOf(".") == -1) {
             String msg = "Please enter an amount in dollars and cents. Be sure to use a decimal point. For example: 1234.56 or 413.00 or 1,234.78 or 345,678.00";
             throw new InvalidDataException(msg);
         }
         // Ensure value contains at least 2 digits to the right of decimal.
-        if (value.substring(value.indexOf(".") + 1).length() < 2) {
+        if (temp.substring(temp.indexOf(".") + 1).length() < 2) {
             String msg = "Money value should contain at least two digits to the right of the decimal";
             throw new InvalidDataException(msg);
         }
