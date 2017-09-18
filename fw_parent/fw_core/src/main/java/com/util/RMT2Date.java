@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -922,5 +923,14 @@ public class RMT2Date {
         return strResult.toString();
     }
 
+    /**
+     * Get current timezone based on server's current UTC.
+     * 
+     * @return timezone id such as <i>America/Chicago</i> or <i>US/Arizona</i>
+     */
+    public static String getCurrentTimezoneId() {
+        TimeZone tz = Calendar.getInstance().getTimeZone();
+        return tz.getID();
+    }
 } // end class
 
