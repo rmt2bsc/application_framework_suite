@@ -245,8 +245,7 @@ public class RMT2Date {
      * @return XMLGregorianCalendar
      * @throws SystemException
      */
-    public static final XMLGregorianCalendar toXmlDate(Date date)
-            throws SystemException {
+    public static final XMLGregorianCalendar toXmlDate(Date date) throws SystemException {
         if (date == null) {
             return null;
         }
@@ -255,8 +254,7 @@ public class RMT2Date {
         try {
             if (date != null) {
                 gDate.setTime(date);
-                xDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        gDate);
+                xDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gDate);
             }
             return xDate;
         } catch (DatatypeConfigurationException e) {
@@ -955,7 +953,5 @@ public class RMT2Date {
         diff = TimeUnit.MILLISECONDS.toDays(timeDiff);
         return diff;
     }
-    
-    
 } // end class
 

@@ -169,6 +169,32 @@ public class DateTest {
 
     }
     
+    /**
+     * Test of getXMLGergorianCalendar method, of class Utility.
+     */
+    @Test
+    public void testGetXMLGergorianCalendarUsingJavaUtilDate() {
+        Date dt = new Date();
+        try {
+            Assert.assertNotNull(RMT2Date.toXmlDate(dt));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    /**
+     * Test of getXMLGergorianCalendar method, of class Utility.
+     */
+    @Test
+    public void testGetXMLGergorianCalendarUsingNullDate() {
+        Date nullDate = null;
+        try {
+            Assert.assertNull(RMT2Date.toXmlDate(nullDate));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+}
+    
     
     @Test
     public void testNumberOfDaysBetweenDates() {
