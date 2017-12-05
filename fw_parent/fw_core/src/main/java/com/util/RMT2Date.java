@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -932,5 +933,29 @@ public class RMT2Date {
         TimeZone tz = Calendar.getInstance().getTimeZone();
         return tz.getID();
     }
+    
+    /**
+     * Calculate and return the number of days between two dates.
+     * 
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws RuntimeException
+     *             when <i>startDate</i> or <i>endDate</i> is null.
+     */
+    public static long getTimeDiffDays(Date startDate, Date endDate) {
+        if (startDate == null) {
+            throw new RuntimeException("Start date is required");
+        }
+        if (endDate == null) {
+            throw new RuntimeException("End date is required");
+        }
+        long diff = 0;
+        long timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
+        diff = TimeUnit.MILLISECONDS.toDays(timeDiff);
+        return diff;
+    }
+    
+    
 } // end class
 

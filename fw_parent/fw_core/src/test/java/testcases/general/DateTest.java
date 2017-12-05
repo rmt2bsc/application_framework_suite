@@ -2,6 +2,7 @@ package testcases.general;
 
 import java.text.DateFormat;
 import java.text.ParsePosition;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -165,5 +167,47 @@ public class DateTest {
             System.out.println("Error Pos: " + pos.getErrorIndex());
         }
 
+    }
+    
+    
+    @Test
+    public void testNumberOfDaysBetweenDates() {
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        start.set(2010, 7, 23);
+        end.set(2010, 8, 26);
+        Date startDate = start.getTime();
+        Date endDate = end.getTime();
+
+        long days = RMT2Date.getTimeDiffDays(startDate, endDate);
+        Assert.assertEquals(34, days);
+    }
+
+    @Test
+    public void testNumberOfDaysBetweenDates_NullStartDate() {
+        Calendar end = Calendar.getInstance();
+        end.set(2010, 8, 26);
+        Date endDate = end.getTime();
+
+        try {
+            long days = RMT2Date.getTimeDiffDays(null, endDate);
+            Assert.fail("Expected an exception to be thrown");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof RuntimeException);
+        }
+    }
+
+    @Test
+    public void testNumberOfDaysBetweenDates_NullEndDate() {
+        Calendar start = Calendar.getInstance();
+        start.set(2010, 7, 23);
+        Date startDate = start.getTime();
+
+        try {
+            long days = RMT2Date.getTimeDiffDays(startDate, null);
+            Assert.fail("Expected an exception to be thrown");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof RuntimeException);
+        }
     }
 }
