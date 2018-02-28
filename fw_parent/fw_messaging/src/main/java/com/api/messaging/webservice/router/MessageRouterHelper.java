@@ -1,6 +1,7 @@
 package com.api.messaging.webservice.router;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -21,9 +22,11 @@ import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
+import com.api.xml.RMT2XmlUtility;
 import com.api.xml.jaxb.JaxbUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.util.RMT2Date;
 
 /**
  * Helper class for routing various types of messages to their respective
@@ -129,6 +132,38 @@ public class MessageRouterHelper extends RMT2Base {
     /**
      * Route a SOAP message to its appropriate destination.
      * 
+     * @param messageId
+     *            the unique identification of the SOAP message
+     * @param payload
+     *            the data to be sent
+     * @param attachments
+     *            SOAP attachments
+     * @return instance of {@link SOAPMessage}
+     * @throws MessageRoutingException
+     *             Unable to access routing information or problems routing the
+     *             message to its destination.
+     * @throws InvalidDataException
+     *             messageId is null or the routing information obtained does
+     *             not contain a URL.
+     * @throws NotFoundException
+     *             Routing information is not found in the service registry
+     *             using the supplied key,
+     */
+    public SOAPMessage routeSoapMessage(String messageId, String payload, List<DataHandler> attachments)
+            throws MessageRoutingException {
+        
+        // Get routing information
+        MessageRoutingInfo routeInfo = this.getRoutingInfo(messageId);
+
+        // Route the message
+        return this.routeSoapMessage(routeInfo, payload, attachments);
+    }
+    
+    
+    
+    /**
+     * Route a SOAP message to its appropriate destination.
+     * 
      * @param routeInfo
      *            An instance of {@link MessageRoutingInfo}
      * @param payload
@@ -138,15 +173,18 @@ public class MessageRouterHelper extends RMT2Base {
      * @return an instance of {@link SOAPMessage} as the reply
      * @throws MessageRoutingException
      */
-    public SOAPMessage routeSoapMessage(MessageRoutingInfo routeInfo, String payload, List<DataHandler> attachments)
+    private SOAPMessage routeSoapMessage(MessageRoutingInfo routeInfo, String payload, List<DataHandler> attachments)
             throws MessageRoutingException {
         MessagingRouter router = MessageRouterFactory.createSoapMessageRouter();
+        
+        // Setup header informtation in the payload
+        String modifiedPayload = this.setPayloadHeaderValues(routeInfo, payload);
+        
         try {
             // Output request to logger
             logger.info("Routing SOAP Request: ");
-            logger.info(payload);
-            MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(routeInfo, payload,
-                    attachments);
+            logger.info(modifiedPayload);
+            MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(routeInfo, modifiedPayload, attachments);
             // Convert results to SOAP Message
             SOAPMessage soapResponse = this.createSoapResponse(results);
             SoapMessageHelper helper = new SoapMessageHelper();
@@ -162,11 +200,13 @@ public class MessageRouterHelper extends RMT2Base {
         }
     }
 
+
+
     /**
      * Route a JSON message to its appropriate destination.
      * 
-     * @param routeInfo
-     *            An instance of {@link MessageRoutingInfo}
+     * @param messageId
+     *            the unique identification of the JSON message
      * @param payload
      *            The payload is a Serializable object that can be
      *            marshalled/unmarshalled as JSON
@@ -176,7 +216,10 @@ public class MessageRouterHelper extends RMT2Base {
      *             Error converting <i>Payload</i> to JSON or the inability to
      *             route the message to its destination.
      */
-    public Object routeJsonMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
+    public Object routeJsonMessage(String messageId, Serializable payload) throws MessageRoutingException {
+        // Get routing information
+        MessageRoutingInfo routeInfo = this.getRoutingInfo(messageId);
+        
         // Try to marshal request payload as JSON and dump contents to logger
         final Gson gson = new GsonBuilder().create();
         String jsonReq = gson.toJson(payload);
@@ -185,9 +228,12 @@ public class MessageRouterHelper extends RMT2Base {
 
         // Convert JSON to XML which is to be routed to the destination
         String xml = this.convertPayloadToXml(payload);
+        
+        // Setup header informtation in the payload
+        String modifiedPayload = this.setPayloadHeaderValues(routeInfo, xml);
 
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(routeInfo, xml);
+        Serializable jaxPayload = this.routeMessage(routeInfo, modifiedPayload);
 
         // Try to marshal response payload as JSON and dump contents to logger
         String jsonResp = gson.toJson(jaxPayload);
@@ -196,12 +242,12 @@ public class MessageRouterHelper extends RMT2Base {
 
         return jaxPayload;
     }
-
+    
     /**
      * Route a XML message object to its appropriate destination.
      * 
-     * @param routeInfo
-     *            An instance of {@link MessageRoutingInfo}
+     * @param messageId
+     *            the unique identification of the XML message
      * @param payload
      *            The payload is a Serializable object that can be
      *            marshalled/unmarshalled as XML
@@ -209,13 +255,19 @@ public class MessageRouterHelper extends RMT2Base {
      *         object that can be marshalled/unmarshalled via JAXB.
      * @throws MessageRoutingException
      */
-    public Object routeXmlMessage(MessageRoutingInfo routeInfo, Serializable payload) throws MessageRoutingException {
+    public Object routeXmlMessage(String messageId, Serializable payload) throws MessageRoutingException {
+        // Get routing information
+        MessageRoutingInfo routeInfo = this.getRoutingInfo(messageId);
+        
         String xml = this.convertPayloadToXml(payload);
-        logger.info("Routing Response: ");
+        logger.info("Routing Request: ");
         logger.info(xml);
+        
+        // Setup header informtation in the payload
+        String modifiedPayload = this.setPayloadHeaderValues(routeInfo, xml);
 
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(routeInfo, xml);
+        Serializable jaxPayload = this.routeMessage(routeInfo, modifiedPayload);
 
         // Try marshall response payload as XML and dump contents to logger
         try {
@@ -260,6 +312,18 @@ public class MessageRouterHelper extends RMT2Base {
         return jaxbPayload;
     }
 
+    private String setPayloadHeaderValues(MessageRoutingInfo routeInfo, String payload) {
+        // Setup header informtation in the payload
+        String modifiedPayload = RMT2XmlUtility.setElementValue("routing", routeInfo.getRouterType() + ": "
+                + routeInfo.getDestination(), payload);
+        modifiedPayload = RMT2XmlUtility.setElementValue("delivery_mode", routeInfo.getDeliveryMode(),
+                modifiedPayload);
+        modifiedPayload = RMT2XmlUtility.setElementValue("message_mode", "REQUEST", modifiedPayload);
+        modifiedPayload = RMT2XmlUtility.setElementValue("delivery_date",
+                RMT2Date.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"), modifiedPayload);
+        return modifiedPayload;
+    }
+    
     private String convertPayloadToXml(Serializable payload) {
         // Convert JSON to XML which is to be routed to the destination
         try {
