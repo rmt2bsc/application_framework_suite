@@ -1,6 +1,5 @@
 package com.api.messaging.webservice.soap.engine;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -17,7 +16,6 @@ import com.SystemException;
 import com.api.messaging.MessageException;
 import com.api.messaging.webservice.router.MessageRouterHelper;
 import com.api.messaging.webservice.router.MessageRoutingException;
-import com.api.messaging.webservice.router.MessageRoutingInfo;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
 import com.api.web.Request;
@@ -26,7 +24,6 @@ import com.api.web.controller.AbstractServlet;
 import com.api.web.controller.StatelessControllerProcessingException;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.xml.RMT2XmlUtility;
-import com.util.RMT2Date;
 
 /**
  * A servlet for accepting SOAP based web service requests, dispatching the web
@@ -163,19 +160,10 @@ public class RMT2SoapEngine extends AbstractServlet {
         String msg = null;
         MessageRouterHelper helper = new MessageRouterHelper();
         try {
-            MessageRoutingInfo routeInfo = helper.getRoutingInfo(messageId);
-            String modifiedPayload = RMT2XmlUtility.setElementValue("routing", routeInfo.getRouterType() + ": "
-                    + routeInfo.getDestination(), payload);
-            modifiedPayload = RMT2XmlUtility.setElementValue("delivery_mode", routeInfo.getDeliveryMode(),
-                    modifiedPayload);
-            modifiedPayload = RMT2XmlUtility.setElementValue("message_mode", "REQUEST", modifiedPayload);
-            modifiedPayload = RMT2XmlUtility.setElementValue("delivery_date",
-                    RMT2Date.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"), modifiedPayload);
-            return helper.routeSoapMessage(routeInfo, modifiedPayload, attachments);
+            return helper.routeSoapMessage(messageId, payload, attachments);
         } catch (MessageRoutingException e) {
             msg = "Error occurred routing SOAP message to its designated handler";
-            logger.error(msg);
-            throw new MessageException(e);
+            throw new MessageException(msg, e);
         }
     }
 
