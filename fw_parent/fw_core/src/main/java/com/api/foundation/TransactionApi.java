@@ -1,5 +1,7 @@
 package com.api.foundation;
 
+import java.io.Serializable;
+
 import com.api.persistence.DaoClient;
 
 /**
@@ -52,4 +54,16 @@ public interface TransactionApi {
      * Close the connection assoicated with this DAO client.
      */
     void close();
+  
+    /**
+     * Send a message to its destination.
+     * 
+     * @param messageId
+     *            the unique identifier of the message
+     * @param payload
+     *            the message content
+     * @return the results, if applicable.
+     * @throws TransactionApiException
+     */
+    Object sendMessage(String messageId, Serializable payload) throws TransactionApiException;
 }
