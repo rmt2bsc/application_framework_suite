@@ -32,7 +32,7 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
 
     protected static final String LOG_API_PATH = "config/log4j.properties";
 
-    protected static final String APP_PARMS_PATH = "config.{$}-AppParms.properties";
+    protected static final String APP_PARMS_PATH = "config.{$}-AppParms";
     
     private static Logger logger;
     
@@ -66,13 +66,7 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
     protected AbstractTransactionApiImpl(String appName) {
         this();
         String propertyFileName = RMT2String.replace(APP_PARMS_PATH, appName, "{$}");
-        try {
-            this.config = RMT2File.loadPropertiesFromClasspath(propertyFileName);    
-        }
-        catch (Exception e) {
-            this.msg = "Application specific configuration could not be loaded for project named, " + appName + ".  Ensure that project name is declared correctly";
-            logger.warn(this.msg, e);
-        }
+        this.initConfiguration(propertyFileName);
         return;
     }
     
@@ -88,7 +82,33 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
         this.sharedDao = dao;
         return;
     }
+    
+    /**
+     * 
+     * @param appName
+     * @param dao
+     */
+    protected AbstractTransactionApiImpl(String appName, DaoClient dao) {
+        this(dao);
+        String propertyFileName = RMT2String.replace(APP_PARMS_PATH, appName, "{$}");
+        this.initConfiguration(propertyFileName);
+    }
 
+    /**
+     * 
+     * @param propertyFileName
+     */
+    protected void initConfiguration(String propertyFileName) {
+        try {
+            this.config = RMT2File.loadPropertiesFromClasspath(propertyFileName);
+        } catch (Exception e) {
+            this.msg = "Application specific configuration could not be loaded for project named, "
+                    + propertyFileName
+                    + ".  Ensure that project name is declared correctly";
+            logger.warn(this.msg, e);
+        }
+    }
+    
     /**
      * Sets up the logging environment that is to be used throughout the entire
      * application.
