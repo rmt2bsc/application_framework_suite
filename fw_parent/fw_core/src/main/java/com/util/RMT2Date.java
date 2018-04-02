@@ -196,6 +196,18 @@ public class RMT2Date {
     }
 
     /**
+     * Creates a date object from a long value
+     * 
+     * @param dateInMillSecs
+     * @return instance of {@link java.util.Date}
+     */
+    public static final Date toDate(long dateInMillSecs) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(dateInMillSecs);
+        return c.getTime();
+    }
+    
+    /**
      * Converts a String date in the form of W3C XML lexical representation to a
      * date String in the format of <i>yyyy-MM-dd HH:mm:ss</i>.
      * 
