@@ -1,6 +1,7 @@
 package com.api.persistence;
 
 import com.RMT2Base;
+import com.api.persistence.db.orm.OrmBean;
 import com.api.persistence.db.orm.Rmt2OrmClientFactory;
 
 /**
@@ -11,8 +12,7 @@ import com.api.persistence.db.orm.Rmt2OrmClientFactory;
  * @author rterrell
  * 
  */
-public abstract class AbstractDaoClientImpl extends RMT2Base implements
-        DaoClient {
+public abstract class AbstractDaoClientImpl extends RMT2Base implements DaoClient {
 
     protected String apiName;
 
@@ -150,5 +150,21 @@ public abstract class AbstractDaoClientImpl extends RMT2Base implements
     @Override
     public PersistenceClient getClient() {
         return this.client;
+    }
+    
+    /**
+     * Common method for 
+     * @param obj
+     * @return
+     */
+    protected int deleteObject(OrmBean obj) {
+        int rows = 0;
+        try {
+            rows = this.client.deleteRow(obj);
+            return rows;
+        } catch (Exception e) {
+            this.msg = "Error deleting RMT2 ORM object, " + obj.getDataSourceClassName();
+            throw new DatabaseException(this.msg, e);
+        }
     }
 }
