@@ -62,6 +62,7 @@ public class RMT2File {
     /** File object is not a directory */
     public static final int FILE_IO_NOT_DIR = -4;
 
+    public static final int DEFAULT_READ_BYTE_SIZE = 1;
     /**
      * Returns the current directory of this project
      * 
@@ -1377,8 +1378,11 @@ public class RMT2File {
      * @throws SystemException
      */
     public static final byte[] getStreamByteData(InputStream is) throws SystemException {
-        int byteSize = 1024;
-        return RMT2File.getStreamByteData(is, byteSize);
+        // Initially, we were setting DEFAULT_READ_BYTE_SIZE to 1024, which was
+        // causing the byte stream to read beyond the EOF marker, hence, causing
+        // the file pointer to position itself back to the BOF and over read the
+        // content until it reaches a stopping point.
+        return RMT2File.getStreamByteData(is, DEFAULT_READ_BYTE_SIZE);
     }
 
     /**
@@ -1413,8 +1417,12 @@ public class RMT2File {
             throws SystemException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            // In the event you experience problems using the "available"
+            // method, go back to using the DEFAULT_READ_BYTE_SIZE (read one
+            // byte at a time) to control reads.
+            int contentSize = (is.available() > 0 ? is.available() : byteSize);
             DataOutputStream dos = new DataOutputStream(baos);
-            byte buffer[] = new byte[byteSize];
+            byte buffer[] = new byte[contentSize];
             while (is.read(buffer) != -1) {
                 dos.write(buffer);
             }
