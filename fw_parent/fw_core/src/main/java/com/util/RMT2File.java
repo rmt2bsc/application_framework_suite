@@ -100,12 +100,18 @@ public class RMT2File {
      * @return the file name and extension.
      */
     public static final String getFileName(String path) {
-        String fileName = path;
-        File file = new File(path);
-        if (file.exists()) {
-            fileName = file.getName();
+        if (path == null) {
+            return null;
         }
-        return fileName;
+        String fileName[] = path.split("/");
+        String target = fileName[fileName.length - 1];
+        return target;
+        
+//        File file = new File(path);
+//        if (RMT2File.FILE_IO_EXIST == RMT2File.verifyFile(file)) {
+//            fileName = file.getName();
+//        }
+//        return fileName;
     }
 
     /**
@@ -1842,6 +1848,40 @@ public class RMT2File {
         }
     }
 
+    /**
+     * Converts generic object data to byte array.
+     * 
+     * @param data generic data that is to be converted to a byte array.
+     * @return byte[]
+     */
+    public static final byte[] getBytes(Object data) {
+        byte[] bytes = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
+        try {
+            try {
+                bos = new ByteArrayOutputStream();
+                oos = new ObjectOutputStream(bos);
+                oos.writeObject(data);
+                oos.flush();
+                bytes = bos.toByteArray();
+                return bytes;
+            } 
+            finally {
+                if (oos != null) {
+                    oos.close();
+                }
+                if (bos != null) {
+                    bos.close();
+                }
+            }    
+        }
+        catch (IOException e) {
+            throw new SystemException("I/O error occurred converting generic oject to byte array", e);
+        }
+    }
+    
+    
     /**
      * Obtains a Base64 encoded String representing the contents of file.
      * 
