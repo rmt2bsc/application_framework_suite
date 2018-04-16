@@ -106,12 +106,6 @@ public class RMT2File {
         String fileName[] = path.split("/");
         String target = fileName[fileName.length - 1];
         return target;
-        
-//        File file = new File(path);
-//        if (RMT2File.FILE_IO_EXIST == RMT2File.verifyFile(file)) {
-//            fileName = file.getName();
-//        }
-//        return fileName;
     }
 
     /**
