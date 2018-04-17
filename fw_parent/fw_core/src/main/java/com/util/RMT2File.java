@@ -1839,23 +1839,16 @@ public class RMT2File {
      * @return byte[]
      * @throws NotFoundException
      *             <i>srcFilePath</i> is not found in the file system.
+     * @throws SystemException Unable to convert data Stream to byte array.
      */
-    public static final byte[] getFileContentsAsBytes(String srcFilePath) throws NotFoundException {
-        File file = new File(srcFilePath);
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            byte binaryData[] = RMT2File.getStreamByteData(fis);
-            return binaryData;
-        } catch (FileNotFoundException e) {
-            throw new NotFoundException(e);
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                throw new SystemException(e);
-            }
+    public static final byte[] getFileContentsAsBytes(String srcFilePath) {
+        byte[] binaryData = null;
+        InputStream is = RMT2File.getFileInputStream(srcFilePath);
+        if (is == null) {
+            throw new NotFoundException(srcFilePath + " is not found");
         }
+        binaryData = RMT2File.getStreamByteData(is);
+        return binaryData;
     }
 
     /**
