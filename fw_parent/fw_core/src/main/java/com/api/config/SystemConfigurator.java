@@ -25,7 +25,8 @@ import com.util.RMT2File;
 import com.util.RMT2String2;
 
 /**
- * Serves as an application server initializer.
+ * Serves as an application server initializer as well as an initilaizer for
+ * individual API's.
  * <p>
  * Initializes the application by loading system level and application level
  * properties, establishing the JDBC connection pool, and setting the the
