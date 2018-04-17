@@ -103,8 +103,17 @@ public class RMT2File {
         if (path == null) {
             return null;
         }
+        String target = null;
         String fileName[] = path.split("/");
-        String target = fileName[fileName.length - 1];
+        if (fileName.length == 1) {
+            String fileName2[] = path.split("\\");
+            if (fileName2.length > 1) {
+                target = fileName2[fileName2.length - 1];
+                return target;
+            }
+        }
+        // Use the original calculation
+        target = fileName[fileName.length - 1];
         return target;
     }
 
@@ -211,27 +220,30 @@ public class RMT2File {
     /**
      * Verifies that _pathname is a valid Directory or File.
      * 
-     * @param _pathName
-     *            The file path.
+     * @param fileName
+     *            The full file path and file name.
      * @return 1=File Exist, -1=File does not exsit, -2=File inaccessible, and
      *         0= Argument is an empty String or null.
      */
-    public static int verifyFile(String _pathName) {
+    public static int verifyFile(String fileName) {
         File path;
 
         try {
-            path = new File(_pathName);
+            path = new File(fileName);
         } catch (NullPointerException e) {
+            logger.error("Input file name is null");
             return FILE_IO_NULL;
         }
 
         // Validate the existence of path
         try {
             if (!path.exists()) {
+                logger.warn("File, " + fileName + ", does not exists!");
                 return FILE_IO_NOTEXIST;
             }
             return FILE_IO_EXIST;
         } catch (Exception e) {
+            logger.warn("File, " + fileName + ", is inaccessible!");
             return FILE_IO_INACCESSIBLE;
         }
     }
