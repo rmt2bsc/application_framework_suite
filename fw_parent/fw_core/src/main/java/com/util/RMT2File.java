@@ -106,7 +106,7 @@ public class RMT2File {
         String target = null;
         String fileName[] = path.split("/");
         if (fileName.length == 1) {
-            String fileName2[] = path.split("\\");
+            String fileName2[] = path.split("\\\\");
             if (fileName2.length > 1) {
                 target = fileName2[fileName2.length - 1];
                 return target;
@@ -1427,6 +1427,10 @@ public class RMT2File {
      */
     public static final ByteArrayOutputStream createOutputByteStream(InputStream is, int byteSize)
             throws SystemException {
+        if (is == null) {
+            throw new SystemException("InputStream is required");
+        }
+        
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             // In the event you experience problems using the "available"
