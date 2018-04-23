@@ -24,10 +24,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.rmt2.jaxb.AddressType;
-import org.rmt2.jaxb.ObjectFactory;
-import org.rmt2.jaxb.PersonType;
-import org.rmt2.jaxb.ZipcodeType;
+import org.rmt2.jaxbtest.AddressType;
+import org.rmt2.jaxbtest.ObjectFactory;
+import org.rmt2.jaxbtest.PersonType;
+import org.rmt2.jaxbtest.ZipcodeType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
