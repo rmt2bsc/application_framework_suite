@@ -142,7 +142,7 @@ public class RMT2File {
      * Returns the path sequence of a given file name.
      * 
      * @param fileName
-     * @return
+     * @return the path in Unix/Linux/Mac style 
      */
     public static final String getFilePathInfo(String fileName) {
         if (fileName == null) {
@@ -152,6 +152,10 @@ public class RMT2File {
         File file = new File(fileName);
         if (file.exists()) {
             path = file.getParent();
+            if (File.separatorChar=='\\') {
+                // From Windows to Linux/Mac
+                path = path.replace(File.separatorChar, '/');
+            }
         }
         return path;
     }
