@@ -1,12 +1,11 @@
 package com.util;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-
 import java.io.File;
 import java.io.FileFilter;
-
 import java.util.List;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 
@@ -63,7 +62,7 @@ public class RMT2FileDirectoryFilter extends RMT2Base implements FileFilter {
         if (criteria == null || criteria.length() <= 0) {
             return null;
         }
-        List<String> tokens = RMT2String.getTokens(criteria,
+        List<String> tokens = RMT2String.getTokens(criteria.trim(),
                 RMT2FileDirectoryFilter.WILDCARD_SEP);
         return tokens;
     }
