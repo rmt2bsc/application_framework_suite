@@ -19,6 +19,11 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -1220,18 +1225,22 @@ public class RMT2File {
                 to.write(buffer, 0, bytesRead); // write
             }
         } finally {
-            if (from != null)
+            if (from != null) {
                 try {
                     from.close();
                 } catch (IOException e) {
-                    ;
+                    RMT2File.logger.log(Level.ERROR,
+                            "Unable to close the source file stream of the copy file operation");
                 }
-            if (to != null)
+            }
+            if (to != null) {
                 try {
                     to.close();
                 } catch (IOException e) {
-                    ;
+                    RMT2File.logger.log(Level.ERROR,
+                            "Unable to close the destination file stream of the copy file operation");
                 }
+            }
         }
     }
 
@@ -1245,8 +1254,21 @@ public class RMT2File {
      * @return int the total number of resources deleted.
      */
     public static final int deleteFile(String filePath) {
-        File file = new File(filePath);
-        return RMT2File.deleteFile(file);
+        // File file = new File(filePath);
+        // return RMT2File.deleteFile(file);
+
+        Path path = Paths.get(filePath);
+        try {
+            Files.delete(path);
+        } catch (NoSuchFileException x) {
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch (DirectoryNotEmptyException x) {
+            System.err.format("%s not empty%n", path);
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            System.err.println(x);
+        }
+        return 1;
     }
 
     /**
@@ -1288,6 +1310,9 @@ public class RMT2File {
         try {
             if (file.delete()) {
                 count++;
+            }
+            else {
+                logger.error("Unable to deleting file: " + file.getPath());
             }
         } catch (Throwable e) {
             logger.error("Error deleting file: " + file.getPath() + ".");
@@ -1764,7 +1789,7 @@ public class RMT2File {
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 listing.add(listOfFiles[i].getName());
-                logger.log(Level.INFO, "Found file: " + listOfFiles[i].getName());
+                logger.log(Level.DEBUG, "Found file: " + listOfFiles[i].getName());
             }
             else if (listOfFiles[i].isDirectory()) {
                 logger.log(Level.INFO, "SubDirectory was found but not added to listing: " + listOfFiles[i].getName());
