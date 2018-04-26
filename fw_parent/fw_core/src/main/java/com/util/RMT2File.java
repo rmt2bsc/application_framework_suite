@@ -1873,7 +1873,13 @@ public class RMT2File {
             throw new NotFoundException(srcFilePath + " is not found");
         }
         binaryData = RMT2File.getStreamByteData(is);
-        return binaryData;
+        try {
+            is.close();    
+            return binaryData;
+        }
+        catch (IOException e) {
+            throw new RMT2RuntimeException("Error closing InputStream", e);
+        }
     }
 
     /**
