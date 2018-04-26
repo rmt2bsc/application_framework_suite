@@ -1262,7 +1262,8 @@ public class RMT2File {
             throw new RMT2RuntimeException(errMsg);
         } catch (IOException x) {
             // File permission problems are caught here.
-            errMsg = filePath + ": file permission problem is preventing the deletion";
+            errMsg = filePath
+                    + ": file permission problem is preventing the deletion.  Check for any InputStream and/or OutputStream objects that may have been left open.";
             throw new RMT2RuntimeException(errMsg);
         }
     }
