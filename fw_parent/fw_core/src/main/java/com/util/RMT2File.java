@@ -37,6 +37,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.NotFoundException;
+import com.RMT2RuntimeException;
 import com.SystemException;
 import com.api.config.ConfigConstants;
 
@@ -1131,17 +1132,9 @@ public class RMT2File {
             }
         } finally {
             if (from != null)
-                try {
-                    from.close();
-                } catch (IOException e) {
-                    ;
-                }
+                from.close();
             if (to != null)
-                try {
-                    to.close();
-                } catch (IOException e) {
-                    ;
-                }
+                to.close();
         }
     }
 
@@ -1251,24 +1244,27 @@ public class RMT2File {
      *            a String containing the full path and file name of the
      *            resource to delete. This can be the path to a file or
      *            directory.
-     * @return int the total number of resources deleted.
+     * @throws RMT2RuntimeException
+     *             when <i>filePath</i> does not exist, when <i>filePath</i> is
+     *             a direcotry and is not empty, or permission problems exists
+     *             preventing <i>filePath</i> from being deleted.
      */
-    public static final int deleteFile(String filePath) {
-        // File file = new File(filePath);
-        // return RMT2File.deleteFile(file);
-
+    public static final void deleteFile(String filePath) {
+        String errMsg = null;
         Path path = Paths.get(filePath);
         try {
             Files.delete(path);
         } catch (NoSuchFileException x) {
-            System.err.format("%s: no such" + " file or directory%n", path);
+            errMsg = filePath + ": no such file or directory";
+            throw new RMT2RuntimeException(errMsg);
         } catch (DirectoryNotEmptyException x) {
-            System.err.format("%s not empty%n", path);
+            errMsg = filePath + ": directory is not empty";
+            throw new RMT2RuntimeException(errMsg);
         } catch (IOException x) {
             // File permission problems are caught here.
-            System.err.println(x);
+            errMsg = filePath + ": file permission problem is preventing the deletion";
+            throw new RMT2RuntimeException(errMsg);
         }
-        return 1;
     }
 
     /**
