@@ -1796,6 +1796,62 @@ public class RMT2File {
     }
 
     /**
+     * Counts the total number of files of the directory, <i>filePath</i>, and
+     * its sub-directories.
+     * 
+     * @param filePath String representing the directory path
+     * @return int the file count
+     * 
+     */
+    public static final int getDirectoryListingCount(String filePath) {
+        File dir = new File(filePath);
+        return getDirectoryListingCount(dir);
+    }
+
+    /**
+     * Counts the total number of files of the directory, <i>file</i>, and its
+     * sub-directories.
+     * 
+     * @param file
+     *            an instance of File which must represent a directory in the
+     *            file system.
+     * @return int the file count.
+     */
+    public static final int getDirectoryListingCount(File file) {
+        File fileList[];
+        int itemCount = 0;
+        int total = 0;
+
+        fileList = file.listFiles();
+        itemCount = fileList.length;
+        for (int ndx = 0; ndx < itemCount; ndx++) {
+            if (fileList[ndx].isDirectory()) {
+                // Make recursive call to process next level
+                total += getDirectoryListingCount(fileList[ndx]);
+            }
+            if (fileList[ndx].isFile()) {
+                total += 1;
+            }
+        }
+        return total;
+    }
+    
+    /**
+     * Resolves the relative directory or file path, which resides somewhere in
+     * the classpath, to its absolute path.
+     * 
+     * @param path
+     *            relative path notation
+     * @return String as the full path;
+     */
+    public static final String resolveRelativeFilePath(String path) {
+        URL url = ClassLoader.getSystemResource(path);
+        String fullPath = url.getFile();
+        return fullPath;
+    }
+    
+    
+    /**
      * 
      * @param s
      * @param out
