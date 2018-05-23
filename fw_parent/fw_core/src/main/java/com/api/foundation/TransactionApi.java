@@ -1,6 +1,7 @@
 package com.api.foundation;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 import com.api.persistence.DaoClient;
 
@@ -12,6 +13,13 @@ import com.api.persistence.DaoClient;
  * 
  */
 public interface TransactionApi {
+    
+    /**
+     * Return a Properties instance which will serve as the application's configuration.
+     * 
+     * @return {@link Properties}
+     */
+    Properties getConfig();
 
     /**
      * Get the DAO instance that is assoicated with this API
