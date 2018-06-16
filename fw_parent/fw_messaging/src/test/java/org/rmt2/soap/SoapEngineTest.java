@@ -156,8 +156,9 @@ public class SoapEngineTest {
         mockMessageRoutingInfo.setRouterType("JMS");
 
         when(mockMessageRouterHelper.getRoutingInfo("getContent")).thenReturn(mockMessageRoutingInfo);
-        when(mockMessageRouterHelper.routeSoapMessage(mockMessageRoutingInfo, REQUEST_SEARCH_PAYLOAD, null))
-                .thenReturn(mockSoapMessageResponse);
+        
+        when(mockMessageRouterHelper.routeSoapMessage("getContent", REQUEST_SEARCH_PAYLOAD, null))
+        .thenReturn(mockSoapMessageResponse);
 
         // THIS IS OLDER COMMENTS
         // Hashtable ht = new Hashtable();
@@ -227,7 +228,7 @@ public class SoapEngineTest {
         when(mockSoapMessageHelper.getBody(mockSoapMessage)).thenReturn(REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD);
         when(mockSoapMessageHelper.extractAttachments(mockSoapMessage)).thenReturn(null);
         when(mockMessageRouterHelper.getRoutingInfo("getContent")).thenReturn(mockMessageRoutingInfo);
-        when(mockMessageRouterHelper.routeSoapMessage(mockMessageRoutingInfo, REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD,
+        when(mockMessageRouterHelper.routeSoapMessage("getContent", REQUEST_SEARCH_TRAN_ID_NOTFOUND_PAYLOAD,
                 null))
                 .thenReturn(mockSoapMessageResponse);
 

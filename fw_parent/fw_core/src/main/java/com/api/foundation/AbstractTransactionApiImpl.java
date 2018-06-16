@@ -1,11 +1,16 @@
 package com.api.foundation;
 
+import java.io.Serializable;
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.api.ApiInitException;
 import com.api.persistence.DaoClient;
 import com.api.persistence.DatabaseException;
+import com.util.RMT2File;
+import com.util.RMT2String;
 
 /**
  * Abstract transaction API class that provides common functionality.
@@ -21,16 +26,17 @@ import com.api.persistence.DatabaseException;
  * 
  */
 
-public abstract class AbstractTransactionApiImpl extends RMT2Base implements
-        TransactionApi {
+public abstract class AbstractTransactionApiImpl extends RMT2Base implements TransactionApi {
 
     private static boolean LOGGER_LOADED = false;
 
     protected static final String LOG_API_PATH = "config/log4j.properties";
 
-    protected static final String APP_PARMS_PATH = "config/AppParms.properties";
-
+    protected static final String APP_PARMS_PATH = "config.{$}-AppParms";
+    
     private static Logger logger;
+    
+    private Properties config;
 
     /**
      * The login id of the user in control of this API.
@@ -52,6 +58,19 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements
     }
 
     /**
+     * Creates a AbstractTransactionApiImpl based on the name of the application
+     * and loads the application specific configuration, if available.
+     * 
+     * @param appName
+     */
+    protected AbstractTransactionApiImpl(String appName) {
+        this();
+        String propertyFileName = RMT2String.replace(APP_PARMS_PATH, appName, "{$}");
+        this.initConfiguration(propertyFileName);
+        return;
+    }
+    
+    /**
      * Creates an AbstractTransactionApiImpl initialized with a connection to
      * the data source, <i>dao</i>. object.
      * 
@@ -63,7 +82,33 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements
         this.sharedDao = dao;
         return;
     }
+    
+    /**
+     * 
+     * @param appName
+     * @param dao
+     */
+    protected AbstractTransactionApiImpl(String appName, DaoClient dao) {
+        this(dao);
+        String propertyFileName = RMT2String.replace(APP_PARMS_PATH, appName, "{$}");
+        this.initConfiguration(propertyFileName);
+    }
 
+    /**
+     * 
+     * @param propertyFileName
+     */
+    protected void initConfiguration(String propertyFileName) {
+        try {
+            this.config = RMT2File.loadPropertiesFromClasspath(propertyFileName);
+        } catch (Exception e) {
+            this.msg = "Application specific configuration could not be loaded for project named, "
+                    + propertyFileName
+                    + ".  Ensure that project name is declared correctly";
+            logger.warn(this.msg, e);
+        }
+    }
+    
     /**
      * Sets up the logging environment that is to be used throughout the entire
      * application.
@@ -143,6 +188,11 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements
         this.sharedDao.close();
     }
 
+    @Override
+    public Object sendMessage(String messageId, Serializable payload) throws TransactionApiException {
+        throw new UnsupportedOperationException("This operation is not supported at this level.  Must implemented at the descendent");
+    }
+    
     /**
      * Get the login id of the user in controll of the API.
      * 
@@ -182,4 +232,8 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements
         this.sharedDao = dao;
     }
 
+    public Properties getConfig() {
+        return config;
+    }
+ 
 } // End class

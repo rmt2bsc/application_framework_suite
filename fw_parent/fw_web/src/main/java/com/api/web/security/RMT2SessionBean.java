@@ -1,8 +1,5 @@
 package com.api.web.security;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +7,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.RMT2BaseBean;
 import com.SystemException;
@@ -228,7 +228,7 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
             return this.sessionId;
         }
 
-        int deleteCount = RMT2File.deleteFile(outPath);
+        int deleteCount = RMT2File.deleteFile(userProfileDir);
         logger.log(
                 Level.INFO,
                 deleteCount

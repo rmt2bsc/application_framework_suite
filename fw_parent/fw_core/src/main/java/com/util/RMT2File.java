@@ -19,6 +19,11 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -32,6 +37,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.NotFoundException;
+import com.RMT2RuntimeException;
 import com.SystemException;
 import com.api.config.ConfigConstants;
 
@@ -62,6 +68,7 @@ public class RMT2File {
     /** File object is not a directory */
     public static final int FILE_IO_NOT_DIR = -4;
 
+    public static final int DEFAULT_READ_BYTE_SIZE = 1;
     /**
      * Returns the current directory of this project
      * 
@@ -99,12 +106,21 @@ public class RMT2File {
      * @return the file name and extension.
      */
     public static final String getFileName(String path) {
-        String fileName = path;
-        File file = new File(path);
-        if (file.exists()) {
-            fileName = file.getName();
+        if (path == null) {
+            return null;
         }
-        return fileName;
+        String target = null;
+        String fileName[] = path.split("/");
+        if (fileName.length == 1) {
+            String fileName2[] = path.split("\\\\");
+            if (fileName2.length > 1) {
+                target = fileName2[fileName2.length - 1];
+                return target;
+            }
+        }
+        // Use the original calculation
+        target = fileName[fileName.length - 1];
+        return target;
     }
 
     /**
@@ -132,7 +148,7 @@ public class RMT2File {
      * Returns the path sequence of a given file name.
      * 
      * @param fileName
-     * @return
+     * @return the path in Unix/Linux/Mac style 
      */
     public static final String getFilePathInfo(String fileName) {
         if (fileName == null) {
@@ -142,6 +158,10 @@ public class RMT2File {
         File file = new File(fileName);
         if (file.exists()) {
             path = file.getParent();
+            if (File.separatorChar=='\\') {
+                // From Windows to Linux/Mac
+                path = path.replace(File.separatorChar, '/');
+            }
         }
         return path;
     }
@@ -210,27 +230,30 @@ public class RMT2File {
     /**
      * Verifies that _pathname is a valid Directory or File.
      * 
-     * @param _pathName
-     *            The file path.
+     * @param fileName
+     *            The full file path and file name.
      * @return 1=File Exist, -1=File does not exsit, -2=File inaccessible, and
      *         0= Argument is an empty String or null.
      */
-    public static int verifyFile(String _pathName) {
+    public static int verifyFile(String fileName) {
         File path;
 
         try {
-            path = new File(_pathName);
+            path = new File(fileName);
         } catch (NullPointerException e) {
+            logger.error("Input file name is null");
             return FILE_IO_NULL;
         }
 
         // Validate the existence of path
         try {
             if (!path.exists()) {
+                logger.warn("File, " + fileName + ", does not exists!");
                 return FILE_IO_NOTEXIST;
             }
             return FILE_IO_EXIST;
         } catch (Exception e) {
+            logger.warn("File, " + fileName + ", is inaccessible!");
             return FILE_IO_INACCESSIBLE;
         }
     }
@@ -1109,17 +1132,9 @@ public class RMT2File {
             }
         } finally {
             if (from != null)
-                try {
-                    from.close();
-                } catch (IOException e) {
-                    ;
-                }
+                from.close();
             if (to != null)
-                try {
-                    to.close();
-                } catch (IOException e) {
-                    ;
-                }
+                to.close();
         }
     }
 
@@ -1203,18 +1218,22 @@ public class RMT2File {
                 to.write(buffer, 0, bytesRead); // write
             }
         } finally {
-            if (from != null)
+            if (from != null) {
                 try {
                     from.close();
                 } catch (IOException e) {
-                    ;
+                    RMT2File.logger.log(Level.ERROR,
+                            "Unable to close the source file stream of the copy file operation");
                 }
-            if (to != null)
+            }
+            if (to != null) {
                 try {
                     to.close();
                 } catch (IOException e) {
-                    ;
+                    RMT2File.logger.log(Level.ERROR,
+                            "Unable to close the destination file stream of the copy file operation");
                 }
+            }
         }
     }
 
@@ -1225,11 +1244,28 @@ public class RMT2File {
      *            a String containing the full path and file name of the
      *            resource to delete. This can be the path to a file or
      *            directory.
-     * @return int the total number of resources deleted.
+     * @throws RMT2RuntimeException
+     *             when <i>filePath</i> does not exist, when <i>filePath</i> is
+     *             a direcotry and is not empty, or permission problems exists
+     *             preventing <i>filePath</i> from being deleted.
      */
-    public static final int deleteFile(String filePath) {
-        File file = new File(filePath);
-        return RMT2File.deleteFile(file);
+    public static final void deleteFile(String filePath) {
+        String errMsg = null;
+        Path path = Paths.get(filePath);
+        try {
+            Files.delete(path);
+        } catch (NoSuchFileException x) {
+            errMsg = filePath + ": no such file or directory";
+            throw new RMT2RuntimeException(errMsg);
+        } catch (DirectoryNotEmptyException x) {
+            errMsg = filePath + ": directory is not empty";
+            throw new RMT2RuntimeException(errMsg);
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            errMsg = filePath
+                    + ": file permission problem is preventing the deletion.  Check for any InputStream and/or OutputStream objects that may have been left open.";
+            throw new RMT2RuntimeException(errMsg);
+        }
     }
 
     /**
@@ -1271,6 +1307,9 @@ public class RMT2File {
         try {
             if (file.delete()) {
                 count++;
+            }
+            else {
+                logger.error("Unable to deleting file: " + file.getPath());
             }
         } catch (Throwable e) {
             logger.error("Error deleting file: " + file.getPath() + ".");
@@ -1377,8 +1416,11 @@ public class RMT2File {
      * @throws SystemException
      */
     public static final byte[] getStreamByteData(InputStream is) throws SystemException {
-        int byteSize = 1024;
-        return RMT2File.getStreamByteData(is, byteSize);
+        // Initially, we were setting DEFAULT_READ_BYTE_SIZE to 1024, which was
+        // causing the byte stream to read beyond the EOF marker, hence, causing
+        // the file pointer to position itself back to the BOF and over read the
+        // content until it reaches a stopping point.
+        return RMT2File.getStreamByteData(is, DEFAULT_READ_BYTE_SIZE);
     }
 
     /**
@@ -1411,10 +1453,18 @@ public class RMT2File {
      */
     public static final ByteArrayOutputStream createOutputByteStream(InputStream is, int byteSize)
             throws SystemException {
+        if (is == null) {
+            throw new SystemException("InputStream is required");
+        }
+        
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            // In the event you experience problems using the "available"
+            // method, go back to using the DEFAULT_READ_BYTE_SIZE (read one
+            // byte at a time) to control reads.
+            int contentSize = (is.available() > 0 ? is.available() : byteSize);
             DataOutputStream dos = new DataOutputStream(baos);
-            byte buffer[] = new byte[byteSize];
+            byte buffer[] = new byte[contentSize];
             while (is.read(buffer) != -1) {
                 dos.write(buffer);
             }
@@ -1736,7 +1786,7 @@ public class RMT2File {
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 listing.add(listOfFiles[i].getName());
-                logger.log(Level.INFO, "Found file: " + listOfFiles[i].getName());
+                logger.log(Level.DEBUG, "Found file: " + listOfFiles[i].getName());
             }
             else if (listOfFiles[i].isDirectory()) {
                 logger.log(Level.INFO, "SubDirectory was found but not added to listing: " + listOfFiles[i].getName());
@@ -1745,6 +1795,62 @@ public class RMT2File {
         return listing;
     }
 
+    /**
+     * Counts the total number of files of the directory, <i>filePath</i>, and
+     * its sub-directories.
+     * 
+     * @param filePath String representing the directory path
+     * @return int the file count
+     * 
+     */
+    public static final int getDirectoryListingCount(String filePath) {
+        File dir = new File(filePath);
+        return getDirectoryListingCount(dir);
+    }
+
+    /**
+     * Counts the total number of files of the directory, <i>file</i>, and its
+     * sub-directories.
+     * 
+     * @param file
+     *            an instance of File which must represent a directory in the
+     *            file system.
+     * @return int the file count.
+     */
+    public static final int getDirectoryListingCount(File file) {
+        File fileList[];
+        int itemCount = 0;
+        int total = 0;
+
+        fileList = file.listFiles();
+        itemCount = fileList.length;
+        for (int ndx = 0; ndx < itemCount; ndx++) {
+            if (fileList[ndx].isDirectory()) {
+                // Make recursive call to process next level
+                total += getDirectoryListingCount(fileList[ndx]);
+            }
+            if (fileList[ndx].isFile()) {
+                total += 1;
+            }
+        }
+        return total;
+    }
+    
+    /**
+     * Resolves the relative directory or file path, which resides somewhere in
+     * the classpath, to its absolute path.
+     * 
+     * @param path
+     *            relative path notation
+     * @return String as the full path;
+     */
+    public static final String resolveRelativeFilePath(String path) {
+        URL url = ClassLoader.getSystemResource(path);
+        String fullPath = url.getFile();
+        return fullPath;
+    }
+    
+    
     /**
      * 
      * @param s
@@ -1815,25 +1921,58 @@ public class RMT2File {
      * @return byte[]
      * @throws NotFoundException
      *             <i>srcFilePath</i> is not found in the file system.
+     * @throws SystemException Unable to convert data Stream to byte array.
      */
-    public static final byte[] getFileContentsAsBytes(String srcFilePath) throws NotFoundException {
-        File file = new File(srcFilePath);
-        FileInputStream fis = null;
+    public static final byte[] getFileContentsAsBytes(String srcFilePath) {
+        byte[] binaryData = null;
+        InputStream is = RMT2File.getFileInputStream(srcFilePath);
+        if (is == null) {
+            throw new NotFoundException(srcFilePath + " is not found");
+        }
+        binaryData = RMT2File.getStreamByteData(is);
         try {
-            fis = new FileInputStream(file);
-            byte binaryData[] = RMT2File.getStreamByteData(fis);
+            is.close();    
             return binaryData;
-        } catch (FileNotFoundException e) {
-            throw new NotFoundException(e);
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                throw new SystemException(e);
-            }
+        }
+        catch (IOException e) {
+            throw new RMT2RuntimeException("Error closing InputStream", e);
         }
     }
 
+    /**
+     * Converts generic object data to byte array.
+     * 
+     * @param data generic data that is to be converted to a byte array.
+     * @return byte[]
+     */
+    public static final byte[] getBytes(Object data) {
+        byte[] bytes = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
+        try {
+            try {
+                bos = new ByteArrayOutputStream();
+                oos = new ObjectOutputStream(bos);
+                oos.writeObject(data);
+                oos.flush();
+                bytes = bos.toByteArray();
+                return bytes;
+            } 
+            finally {
+                if (oos != null) {
+                    oos.close();
+                }
+                if (bos != null) {
+                    bos.close();
+                }
+            }    
+        }
+        catch (IOException e) {
+            throw new SystemException("I/O error occurred converting generic oject to byte array", e);
+        }
+    }
+    
+    
     /**
      * Obtains a Base64 encoded String representing the contents of file.
      * 

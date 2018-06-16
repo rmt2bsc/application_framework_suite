@@ -3,6 +3,8 @@ package com.api;
 import java.io.File;
 import java.util.List;
 
+import com.api.foundation.TransactionApi;
+
 /**
  * A general interface for processing batches of files obtained from some
  * external datasource.
@@ -10,7 +12,7 @@ import java.util.List;
  * @author appdev
  * 
  */
-public interface BatchFileProcessor {
+public interface BatchFileProcessor extends TransactionApi {
 
     /**
      * Setup connection for some external datasource which the configuration is

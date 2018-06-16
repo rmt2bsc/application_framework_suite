@@ -11,8 +11,7 @@ import com.util.RMT2File;
  * @author Roy Terrell
  *
  */
-public abstract class AbstractApiConfiguratorPropertiesImpl extends RMT2Base
-        implements ApiConfigurator {
+public abstract class AbstractApiConfiguratorPropertiesImpl extends RMT2Base implements ApiConfigurator {
 
     protected String configPath;
 
@@ -43,8 +42,17 @@ public abstract class AbstractApiConfiguratorPropertiesImpl extends RMT2Base
 
         // See if we need to to setup logger locally
         this.setupLogger();
+        
+        this.doPostStart();
     }
 
+    /**
+     * Handle any post startup tasks.
+     */
+    protected void doPostStart() {
+        return;
+    }
+    
     /**
      * Setup logging environment for API
      */

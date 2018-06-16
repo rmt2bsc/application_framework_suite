@@ -1,18 +1,22 @@
 package com.api.messaging.email.smtp;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.Map;
+import java.util.Properties;
 
-import javax.mail.Address;
-import javax.mail.Transport;
-import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.IllegalWriteException;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.SendFailedException;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -29,12 +33,6 @@ import com.api.messaging.MessageException;
 import com.api.messaging.email.AbstractMailImpl;
 import com.api.messaging.email.EmailException;
 import com.api.messaging.email.EmailMessageBean;
-
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Date;
 
 /**
  * This class implements SmtpApi interface which is used for sending emails
@@ -125,7 +123,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
      *            EmailMessageBean} containing data representing the components
      *            that comprises an email structure: 'From', 'To', 'Subject',
      *            'Body', and any attachments.
-     * @return int Always returns null.
+     * @return int Always returns 1.
      * @throws MessageException
      *             SMTP server is invalid or not named, validation errors,
      *             invalid assignment of data values to the email message, email
@@ -146,7 +144,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
             this.connect(this.config);
             this.setupMessage();
             this.transportMessage();
-            return null;
+            return 1;
         } catch (EmailException e) {
             throw new MessageException(e);
         } catch (ProviderConnectionException e) {

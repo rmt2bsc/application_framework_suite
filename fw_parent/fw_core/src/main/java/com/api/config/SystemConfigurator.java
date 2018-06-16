@@ -25,9 +25,13 @@ import com.util.RMT2File;
 import com.util.RMT2String2;
 
 /**
+ * Serves as an application server initializer as well as an initilaizer for
+ * individual API's.
+ * <p>
  * Initializes the application by loading system level and application level
  * properties, establishing the JDBC connection pool, and setting the the
- * application's logger.
+ * application's logger, and intializing all API's package within an application
+ * space.
  * <p>
  * User-defined JVM and application properties are loaded into memory from
  * localized sources
@@ -112,7 +116,7 @@ public class SystemConfigurator extends RMT2Base {
         }
         logger.info("Loading of remaining JAXB contexts complete.");
 
-        // Load system and application properties for this web app being
+        // Load system and application properties for the web app being
         // initialized.
         logger.info("Loading core system/application properties...");
         this.loadProperties(appConfig);
@@ -123,15 +127,15 @@ public class SystemConfigurator extends RMT2Base {
         this.setupDatabaseApi(appConfig);
         logger.info("Database initialization complete.");
 
-        // Build destinaion mappings has
+        // Build destinaion mappings hash
         logger.info("Begin building destination mappings hash...");
         this.setupDestinationMappings(appConfig);
         logger.info("Building of destinaion mappings hash complete.");
 
         // Initialize each API.
-        logger.info("Begin initialization of all API collection...");
+        logger.info("Begin initialization of all API's...");
         this.setupApiCollection(appConfig);
-        logger.info("Initialization of API collection complete.");
+        logger.info("Initialization of API's complete.");
 
         // Configuration process complete...
         logger.info("Application initialization complete");

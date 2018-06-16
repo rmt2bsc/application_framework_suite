@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -194,6 +196,18 @@ public class RMT2Date {
     }
 
     /**
+     * Creates a date object from a long value
+     * 
+     * @param dateInMillSecs
+     * @return instance of {@link java.util.Date}
+     */
+    public static final Date toDate(long dateInMillSecs) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(dateInMillSecs);
+        return c.getTime();
+    }
+    
+    /**
      * Converts a String date in the form of W3C XML lexical representation to a
      * date String in the format of <i>yyyy-MM-dd HH:mm:ss</i>.
      * 
@@ -243,8 +257,7 @@ public class RMT2Date {
      * @return XMLGregorianCalendar
      * @throws SystemException
      */
-    public static final XMLGregorianCalendar toXmlDate(Date date)
-            throws SystemException {
+    public static final XMLGregorianCalendar toXmlDate(Date date) throws SystemException {
         if (date == null) {
             return null;
         }
@@ -253,8 +266,7 @@ public class RMT2Date {
         try {
             if (date != null) {
                 gDate.setTime(date);
-                xDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        gDate);
+                xDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gDate);
             }
             return xDate;
         } catch (DatatypeConfigurationException e) {
@@ -922,5 +934,36 @@ public class RMT2Date {
         return strResult.toString();
     }
 
+    /**
+     * Get current timezone based on server's current UTC.
+     * 
+     * @return timezone id such as <i>America/Chicago</i> or <i>US/Arizona</i>
+     */
+    public static String getCurrentTimezoneId() {
+        TimeZone tz = Calendar.getInstance().getTimeZone();
+        return tz.getID();
+    }
+    
+    /**
+     * Calculate and return the number of days between two dates.
+     * 
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws RuntimeException
+     *             when <i>startDate</i> or <i>endDate</i> is null.
+     */
+    public static long getTimeDiffDays(Date startDate, Date endDate) {
+        if (startDate == null) {
+            throw new RuntimeException("Start date is required");
+        }
+        if (endDate == null) {
+            throw new RuntimeException("End date is required");
+        }
+        long diff = 0;
+        long timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
+        diff = TimeUnit.MILLISECONDS.toDays(timeDiff);
+        return diff;
+    }
 } // end class
 

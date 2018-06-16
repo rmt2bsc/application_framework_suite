@@ -804,6 +804,21 @@ public class Verifier {
      * is true.
      * 
      * @param variant
+     * 
+     * @throws VerifyException If the predicate is <code>false</code>.
+     */
+    public static void verifyNotEmpty(byte[] variant) {
+        if (!(variant != null && variant.length > 0)) {
+            throw new VerifyException();
+        }
+    }
+    
+    /**
+     * Verify that the predicate <code>variant &#33;= null &amp;&amp; variant.length() &gt;
+     * 0</code>
+     * is true.
+     * 
+     * @param variant
      * @param message
      * 
      * @throws VerifyException If the predicate is <code>false</code>.

@@ -42,8 +42,7 @@ class SoapMessageRouterImpl extends AbstractMessageRouterImpl {
      * @return an instance of {@link MessageHandlerResults}
      * @throws MessageRoutingException
      */
-    public MessageHandlerResults routeMessage(MessageRoutingInfo routeInfo, String soapXml,
-            List<DataHandler> attachments)
+    public MessageHandlerResults routeMessage(MessageRoutingInfo routeInfo, String soapXml, List<DataHandler> attachments)
             throws MessageRoutingException {
         this.attachments = attachments;
         return super.routeMessage(routeInfo, soapXml);

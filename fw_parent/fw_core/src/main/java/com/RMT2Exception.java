@@ -45,6 +45,7 @@ public class RMT2Exception extends Exception {
      * 
      */
     public RMT2Exception() {
+        super();
         this.className = this.getClass().getName();
     }
 
@@ -55,7 +56,7 @@ public class RMT2Exception extends Exception {
      *            Error message
      */
     public RMT2Exception(String msg) {
-        this();
+        super(msg);
         this.errorMsg = msg;
     }
 
@@ -113,7 +114,7 @@ public class RMT2Exception extends Exception {
      *            Error code
      */
     public RMT2Exception(String _msg, int _code) {
-        this();
+        this(_msg);
         this.setErrorMessage(_msg);
         this.setErrorCode(_code);
     }
@@ -180,7 +181,8 @@ public class RMT2Exception extends Exception {
      * 
      */
     public RMT2Exception(String msg, Throwable cause) {
-        super(msg, cause);
+        this(msg);
+        this.initCause(cause);
     }
 
     /**

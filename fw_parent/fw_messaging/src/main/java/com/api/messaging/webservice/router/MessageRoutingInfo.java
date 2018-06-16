@@ -16,7 +16,7 @@ public class MessageRoutingInfo extends RMT2Base {
 
     /**
      * This is equivalent to resource sub type name which represents the service
-     * transport type
+     * transport type.  Examples are: JMS, HTTP, and RMI.
      */
     private String routerType;
 

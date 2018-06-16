@@ -7,6 +7,7 @@ import com.SystemException;
  * Return code class for external remote service calls.
  * 
  * @author appdev
+ * @deprecated
  * 
  */
 public class ServiceReturnCode extends RMT2BaseBean {

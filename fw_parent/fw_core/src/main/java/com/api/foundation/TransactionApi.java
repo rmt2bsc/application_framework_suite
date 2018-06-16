@@ -1,5 +1,10 @@
 package com.api.foundation;
 
+import java.io.Serializable;
+import java.util.Properties;
+
+import com.api.persistence.DaoClient;
+
 /**
  * A base interface designed to track the activity of the user currently in
  * control of a transaction API instance.
@@ -8,7 +13,21 @@ package com.api.foundation;
  * 
  */
 public interface TransactionApi {
+    
+    /**
+     * Return a Properties instance which will serve as the application's configuration.
+     * 
+     * @return {@link Properties}
+     */
+    Properties getConfig();
 
+    /**
+     * Get the DAO instance that is assoicated with this API
+     * 
+     * @return {@link DaoClient}
+     */
+    DaoClient getSharedDao();
+    
     /**
      * Get the login id of the user in controll of the API.
      * 
@@ -43,4 +62,16 @@ public interface TransactionApi {
      * Close the connection assoicated with this DAO client.
      */
     void close();
+  
+    /**
+     * Send a message to its destination.
+     * 
+     * @param messageId
+     *            the unique identifier of the message
+     * @param payload
+     *            the message content
+     * @return the results, if applicable.
+     * @throws TransactionApiException
+     */
+    Object sendMessage(String messageId, Serializable payload) throws TransactionApiException;
 }

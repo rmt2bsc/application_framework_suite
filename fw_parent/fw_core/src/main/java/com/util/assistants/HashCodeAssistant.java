@@ -1,5 +1,7 @@
 package com.util.assistants;
 
+import java.util.Arrays;
+
 /**
  * Facilitates computing hash codes from primitive values and combining individual hash codes into a cumulative hash.
  * <p />
@@ -103,11 +105,30 @@ public final class HashCodeAssistant
     }
 
     /**
-     * Combine the given hash codes into a cumulative hash. The values are combined by starting with a seed value, {@code 17}. Then each individual hash code is added to the previous cumulative
-     * result multiplied by {@code 31}.
-     * @param hashCodes Array of hash codes to combine, in order (cannot be null or empty).
-     * @return Cumulative hash code computed from combining the given individual hash codes.
-     * @throws IllegalArgumentException if the parameter conditions are not met.
+     * Compute a hash code for the given value. If the object is null,
+     * {@code 17} is returned.
+     * 
+     * @param value
+     *            Value to hash.
+     * @return Hash code for the given value.
+     */
+    public static int hashByteArray(final byte[] value) {
+        return value == null ? DEFAULT_SEED_PRIME : Arrays.hashCode(value);
+    }
+
+    /**
+     * Combine the given hash codes into a cumulative hash. The values are
+     * combined by starting with a seed value, {@code 17}. Then each individual
+     * hash code is added to the previous cumulative result multiplied by
+     * {@code 31}.
+     * 
+     * @param hashCodes
+     *            Array of hash codes to combine, in order (cannot be null or
+     *            empty).
+     * @return Cumulative hash code computed from combining the given individual
+     *         hash codes.
+     * @throws IllegalArgumentException
+     *             if the parameter conditions are not met.
      */
     public static int combineHashCodes(final int... hashCodes)
     {

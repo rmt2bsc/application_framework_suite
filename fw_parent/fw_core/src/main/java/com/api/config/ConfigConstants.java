@@ -34,6 +34,8 @@ public class ConfigConstants {
     /** The key name that identifies the path of an api's logger configuration */
     public static final String API_LOGGER_CONFIG_PATH_KEY = "logger_config_path";
     public static final String API_APP_TITLE_KEY = "apptitle";
+    public static final String API_APP_CODE_KEY = "appcode";
+    public static final String API_APP_MODULE_VALUE = "unknown";
 
     /** Envirionment variable name */
     public static String PROPNAME_ENVIRONMENT = "ENVIRONMENT";

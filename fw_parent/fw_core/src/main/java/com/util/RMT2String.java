@@ -314,5 +314,23 @@ public class RMT2String {
         return results;
     }
 
+    /**
+     * Formats a string to conform to the variable and method naming conventions of the
+     * Javabean specification by converting the first character of the string to
+     * upper case.
+     * 
+     * @param entityName
+     *            Source to be converted.
+     * @return The <i>entityName</i> in camel case form.
+     */
+    public static final String getCamelCase(String entityName) {
+
+        StringBuffer propName = new StringBuffer(50);
+
+        propName.append(entityName.substring(0, 1).toLowerCase());
+        propName.append(entityName.substring(1));
+
+        return propName.toString();
+    }
 } // end class
 
