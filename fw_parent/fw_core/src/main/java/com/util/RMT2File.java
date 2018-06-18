@@ -1938,6 +1938,32 @@ public class RMT2File {
             throw new RMT2RuntimeException("Error closing InputStream", e);
         }
     }
+    
+    /**
+     * Obtains the contents of a file as a String.
+     * 
+     * @param srcFilePath
+     *            the complete path and file name of the source file
+     * @return String
+     * @throws NotFoundException
+     *             <i>srcFilePath</i> is not found in the file system.
+     * @throws SystemException Unable to convert data Stream to String.
+     */
+    public static final String getFileContentsAsString(String srcFilePath) {
+        String contents = null;
+        InputStream is = RMT2File.getFileInputStream(srcFilePath);
+        if (is == null) {
+            throw new NotFoundException(srcFilePath + " is not found");
+        }
+        contents = RMT2File.getStreamStringData(is);
+        try {
+            is.close();    
+            return contents;
+        }
+        catch (IOException e) {
+            throw new RMT2RuntimeException("Error closing InputStream", e);
+        }
+    }
 
     /**
      * Converts generic object data to byte array.
