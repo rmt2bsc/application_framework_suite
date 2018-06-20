@@ -520,8 +520,7 @@ public class RMT2XmlUtility {
      * @return
      * @throws SystemException
      */
-    public static org.w3c.dom.Document stringToDocument(String xmlSource)
-            throws SystemException {
+    public static org.w3c.dom.Document toDocument(String xmlSource) throws SystemException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder builder;
@@ -545,6 +544,17 @@ public class RMT2XmlUtility {
             logger.error(errMsg);
             throw new SystemException(errMsg);
         }
+    }
+
+    /**
+     * 
+     * @param xml
+     * @return
+     * @throws TransformerException
+     */
+    public static String prettyPrint(String xml) throws TransformerException {
+        org.w3c.dom.Document doc = toDocument(xml);
+        return prettyPrint(doc, true, true);
     }
 
     /**
@@ -584,7 +594,7 @@ public class RMT2XmlUtility {
      *             document parsing errors.
      */
     public static String getDocumentName(String xml) throws SystemException {
-        org.w3c.dom.Document doc = RMT2XmlUtility.stringToDocument(xml);
+        org.w3c.dom.Document doc = RMT2XmlUtility.toDocument(xml);
         Element e = doc.getDocumentElement();
         String docName = e.getTagName();
         return docName;
@@ -828,7 +838,7 @@ public class RMT2XmlUtility {
      */
     public static String getElementValue(String elementName, String xml) {
         org.w3c.dom.Document doc = null;
-        doc = RMT2XmlUtility.stringToDocument(xml);
+        doc = RMT2XmlUtility.toDocument(xml);
 
         // Get the target element element by tag name directly
         Node targetNode = doc.getElementsByTagName(elementName).item(0);
@@ -845,7 +855,7 @@ public class RMT2XmlUtility {
      */
     public static String setElementValue(String elementName, String value, String xml) {
         org.w3c.dom.Document doc = null;
-        doc = RMT2XmlUtility.stringToDocument(xml);
+        doc = RMT2XmlUtility.toDocument(xml);
         // Get the root element
         Node root = doc.getFirstChild();
 
@@ -866,8 +876,8 @@ public class RMT2XmlUtility {
      * @return
      * @throws TransformerException
      */
-    public static String printDocumentWithJdom(org.w3c.dom.Document document,
-            boolean pretty, boolean omitDeclaration) throws SystemException {
+    public static String prettyPrint(org.w3c.dom.Document document, boolean pretty, boolean omitDeclaration)
+            throws SystemException {
         DOMBuilder builder = new DOMBuilder();
         Document jdomDoc = builder.build(document);
 
@@ -898,7 +908,7 @@ public class RMT2XmlUtility {
     public static InputSource getSaxInputSource(org.w3c.dom.Document doc)
             throws SystemException {
         // THE JDOM way to obtain XML string from Document instance...
-        String xml = RMT2XmlUtility.printDocumentWithJdom(doc, true, true);
+        String xml = RMT2XmlUtility.prettyPrint(doc, true, true);
         StringReader is = new StringReader(xml);
         InputSource insrc = new InputSource(is);
         return insrc;

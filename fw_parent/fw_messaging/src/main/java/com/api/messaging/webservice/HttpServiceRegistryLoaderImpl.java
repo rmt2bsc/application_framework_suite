@@ -233,7 +233,7 @@ class HttpServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
         rootElement = RMT2XmlUtility.getDocumentName(data);
 
         try {
-            Document doc = RMT2XmlUtility.stringToDocument(data);
+            Document doc = RMT2XmlUtility.toDocument(data);
             Element e = doc.getDocumentElement();
             rootElement = e.getTagName();
         } catch (Exception e1) {

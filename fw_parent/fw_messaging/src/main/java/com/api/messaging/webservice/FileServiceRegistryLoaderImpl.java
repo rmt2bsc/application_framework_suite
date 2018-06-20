@@ -173,7 +173,7 @@ class FileServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
         rootElement = RMT2XmlUtility.getDocumentName(xml);
 
         try {
-            Document doc = RMT2XmlUtility.stringToDocument(xml);
+            Document doc = RMT2XmlUtility.toDocument(xml);
             Element e = doc.getDocumentElement();
             rootElement = e.getTagName();
         } catch (Exception e1) {
