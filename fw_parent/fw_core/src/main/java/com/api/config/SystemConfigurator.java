@@ -18,11 +18,11 @@ import com.api.config.jaxb.AppServerConfig.SystemProperties;
 import com.api.config.jaxb.AppServerConfig.SystemProperties.EmailConfig;
 import com.api.persistence.db.DatabaseConnectionFactory;
 import com.api.pool.DatabaseConnectionPool;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String2;
 import com.api.xml.jaxb.JaxbUtil;
 import com.api.xml.jaxb.JaxbUtilException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
-import com.util.RMT2String2;
 
 /**
  * Serves as an application server initializer as well as an initilaizer for

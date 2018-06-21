@@ -24,7 +24,7 @@ import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.MessageException;
 import com.api.messaging.webservice.http.HttpClient;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * An implementation of {@link SoapClient} which functions only to send

@@ -12,6 +12,7 @@ import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
+import com.api.constants.RMT2ServletConst;
 import com.api.security.RMT2TagQueryBean;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.security.authentication.web.AuthenticationException;
@@ -19,7 +20,6 @@ import com.api.web.Request;
 import com.api.web.Session;
 import com.api.xml.XmlApiFactory;
 import com.api.xml.XmlDao;
-import com.constants.RMT2ServletConst;
 
 /**
  * Configures an existing user's session bean object with data specific to the

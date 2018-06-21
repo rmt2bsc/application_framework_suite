@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
-import com.util.RMT2String;
-import com.util.RMT2Utility;
+import com.api.util.RMT2String;
+import com.api.util.RMT2Utility;
 
 /**
  * The class RMT2Exception and its subclasses are a form of Exception that

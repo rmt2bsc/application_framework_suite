@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Utility;
 
 /**
  * Abstract class that provides basic functionality for manipulatig the

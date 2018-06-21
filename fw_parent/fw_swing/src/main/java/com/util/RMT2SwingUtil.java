@@ -9,6 +9,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 
 import com.RMT2Base;
+import com.api.util.RMT2Money;
+import com.api.util.RMT2String;
 
 /**
  * @author rterrell

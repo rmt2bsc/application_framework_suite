@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.SystemException;
 import com.api.config.old.ProviderConfig;
+import com.api.constants.GeneralConst;
 import com.api.persistence.DatabaseException;
 import com.api.security.TargetAppException;
 import com.api.security.authentication.web.AuthenticationException;
@@ -16,7 +17,6 @@ import com.api.security.authentication.web.MissingLoginCredentialsException;
 import com.api.security.authentication.web.PasswordException;
 import com.api.security.authentication.web.UserCredentials;
 import com.api.web.AbstractWebRequestManager;
-import com.constants.GeneralConst;
 
 /**
  * An abstract class definition that utilizes the template pattern for

@@ -19,7 +19,7 @@ import java.util.Properties;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
-import com.constants.GeneralConst;
+import com.api.constants.GeneralConst;
 import com.api.messaging.webservice.ServiceRegistryFactory;
 import com.api.messaging.webservice.ServiceRegistryFactoryImpl;
 import com.api.messaging.webservice.ServiceRegistry;

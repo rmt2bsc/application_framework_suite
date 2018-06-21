@@ -35,10 +35,10 @@ import com.InvalidDataException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapServiceException;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
+import com.api.util.RMT2File;
 import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.xml.jaxb.JaxbUtil;
-import com.util.RMT2File;
 
 import testcases.TestCaseConstants;
 

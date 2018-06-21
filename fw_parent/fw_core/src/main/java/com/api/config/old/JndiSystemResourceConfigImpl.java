@@ -19,7 +19,7 @@ import com.api.ldap.LdapClient;
 import com.api.ldap.LdapFactory;
 import com.api.ldap.beans.LdapAppServer;
 import com.api.ldap.operation.LdapSearchOperation;
-import com.util.RMT2BeanUtility;
+import com.api.util.RMT2BeanUtility;
 
 /**
  * This class objtains system environment variables and application level

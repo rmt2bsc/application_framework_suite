@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import testcases.TestCaseConstants;
 
+import com.api.util.RMT2File;
 import com.api.xml.RMT2XmlUtility;
-import com.util.RMT2File;
 
 //import com.ibm.xml.parsers.DOMParser;
 

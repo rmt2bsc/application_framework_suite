@@ -6,7 +6,7 @@ import org.apache.log4j.Level;
 import com.SystemException;
 import com.api.persistence.DatabaseException;
 import com.api.persistence.db.orm.bean.DynamSqlParmBean;
-import com.util.RMT2String;
+import com.api.util.RMT2String;
 
 import java.util.Hashtable;
 import java.util.Enumeration;

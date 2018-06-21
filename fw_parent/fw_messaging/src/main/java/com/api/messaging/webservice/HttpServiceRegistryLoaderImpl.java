@@ -14,14 +14,14 @@ import com.NotFoundException;
 import com.SystemException;
 import com.api.DaoApi;
 import com.api.config.ConfigConstants;
+import com.api.constants.GeneralConst;
 import com.api.messaging.webservice.http.HttpClient;
 import com.api.messaging.webservice.http.HttpException;
 import com.api.messaging.webservice.router.MessageRoutingInfo;
 import com.api.persistence.DatabaseException;
+import com.api.util.RMT2File;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.XmlApiFactory;
-import com.constants.GeneralConst;
-import com.util.RMT2File;
 
 /**
  * An implementation of the ServiceRegistry interface where the service entries

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import com.SystemException;
 import com.api.config.AppPropertyPool;
+import com.api.constants.RMT2ServletConst;
 import com.api.jsp.action.AbstractActionHandler;
 import com.api.persistence.DatabaseException;
 import com.api.security.authentication.web.AuthenticationConst;
@@ -21,7 +22,6 @@ import com.api.web.security.SessionBeanManager;
 import com.api.web.security.UserAuthenticationFactory;
 import com.api.web.security.UserAuthenticationHelper;
 import com.api.web.security.UserAuthenticator;
-import com.constants.RMT2ServletConst;
 
 /**
  * This common action handler is called upon from a descendent of the

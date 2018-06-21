@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.swing.JTable;
 
-import com.util.RMT2Date;
+import com.api.util.RMT2Date;
 
 /**
  * A custom JTextField editor for managing date values of DataGrid cells.

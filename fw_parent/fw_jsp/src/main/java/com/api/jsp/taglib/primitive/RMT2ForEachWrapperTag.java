@@ -7,7 +7,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.IterationTag;
 
 import com.api.jsp.taglib.RMT2BodyTagSupportBase;
-import com.util.RMT2Utility;
+import com.api.util.RMT2Utility;
 
 /**
  * A custom tag that iterates through an array of objects and exposing each

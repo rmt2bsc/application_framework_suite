@@ -11,22 +11,20 @@ import com.NotFoundException;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.DataSourceApi;
+import com.api.constants.GeneralConst;
+import com.api.constants.RMT2ServletConst;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.DatabaseException;
 //import com.api.jsp.action.ICommonAction;
 import com.api.security.RMT2TagQueryBean;
 import com.api.security.authentication.web.AuthenticationConst;
+import com.api.util.RMT2String;
+import com.api.util.RMT2Utility;
 import com.api.web.Context;
 import com.api.web.Request;
 import com.api.web.Response;
 import com.api.web.Session;
 import com.api.web.security.RMT2SessionBean;
-import com.constants.GeneralConst;
-import com.constants.RMT2ServletConst;
-import com.constants.RMT2SystemExceptionConst;
-import com.util.RMT2String;
-import com.util.RMT2Utility;
-//import com.api.persistence.db.DatabaseTransApi;
-//import com.api.persistence.db.DatabaseTransFactory;
 
 /**
  * Abstract base class for handling client actions triggered from the controller

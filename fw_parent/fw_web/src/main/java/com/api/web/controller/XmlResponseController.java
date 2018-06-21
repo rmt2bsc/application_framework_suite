@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.constants.RMT2ServletConst;
+import com.api.constants.RMT2ServletConst;
 
 /**
  * Command Servlet implementation that sends the server's response as a typical

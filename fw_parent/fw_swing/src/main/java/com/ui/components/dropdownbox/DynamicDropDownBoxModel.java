@@ -2,8 +2,8 @@ package com.ui.components.dropdownbox;
 
 import javax.swing.DefaultComboBoxModel;
 
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Date;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Date;
 
 /**
  * The model that is to be used along with the DropDownBox.

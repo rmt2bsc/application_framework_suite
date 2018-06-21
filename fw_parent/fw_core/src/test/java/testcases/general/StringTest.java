@@ -4,8 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.util.RMT2HashUtility;
-import com.util.RMT2String;
+import com.api.util.RMT2HashUtility;
+import com.api.util.RMT2String;
 
 public class StringTest {
 

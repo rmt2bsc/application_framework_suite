@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.util.RMT2Utility;
+import com.api.util.RMT2Utility;
 
 /**
  * Test IP Address manipulation

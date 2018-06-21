@@ -22,10 +22,10 @@ import com.RMT2Exception;
 import com.SystemException;
 import com.api.DaoApi;
 import com.api.persistence.DatabaseException;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Utility;
 import com.api.xml.XmlApiFactory;
 import com.api.xml.XmlDao;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Utility;
 
 /**
  * An implementation of XmlBeanAdapter interface using XQuery technologies.

@@ -16,9 +16,9 @@ import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
 import com.api.security.authentication.web.AuthenticationConst;
+import com.api.util.RMT2File;
 import com.api.web.Request;
 import com.api.web.Session;
-import com.util.RMT2File;
 
 /**
  * Manages detail information about the user and his session.

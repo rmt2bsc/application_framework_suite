@@ -14,7 +14,7 @@ import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.rmi.RmiConstants;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * Facotry class for creating RMI client related instances.

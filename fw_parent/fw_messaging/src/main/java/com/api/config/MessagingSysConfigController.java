@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import com.api.messaging.MessagingResourceFactory;
 import com.api.messaging.webservice.ServiceRegistry;
 import com.api.messaging.webservice.ServiceRegistryFactory;
+import com.api.util.RMT2BeanUtility;
 import com.api.web.controller.AbstractServlet;
-import com.util.RMT2BeanUtility;
 
 /**
  * A servlet which functions to initialize the messaging environment.

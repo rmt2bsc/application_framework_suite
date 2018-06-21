@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JTable;
 
-import com.util.RMT2Money;
+import com.api.util.RMT2Money;
 
 /**
  * A custom JTextField editor for managing money values of DataGrid cells.

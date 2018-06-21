@@ -15,11 +15,11 @@ import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
 import com.api.config.old.AbstractSystemConfigImpl;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Date;
-import com.util.RMT2File;
-import com.util.RMT2String;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Date;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
+import com.api.util.RMT2Utility;
 
 /**
  * Abstract class used for Object Relational Mapping and database persistence.

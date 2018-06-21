@@ -5,7 +5,7 @@ import java.util.EventListener;
 
 import javax.swing.event.EventListenerList;
 
-import com.util.RMT2BeanUtility;
+import com.api.util.RMT2BeanUtility;
 
 /**
  * An implementation of {@link EventDispatcher} providing the ability to

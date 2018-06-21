@@ -10,12 +10,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Level;
 
+import com.api.constants.RMT2ServletConst;
 import com.api.jsp.taglib.RMT2TagSupportBase;
 import com.api.persistence.db.DatabaseConnectionBean;
 import com.api.pool.DatabaseConnectionPool;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.web.security.RMT2SessionBean;
-import com.constants.RMT2ServletConst;
 
 /**
  * This custom tag associates a database connection within a JSP page. The

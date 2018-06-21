@@ -11,10 +11,9 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import com.RMT2Base;
+import com.api.util.RMT2Date;
 import com.api.xml.adapters.XmlAdapterFactory;
 import com.api.xml.adapters.XmlBeanAdapter;
-
-import com.util.RMT2Date;
 
 /**
  * Abstract bean class which is generally used as the ancestor for all beans.

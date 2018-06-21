@@ -8,9 +8,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import testcases.bean.Xact;
+import com.api.util.RMT2BeanUtility;
 
-import com.util.RMT2BeanUtility;
+import testcases.bean.Xact;
 
 /**
  * Test dynamic bean creattion

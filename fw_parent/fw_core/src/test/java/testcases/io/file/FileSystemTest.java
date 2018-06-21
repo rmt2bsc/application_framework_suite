@@ -13,8 +13,8 @@ import testcases.TestCaseConstants;
 
 import com.NotFoundException;
 import com.SystemException;
-import com.util.RMT2File;
-import com.util.RMT2FileDirectoryFilter;
+import com.api.util.RMT2File;
+import com.api.util.RMT2FileDirectoryFilter;
 
 /**
  * Test file manipulation and MIME type identification

@@ -58,10 +58,10 @@ import com.NotFoundException;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
+import com.api.constants.GeneralConst;
 import com.api.persistence.DatabaseException;
-import com.constants.GeneralConst;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 
 /**
  * A utility for performing commonly used XML operations. Conatins functionality

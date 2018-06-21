@@ -9,9 +9,9 @@ import com.api.CannotConnectException;
 import com.api.ConnectionProvider;
 import com.api.config.ConfigConstants;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
-import com.util.RMT2String;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
 
 /**
  * Factory used for creating {@link bean.db.DatabaseConnectionBean

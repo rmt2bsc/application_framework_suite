@@ -40,19 +40,19 @@ import com.api.DaoApi;
 import com.api.Product;
 import com.api.ProductBuilderException;
 import com.api.ProductDirector;
+import com.api.constants.GeneralConst;
 import com.api.messaging.MessageException;
 import com.api.messaging.webservice.http.HttpConstants;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
 import com.api.messaging.webservice.soap.client.SoapClientFactory;
 import com.api.messaging.webservice.soap.client.SoapProductBuilder;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String2;
 import com.api.web.Request;
 import com.api.web.Response;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.XmlApiFactory;
 import com.api.xml.jaxb.JaxbUtil;
-import com.constants.GeneralConst;
-import com.util.RMT2File;
-import com.util.RMT2String2;
 
 /**
  * Contains common SOAP Messaging functionality that both the SOAP client and

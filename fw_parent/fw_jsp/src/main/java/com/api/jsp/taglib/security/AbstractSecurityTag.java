@@ -8,13 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-
-
-
-
-
-
+import com.api.constants.RMT2ServletConst;
 //import com.api.security.UserSecurity;
 //import com.api.security.authentication.web.AuthenticationFactory;
 import com.api.jsp.taglib.RMT2BodyTagSupportBase;
@@ -25,7 +19,6 @@ import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.web.security.RMT2SessionBean;
 import com.api.web.security.UserAuthenticationFactory;
 import com.api.web.security.UserAuthenticator;
-import com.constants.RMT2ServletConst;
 
 /**
  * Abstract custom body tag implementation for maintaining common security

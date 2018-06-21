@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 
 import com.NotFoundException;
 import com.SystemException;
+import com.api.constants.RMT2TagConst;
 import com.api.persistence.DatabaseException;
-import com.constants.RMT2TagConst;
 
 /**
  * This class builds HTML input controls from a java bean data source.

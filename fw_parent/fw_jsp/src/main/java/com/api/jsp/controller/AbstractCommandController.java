@@ -17,8 +17,12 @@ import org.apache.log4j.Logger;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
+import com.api.constants.RMT2ServletConst;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.security.authentication.web.AuthenticationException;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
+import com.api.util.RMT2Utility;
 import com.api.web.ActionCommandException;
 import com.api.web.ICommand;
 import com.api.web.Request;
@@ -31,10 +35,6 @@ import com.api.web.security.RMT2SessionBean;
 import com.api.web.security.SessionBeanManager;
 import com.api.web.security.UserAuthenticationFactory;
 import com.api.web.util.RMT2WebUtility;
-import com.constants.RMT2ServletConst;
-import com.util.RMT2File;
-import com.util.RMT2String;
-import com.util.RMT2Utility;
 
 /**
  * This class represents the bulk of a generic framework for handling arbitrary

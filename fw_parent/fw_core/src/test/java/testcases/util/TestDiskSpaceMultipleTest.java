@@ -7,8 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.util.HealthResults;
-import com.util.TestDiskSpaceMultiple;
+import com.api.util.HealthResults;
+import com.api.util.TestDiskSpaceMultiple;
 
 /**
  * The class <code>TestDiskSpaceMultipleTest</code> contains tests for the class <code>{@link TestDiskSpaceMultiple}</code>.

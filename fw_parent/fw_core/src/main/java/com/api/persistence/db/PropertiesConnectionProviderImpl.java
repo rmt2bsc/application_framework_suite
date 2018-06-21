@@ -11,10 +11,10 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import com.SystemException;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.CannotReadManagerConfigurationException;
 import com.api.persistence.DatabaseException;
-import com.constants.RMT2SystemExceptionConst;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * A Properties implementation of the api, {@link ConnectionProvider}, which

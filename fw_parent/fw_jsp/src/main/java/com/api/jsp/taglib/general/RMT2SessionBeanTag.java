@@ -3,8 +3,8 @@ package com.api.jsp.taglib.general;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.api.constants.RMT2ServletConst;
 import com.api.jsp.taglib.RMT2TagSupportBase;
-import com.constants.RMT2ServletConst;
 
 /**
  * The purpose of this class is to export the user's session bean object and to

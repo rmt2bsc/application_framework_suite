@@ -5,8 +5,7 @@ import java.util.Map;
 
 import com.RMT2BaseBean;
 import com.SystemException;
-
-import com.constants.RMT2SystemExceptionConst;
+import com.api.constants.RMT2SystemExceptionConst;
 
 /**
  * Object used to store key data and selectin criteria pertaining to data

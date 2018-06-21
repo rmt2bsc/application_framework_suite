@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * Helper class for managing the configuration of ORM Datasources.

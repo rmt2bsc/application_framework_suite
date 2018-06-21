@@ -8,9 +8,9 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Date;
-import com.util.RMT2Money;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Date;
+import com.api.util.RMT2Money;
 
 /**
  * An imiplementation of {@link DynamicListTableModel} for managing JTable

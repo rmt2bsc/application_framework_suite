@@ -18,13 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.api.constants.GeneralConst;
+import com.api.constants.RMT2ServletConst;
 import com.api.security.RMT2TagQueryBean;
 import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.web.security.RMT2SessionBean;
 import com.api.web.util.RMT2WebUtility;
-import com.constants.GeneralConst;
-import com.constants.RMT2ServletConst;
 
 /**
  * Abstract Servlet that is the ancestor of all non-command servlets of this

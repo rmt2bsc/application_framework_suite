@@ -15,8 +15,8 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 import com.RMT2Base;
+import com.api.util.RMT2Base64Encoder;
 import com.api.web.Response;
-import com.util.RMT2Base64Encoder;
 
 /**
  * A class to simplify HTTP applet-to-server or servlet-to-servlet

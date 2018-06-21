@@ -3,7 +3,7 @@ package com.api.config;
 import java.util.ResourceBundle;
 
 import com.RMT2Base;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * Common processes for configuring an individual API

@@ -1,9 +1,10 @@
 package com.api.jsp.controller;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 
-import com.constants.RMT2ServletConst;
+import com.api.constants.RMT2ServletConst;
+
+import org.apache.log4j.Level;
 
 import java.io.IOException;
 import java.io.PrintWriter;

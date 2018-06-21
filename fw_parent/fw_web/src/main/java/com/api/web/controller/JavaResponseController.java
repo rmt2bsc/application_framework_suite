@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.api.constants.RMT2ServletConst;
 import com.api.web.ActionCommandException;
 import com.api.web.util.RMT2WebUtility;
-import com.constants.RMT2ServletConst;
 
 /**
  * Concrete implementation of the AbstractCommandServlet which is designed to

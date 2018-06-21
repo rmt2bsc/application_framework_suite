@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.util.RMT2Date;
+import com.api.util.RMT2Date;
 
 /**
  * Test the date/time framework utility classes
