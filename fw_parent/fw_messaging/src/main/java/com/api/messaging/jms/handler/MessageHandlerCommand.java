@@ -12,7 +12,7 @@ import com.api.messaging.handler.MessageHandlerResults;
  *
  * @param <T1> The request type to process
  * @param <T2> The response type to process
- * @param <P> The Payload type to process
+ * @param <P> The Payload type to process for responses and/or request update data
  */
 public interface MessageHandlerCommand<T1, T2, P> {
     /**
