@@ -1,8 +1,6 @@
-package com.api.messaging.jms.handler;
+package com.api.messaging.handler;
 
 import java.io.Serializable;
-
-import com.api.messaging.handler.MessageHandlerResults;
 
 /**
  * This interface describes what a command can do. It only defines one method,

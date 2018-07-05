@@ -1,4 +1,4 @@
-package com.api.messaging.jms.handler;
+package com.api.messaging.handler;
 
 import com.RMT2Exception;
 
