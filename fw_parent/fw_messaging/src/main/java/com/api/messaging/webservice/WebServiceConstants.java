@@ -7,6 +7,16 @@ package com.api.messaging.webservice;
  * 
  */
 public class WebServiceConstants {
+    
+    /**
+     * Successful return code.
+     */
+    public static final int RETURN_CODE_SUCCESS = 1;
+    
+    /**
+     * Failure return code.
+     */
+    public static final int RETURN_CODE_FAILURE = -1;
 
     /**
      * 
