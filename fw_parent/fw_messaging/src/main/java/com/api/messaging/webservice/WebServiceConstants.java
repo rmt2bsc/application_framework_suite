@@ -126,5 +126,11 @@ public class WebServiceConstants {
      * Message router type name for JMS type transporter.
      */
     public static final String MSG_ROUTER_TYPE_JMS = "JMS";
+    
+    public static final String APPLICATION = "application";
+
+    public static final String MODULE = "module";
+
+    public static final String TRANSACTION = "transaction";
 
 }
