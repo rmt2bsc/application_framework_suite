@@ -2,6 +2,7 @@ package com.api.messaging.handler;
 
 import java.io.Serializable;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import com.api.messaging.InvalidRequestException;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.jaxb.JaxbUtil;
+import com.api.xml.jaxb.JaxbUtilException;
 
 /**
  * Abstract class containing common logic for receiving, unmarshaling,
@@ -89,9 +91,17 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             this.validateRequest(this.requestObj);
         } catch (Exception e) {
             MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
-            rs.setReturnCode(WebServiceConstants.RETURN_CODE_SUCCESS);
+            rs.setReturnCode(WebServiceConstants.RETURN_CODE_FAILURE);
             rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
-            rs.setMessage(e.getMessage());
+            
+            if (e instanceof JaxbUtilException) {
+                rs.setReturnCode(HttpServletResponse.SC_BAD_REQUEST);
+                rs.setMessage("An invalid request message was encountered.  Please payload.");
+                rs.setExtMessage(e.getMessage());
+            } else {
+                rs.setMessage(e.getMessage());
+            }
+            
             String respXml = this.buildResponse(null,rs);
             results = new MessageHandlerResults();
             results.setPayload(respXml);
