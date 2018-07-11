@@ -150,12 +150,12 @@ public class JaxbUtil {
      *            When set to true, the document will be formatted. When set to
      *            false, the document will be presented in raw format.
      * @return String the XML document equivalent to <i>obj</i>.
-     * @throws RuntimeException
+     * @throws JaxbUtilException
      *             general JAXB marshalling errors.
      */
     public String marshalMessage(Object source, boolean formatOutput) {
         if (this.context == null) {
-            throw new RuntimeException("Unable to marshal object.  JAXB context is invalid or null");
+            throw new JaxbUtilException("Unable to marshal object.  JAXB context is invalid or null");
         }
         try {
             Marshaller m = context.createMarshaller();
@@ -171,7 +171,7 @@ public class JaxbUtil {
             JaxbUtil.LOGGER.debug(xml);
             return xml;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new JaxbUtilException("Error marshalling XML String to Object", e);
         }
     }
 
@@ -182,7 +182,7 @@ public class JaxbUtil {
      * @param source
      *            the java object that is to be converted.
      * @return String the XML document equivalent to <i>obj</i>.
-     * @throws RuntimeException
+     * @throws JaxbUtilException
      *             general JAXB marshalling errors.
      */
     public String marshalJsonMessage(Object source) {
@@ -202,12 +202,12 @@ public class JaxbUtil {
      *         document that was unmarshalled. The user must apply the
      *         appropriate cast on the generic object in order to access its
      *         data.
-     * @throws RuntimeException
+     * @throws JaxbUtilException
      *             general JAXB marshalling errors.
      */
     public Object unMarshalMessage(String xmlDoc) {
         if (this.context == null) {
-            throw new RuntimeException("Unable to unmarshal object.  JAXB context is invalid or null");
+            throw new JaxbUtilException("JAXB Unmarsahl error: JAXB context is invalid or null");
         }
         try {
             Unmarshaller u = context.createUnmarshaller();
@@ -215,7 +215,7 @@ public class JaxbUtil {
             Object bindObj = u.unmarshal(bais);
             return bindObj;
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new JaxbUtilException("Error unmarshalling XML document, " + xmlDoc, e);
         }
     }
 
