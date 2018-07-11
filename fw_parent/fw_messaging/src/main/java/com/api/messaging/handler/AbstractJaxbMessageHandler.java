@@ -91,11 +91,10 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             this.validateRequest(this.requestObj);
         } catch (Exception e) {
             MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
-            rs.setReturnCode(WebServiceConstants.RETURN_CODE_FAILURE);
+            rs.setReturnCode(HttpServletResponse.SC_BAD_REQUEST);
             rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
             
             if (e instanceof JaxbUtilException) {
-                rs.setReturnCode(HttpServletResponse.SC_BAD_REQUEST);
                 rs.setMessage("An invalid request message was encountered.  Please payload.");
                 rs.setExtMessage(e.getMessage());
             } else {
