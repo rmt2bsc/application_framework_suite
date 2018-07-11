@@ -11,7 +11,7 @@ public class WebServiceConstants {
     /**
      * Successful return code.
      */
-    public static final int RETURN_CODE_SUCCESS = 1;
+    public static final int RETURN_CODE_SUCCESS = 200;
     
     /**
      * Failure return code.
