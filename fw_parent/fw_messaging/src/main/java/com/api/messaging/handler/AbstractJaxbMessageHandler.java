@@ -45,6 +45,8 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
     protected T1 requestObj;
     
     protected T2 responseObj;
+    
+    protected String command;
 
     /**
      * Creates a AbstractMessageHandler 
@@ -68,6 +70,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
      */
     @Override
     public MessageHandlerResults processMessage(String command, Serializable payload) throws MessageHandlerCommandException {
+        this.command = command;
         this.payload = payload;
         if (this.payload instanceof Serializable) {
             logger.info("Payload is identified as a valid Serializable");
@@ -90,6 +93,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             
             this.validateRequest(this.requestObj);
         } catch (Exception e) {
+            logger.error("Core Message Handler Error", e);
             MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
             rs.setReturnCode(WebServiceConstants.RETURN_CODE_FAILURE);
             rs.setReturnStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
@@ -155,11 +159,11 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
      * @param msg
      * @return
      */
-    protected MessageHandlerResults createErrorReply(int errorCode, String msg) {
+    protected MessageHandlerResults createErrorReply(int errorCode, String statusCode, String msg) {
         MessageHandlerResults results = new MessageHandlerResults();
         MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
         rs.setReturnCode(errorCode);
-        rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
+        rs.setReturnStatus(statusCode);
         rs.setMessage(msg);
         String xml = this.buildResponse(null, rs);
         results.setPayload(xml);
