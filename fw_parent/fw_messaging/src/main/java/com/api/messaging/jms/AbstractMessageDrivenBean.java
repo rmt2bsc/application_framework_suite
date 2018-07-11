@@ -162,7 +162,7 @@ public abstract class AbstractMessageDrivenBean {
                 errorDetails.setMessage(BUS_SERVER_ERROR);
                 errorDetails.setExtMessage(errMsg);
                 errorDetails.setReturnCode(-101);
-                errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
+                errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
                 String xml = this.buildErrorResponse(errorDetails);
 
                 MessageHandlerResults response = new MessageHandlerResults();
@@ -204,7 +204,7 @@ public abstract class AbstractMessageDrivenBean {
             errorDetails.setMessage(BUS_SERVER_ERROR);
             errorDetails.setExtMessage(errMsg);
             errorDetails.setReturnCode(-201);
-            errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
+            errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
             String xml = this.buildErrorResponse(errorDetails);
          
             MessageHandlerResults response = new MessageHandlerResults();

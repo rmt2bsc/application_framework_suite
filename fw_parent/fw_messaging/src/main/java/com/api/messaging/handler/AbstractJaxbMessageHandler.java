@@ -91,8 +91,8 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             this.validateRequest(this.requestObj);
         } catch (Exception e) {
             MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
-            rs.setReturnCode(HttpServletResponse.SC_BAD_REQUEST);
-            rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
+            rs.setReturnCode(WebServiceConstants.RETURN_CODE_FAILURE);
+            rs.setReturnStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
             
             if (e instanceof JaxbUtilException) {
                 rs.setMessage("An invalid request message was encountered.  Please payload.");
@@ -159,7 +159,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
         MessageHandlerResults results = new MessageHandlerResults();
         MessageHandlerCommonReplyStatus rs = new MessageHandlerCommonReplyStatus();
         rs.setReturnCode(errorCode);
-        rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_ERROR);
+        rs.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
         rs.setMessage(msg);
         String xml = this.buildResponse(null, rs);
         results.setPayload(xml);

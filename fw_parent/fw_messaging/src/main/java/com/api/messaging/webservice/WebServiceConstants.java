@@ -11,7 +11,7 @@ public class WebServiceConstants {
     /**
      * Successful return code.
      */
-    public static final int RETURN_CODE_SUCCESS = 200;
+    public static final int RETURN_CODE_SUCCESS = 1;
     
     /**
      * Failure return code.
@@ -41,12 +41,17 @@ public class WebServiceConstants {
     /**
      * 
      */
-    public static final String RETURN_STATUS_SUCCESS = "SUCCESS";
+    public static final String RETURN_STATUS_SUCCESS = "200";
 
     /**
      * 
      */
-    public static final String RETURN_STATUS_ERROR = "ERROR";
+    public static final String RETURN_STATUS_BAD_REQUEST = "400";
+    
+    /**
+     * 
+     */
+    public static final String RETURN_STATUS_SERVER_ERROR = "500";
 
     /**
      * 
