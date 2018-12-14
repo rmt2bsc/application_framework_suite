@@ -22,6 +22,8 @@ public class MessageHandlerCommonReplyStatus extends RMT2Base implements Seriali
 
     private int returnCode;
     
+    private int recordCount;
+    
     private String application;
     
     private String module;
@@ -162,5 +164,21 @@ public class MessageHandlerCommonReplyStatus extends RMT2Base implements Seriali
      */
     public void setTransaction(String transaction) {
         this.transaction = transaction;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getRecordCount() {
+        return recordCount;
+    }
+
+    /**
+     * 
+     * @param recordCount
+     */
+    public void setRecordCount(int recordCount) {
+        this.recordCount = recordCount;
     }
 }
