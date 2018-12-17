@@ -37,6 +37,8 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
     private static final Logger logger = Logger.getLogger(AbstractJaxbMessageHandler.class);
 
     public static final String ERROR_MSG_TRANS_NOT_FOUND = "Unable to identify transaction code: ";
+    
+    public static final String ERROR_MSG_INVALID_TRANS = "An invalid request message was encountered.  Please check payload.";
 
     protected Serializable payload;
 
@@ -99,7 +101,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             rs.setReturnStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
             
             if (e instanceof JaxbUtilException) {
-                rs.setMessage("An invalid request message was encountered.  Please payload.");
+                rs.setMessage(ERROR_MSG_INVALID_TRANS);
                 rs.setExtMessage(e.getMessage());
             } else {
                 rs.setMessage(e.getMessage());
