@@ -88,8 +88,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
                     String printXml = RMT2XmlUtility.prettyPrint(reqXml);
                     logger.debug(printXml);
                 } catch (TransformerException e1) {
-                    logger.debug(reqXml);
-                    e1.printStackTrace();
+                    logger.debug(reqXml, e1);
                 }
             }
             
@@ -116,8 +115,7 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
                     String printXml = RMT2XmlUtility.prettyPrint(respXml);
                     logger.debug(printXml);
                 } catch (TransformerException e1) {
-                    logger.debug(reqXml);
-                    e1.printStackTrace();
+                    logger.debug(reqXml, e1);
                 }
             }
         }
