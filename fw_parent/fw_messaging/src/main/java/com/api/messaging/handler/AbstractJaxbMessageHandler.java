@@ -167,6 +167,8 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
         rs.setMessage(msg);
         String xml = this.buildResponse(null, rs);
         results.setPayload(xml);
+        results.setReturnCode(errorCode);
+        results.setErrorMsg(msg);
         return results;
     }
 }
