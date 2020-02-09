@@ -173,7 +173,8 @@ public class RMT2XmlUtility extends RMT2Base {
      * @param xmlFileName
      *            File name of the input XML document.
      * @param outFileName
-     *            File name that will store the results of the transformation
+     *            File name that will store the results of the XML
+     *            transformation
      * @throws SystemException
      */
     public void transformXslt(String xsltFileName, String xmlFileName, String outFileName) throws SystemException {
@@ -442,10 +443,12 @@ public class RMT2XmlUtility extends RMT2Base {
     }
 
     /**
-     * Creates a StreamResult object out of outSrc.
+     * Creates a StreamResult object that will be used to contatin the XML
+     * transformation.
      * 
      * @param outSrc
-     *            An object of type OutputStream, Writer, or File.
+     *            An object of type OutputStream, Writer, File, or String which
+     *            serves as the outpput source of the XML transformation.
      * @return StreamResult.
      * @throws SystemException
      *             When ourSrc is of an invalid type or is null.
@@ -457,8 +460,8 @@ public class RMT2XmlUtility extends RMT2Base {
             throw new SystemException(this.msg);
         }
         if (outSrc instanceof String) {
-            // outSrc is a String that will used persist the results of the
-            // first transformation as a FO file
+            // This is a String that will serve as the name of the file in which
+            // the XML transformation is saved.
             OutputStream os = new ByteArrayOutputStream();
             out = new StreamResult(os);
         }
@@ -481,13 +484,16 @@ public class RMT2XmlUtility extends RMT2Base {
     /**
      * Renders a XSLT Formatted Object document as a PDF stream in memeory.
      * 
-     * @param srcFileName
-     *            The XSLT-FO document to be rendered.
+     * @param xslFoFileName
+     *            The file path of the XSLT-FO document to be rendered.
      * @return
      * @throws SystemException
      */
-    public ByteArrayOutputStream renderPdf(String srcFileName) throws SystemException {
-        ByteArrayOutputStream stream = this.generateXsltPdf(srcFileName);
+    public ByteArrayOutputStream renderPdf(String xslFoFileName) throws SystemException {
+        // Set up input and output streams. Note: Using BufferedOutputStream for
+        // performance reasons (helpful with FileOutputStreams).
+        File inFile = new File(xslFoFileName);
+        ByteArrayOutputStream stream = this.renderPdf(inFile);
         return stream;
     }
 
@@ -495,15 +501,18 @@ public class RMT2XmlUtility extends RMT2Base {
      * Generates a PDF document from a XSLT Formatted Object document,
      * <i>srcFileName</i>, using Apache Formatted Object Processeor.
      * 
-     * @param srcFileName
-     *            The XSLT-FO document to be rendered.
+     * @param xslFoFile
+     *            An instance of {@link File} representing the XSLT-FO document
+     *            to be rendered.
      * @return ByteArrayOutputStream representing the PDF results.
      * @throws SystemException
      */
-    protected ByteArrayOutputStream generateXsltPdf(String srcFileName) throws SystemException {
+    public ByteArrayOutputStream renderPdf(File xslFoFile) throws SystemException {
+        // Setup input and output for XSLT transformation Setup input stream
+        Source xslFoSource = new StreamSource(xslFoFile);
         // Setup a buffer to obtain the content length
         ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
-        this.generateXsltPdf(srcFileName, pdfStream);
+        this.renderPdf(xslFoSource, pdfStream);
         return pdfStream;
     }
 
@@ -511,29 +520,19 @@ public class RMT2XmlUtility extends RMT2Base {
      * Generates a PDF document from a XSLT Formatted Object document using
      * Apache Formatted Object Processeor to a generic output stream
      * 
-     * @param srcFileName
-     *            the filename of the XSL-FO document acting as the source of
-     *            the generated PDF.
+     * @param source
+     *            An instance of {@link Source} representing the XSL-FO document
+     *            to be transformed into a PDF.
      * @param pdfStream
      *            a generic output stream for direciting the generated results.
      * @throws SystemException
      */
-    protected void generateXsltPdf(String srcFileName, OutputStream outStream) throws SystemException {
+    public void renderPdf(Source source, OutputStream outStream) throws SystemException {
 
         try {
-            // Set up input and output streams.
-            // Note: Using BufferedOutputStream for performance reasons (helpful
-            // with FileOutputStreams).
-            File inFile = new File(srcFileName);
-
-            // Setup input and output for XSLT transformation
-            // Setup input stream
-            Source source = new StreamSource(inFile);
-
             // Resulting SAX events (the generated FO) must be piped through to
             // FOP Construct fop with desired output format (reuse if you plan
             // to render multiple documents!)
-
             FopFactory fopFactory = FopFactory.newInstance();
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, outStream);
             Result result = new SAXResult(fop.getDefaultHandler());
