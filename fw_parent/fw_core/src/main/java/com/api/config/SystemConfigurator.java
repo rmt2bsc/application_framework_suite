@@ -142,7 +142,7 @@ public class SystemConfigurator extends RMT2Base {
     }
 
     /**
-     * Loads system and application properties.
+     * Loads system, application, and company properties.
      * 
      * @param config
      * @throws ConfigException
@@ -150,6 +150,7 @@ public class SystemConfigurator extends RMT2Base {
     protected void loadProperties(AppServerConfig config) throws ConfigException {
         this.loadSystemProperties(config);
         this.loadLocalProperties(config);
+        this.loadCompanyProperties(config);
         return;
     }
 
@@ -186,6 +187,18 @@ public class SystemConfigurator extends RMT2Base {
                     sysProps.getConsumerMsgHandlerMappingsLocation());
         }
         return;
+    }
+
+    private void loadCompanyProperties(AppServerConfig config) {
+        AppPropertyPool props = AppPropertyPool.getInstance();
+        props.addSystemProperty("CompContactId", config.getCompanyProperties().getContactId());
+        props.addSystemProperty("CompanyName", config.getCompanyProperties().getCompanyName());
+        props.addSystemProperty("CompContactFirstname", config.getCompanyProperties().getContactFirstname());
+        props.addSystemProperty("CompContactLastname", config.getCompanyProperties().getContactLastname());
+        props.addSystemProperty("CompContactPhone", config.getCompanyProperties().getContactPhone());
+        props.addSystemProperty("CompContactEmail", config.getCompanyProperties().getContactEmail());
+        props.addSystemProperty("CompTaxId", config.getCompanyProperties().getTaxId());
+        props.addSystemProperty("CompWebsite", config.getCompanyProperties().getWebsite());
     }
 
     private void loadLocalProperties(AppServerConfig config) {

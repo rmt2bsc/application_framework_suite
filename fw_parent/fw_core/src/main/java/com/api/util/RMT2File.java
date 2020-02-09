@@ -760,7 +760,7 @@ public class RMT2File {
             fos.close();
             return data.length;
         } catch (FileNotFoundException e) {
-            msg = "File was not found.  Check whether or not the directory structure exists";
+            msg = "File, " + filename + ", was not found.  Check whether or not the directory structure exists";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
         } catch (NotSerializableException e) {

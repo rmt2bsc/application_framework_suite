@@ -22,6 +22,25 @@
         <xs:element type="xs:string" name="WebAppMapping"/>
         <xs:element type="xs:string" name="WebAppsDir"/>
         <xs:element type="xs:string" name="WebAppsDrive"/>
+        
+        <xs:element name="CompanyProperties">
+          <xs:annotation>
+            <xs:documentation>*******************************  Main Company Properties           *******************************</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="ContactId"/>
+              <xs:element type="xs:string" name="CompanyName"/>
+              <xs:element type="xs:string" name="ContactFirstname"/>
+              <xs:element type="xs:string" name="ContactLastname"/>
+              <xs:element type="xs:string" name="ContactPhone"/>
+              <xs:element type="xs:string" name="ContactEmail"/>
+              <xs:element type="xs:string" name="TaxId"/>
+              <xs:element type="xs:string" name="Website"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        
         <xs:element name="SystemProperties">
           <xs:annotation>
             <xs:documentation>*******************************  JVM System Properties            *******************************</xs:documentation>
@@ -51,6 +70,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="ApiConfigurators">
           <xs:annotation>
             <xs:documentation>********************************************************************  Configurators used to initialize individual Api environments.         Each class must derive ApiConfigurator interface.                     ********************************************************************</xs:documentation>
@@ -69,6 +89,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="JaxbContexts">
           <xs:annotation>
             <xs:documentation>*******************************  Messaging related configuration  *******************************</xs:documentation>
@@ -87,6 +108,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="MessagingSystemsInfo">
           <xs:complexType>
             <xs:sequence>
@@ -109,6 +131,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="DestinationMappings">
           <xs:complexType>
             <xs:sequence>
@@ -124,6 +147,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="ServiceRegistry">
           <xs:complexType>
             <xs:sequence>
@@ -146,6 +170,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
       </xs:sequence>
     </xs:complexType>
   </xs:element>

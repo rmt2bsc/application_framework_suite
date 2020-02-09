@@ -11,6 +11,11 @@
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+	  <dependency>
+		   <groupId>org.apache.xmlgraphics</groupId>
+		   <artifactId>fop</artifactId>
+		   <version>1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>

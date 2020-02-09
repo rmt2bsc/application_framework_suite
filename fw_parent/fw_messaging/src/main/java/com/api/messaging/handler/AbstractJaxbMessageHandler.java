@@ -1,5 +1,7 @@
 package com.api.messaging.handler;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 import javax.servlet.http.HttpServletResponse;
@@ -152,10 +154,25 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
         return this.payload.toString();
     }
 
+    protected OutputStream buildPdfReport() {
+        ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
+        return pdfStream;
+    }
+
+    /**
+     * Return the file name of the file layout or XSL transformation script used
+     * to generate a report
+     * 
+     * @return
+     */
+    public String getReportName() {
+        return null;
+    }
+
     /**
      * Creates an error reply as XML String
      * 
-     * @param errorCode 
+     * @param errorCode
      * @param msg
      * @return
      */
