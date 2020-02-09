@@ -11,6 +11,11 @@
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+		<dependency>
+		    <groupId>net.sf.saxon</groupId>
+		    <artifactId>Saxon-HE</artifactId>
+		    <version>9.6.0-9</version>
+		</dependency>
 	  <dependency>
 		   <groupId>org.apache.xmlgraphics</groupId>
 		   <artifactId>fop</artifactId>

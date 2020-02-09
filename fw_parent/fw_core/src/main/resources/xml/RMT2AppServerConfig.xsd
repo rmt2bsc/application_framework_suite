@@ -67,6 +67,7 @@
               </xs:element>
               <xs:element type="xs:string" name="ConsumerMsgHandlerMappingsKey"/>
               <xs:element type="xs:string" name="ConsumerMsgHandlerMappingsLocation"/>
+              <xs:element type="xs:string" name="XsltTransformer"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>

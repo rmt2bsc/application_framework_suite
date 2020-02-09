@@ -67,5 +67,7 @@ public class CommonAppServerConfigurationTest {
         Assert.assertEquals("RMT2 Business Systems Corp.", appConfig.getCompanyProperties().getCompanyName());
         Assert.assertEquals("rmt2bsc@gmail.com", appConfig.getCompanyProperties().getContactEmail());
         Assert.assertEquals("rmt2.net", appConfig.getCompanyProperties().getWebsite());
+        Assert.assertEquals("net.sf.saxon.TransformerFactoryImpl", appConfig.getSystemProperties().getXsltTransformer());
+
     }
 }

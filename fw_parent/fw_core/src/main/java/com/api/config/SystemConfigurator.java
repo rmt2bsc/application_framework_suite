@@ -170,6 +170,7 @@ public class SystemConfigurator extends RMT2Base {
             }
             props.addSystemProperty("soaphost", sysProps.getSoaphost());
             props.addSystemProperty("SaxDriver", sysProps.getSaxDriver());
+            props.addSystemProperty("javax.xml.transform.TransformerFactory", sysProps.getXsltTransformer());
 
             EmailConfig emailProps = sysProps.getEmailConfig();
             if (emailProps != null) {
