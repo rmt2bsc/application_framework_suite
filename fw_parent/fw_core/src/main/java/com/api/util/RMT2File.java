@@ -718,6 +718,54 @@ public class RMT2File {
     }
 
     /**
+     * Create a ByteArrayOutputStream object from a file
+     * 
+     * @param filename
+     *            THe path of the file to obtain data
+     * @return An instance of {@link ByteArrayOutputStream}
+     * @throws NotFoundException
+     * @throws SystemException
+     */
+    public static ByteArrayOutputStream createByteArrayStreamFromFile(String filename) throws NotFoundException, SystemException {
+        File sourceFile = new File(filename);
+        if (!sourceFile.exists()) {
+            throw new NotFoundException("Input File not found: " + filename);
+        }
+
+        FileInputStream fis = null;
+        ByteArrayOutputStream baos = null;
+        int fileSize = new Long(sourceFile.length()).intValue();
+        try {
+            fis = new FileInputStream(sourceFile);
+            baos = new ByteArrayOutputStream();
+            byte buffer[];
+            try {
+                buffer = new byte[fileSize];
+            } catch (OutOfMemoryError e) {
+                throw new SystemException(
+                        "Out of Memory error occured when attempting to allocate memory buffer for file input: "
+                                + filename);
+            }
+            int bytesRead = fis.read(buffer);
+            while (bytesRead != -1) {
+                baos.write(buffer);
+                bytesRead = fis.read(buffer);
+            }
+            return baos;
+        } catch (IOException e) {
+            throw new SystemException("IO Exception: " + e.getMessage());
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    ;
+                }
+            }
+        }
+    }
+
+    /**
      * Writes String data to a disk file.
      * 
      * @param data
