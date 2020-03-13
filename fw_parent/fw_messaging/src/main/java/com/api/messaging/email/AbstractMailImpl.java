@@ -16,7 +16,7 @@ import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.AbstractMessagingImpl;
 import com.api.messaging.MessageException;
-import com.util.RMT2String;
+import com.api.util.RMT2String;
 
 /**
  * Provides common implementation for email clients.

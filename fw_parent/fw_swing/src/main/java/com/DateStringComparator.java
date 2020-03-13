@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.util.RMT2Date;
+import com.api.util.RMT2Date;
 
 /**
  * A Comparison implementation to provide custom logic as to how two String date

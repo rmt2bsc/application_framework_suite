@@ -7,6 +7,16 @@ package com.api.messaging.webservice;
  * 
  */
 public class WebServiceConstants {
+    
+    /**
+     * Successful return code.
+     */
+    public static final int RETURN_CODE_SUCCESS = 1;
+    
+    /**
+     * Failure return code.
+     */
+    public static final int RETURN_CODE_FAILURE = -1;
 
     /**
      * 
@@ -31,12 +41,17 @@ public class WebServiceConstants {
     /**
      * 
      */
-    public static final String RETURN_STATUS_SUCCESS = "SUCCESS";
+    public static final String RETURN_STATUS_SUCCESS = "200";
 
     /**
      * 
      */
-    public static final String RETURN_STATUS_ERROR = "ERROR";
+    public static final String RETURN_STATUS_BAD_REQUEST = "400";
+    
+    /**
+     * 
+     */
+    public static final String RETURN_STATUS_SERVER_ERROR = "500";
 
     /**
      * 
@@ -116,5 +131,11 @@ public class WebServiceConstants {
      * Message router type name for JMS type transporter.
      */
     public static final String MSG_ROUTER_TYPE_JMS = "JMS";
+    
+    public static final String APPLICATION = "application";
+
+    public static final String MODULE = "module";
+
+    public static final String TRANSACTION = "transaction";
 
 }

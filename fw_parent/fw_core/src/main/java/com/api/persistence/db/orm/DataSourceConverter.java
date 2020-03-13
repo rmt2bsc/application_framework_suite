@@ -28,8 +28,8 @@ import com.api.persistence.DatabaseException;
 import com.api.persistence.db.orm.bean.DataSourceColumn;
 import com.api.persistence.db.orm.bean.ObjectMapperAttrib;
 import com.api.persistence.db.orm.bean.TableUsageBean;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Utility;
 
 /**
  * Abstract class that provides methods for converting data from one source to

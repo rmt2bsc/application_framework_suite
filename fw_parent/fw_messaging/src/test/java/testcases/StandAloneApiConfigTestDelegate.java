@@ -16,8 +16,8 @@ import com.api.config.old.CoreSysConfigFactory;
 import com.api.config.old.ResourceConfigurator;
 import com.api.messaging.webservice.ServiceRegistry;
 import com.api.messaging.webservice.ServiceRegistryFactory;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
 
 /**
  * Uses local resource to perform the initialization of the application by

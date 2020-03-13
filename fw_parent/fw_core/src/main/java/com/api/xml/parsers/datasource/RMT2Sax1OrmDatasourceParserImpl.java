@@ -8,15 +8,14 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import com.SystemException;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
-
 import com.api.persistence.db.DbSqlConst;
 import com.api.persistence.db.orm.OrmConfigHelper;
 import com.api.persistence.db.orm.bean.DataSourceColumn;
 import com.api.persistence.db.orm.bean.ObjectMapperAttrib;
 import com.api.persistence.db.orm.bean.TableUsageBean;
 import com.api.security.RMT2TagQueryBean;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 import com.api.xml.RMT2SaxAttributesBean;
 
 import org.xml.sax.AttributeList;

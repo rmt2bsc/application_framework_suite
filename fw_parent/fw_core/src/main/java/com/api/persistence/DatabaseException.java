@@ -1,9 +1,8 @@
 package com.api.persistence;
 
 import com.RMT2RuntimeException;
-import com.constants.RMT2SystemExceptionConst;
-
-import com.util.RMT2String;
+import com.api.constants.RMT2SystemExceptionConst;
+import com.api.util.RMT2String;
 
 import java.util.List;
 

@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.SystemException;
+import com.api.constants.RMT2ServletConst;
 import com.api.security.authentication.web.AuthenticationConst;
+import com.api.util.RMT2Date;
+import com.api.util.UserTimestamp;
 import com.api.web.Request;
 import com.api.web.Session;
 import com.api.web.security.RMT2SessionBean;
-import com.constants.RMT2ServletConst;
-import com.util.RMT2Date;
-import com.util.UserTimestamp;
 
 /**
  * Class contains a collection general purpose web utilities.

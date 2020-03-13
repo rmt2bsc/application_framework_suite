@@ -8,8 +8,8 @@ import com.NotFoundException;
 import com.SystemException;
 import com.api.DataSourceApi;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Utility;
 
 /**
  * A Thread derivative class that is used to transfer the data of a large

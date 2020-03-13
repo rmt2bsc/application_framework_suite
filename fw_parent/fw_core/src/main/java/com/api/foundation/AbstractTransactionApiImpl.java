@@ -9,8 +9,8 @@ import com.RMT2Base;
 import com.api.ApiInitException;
 import com.api.persistence.DaoClient;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2File;
-import com.util.RMT2String;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
 
 /**
  * Abstract transaction API class that provides common functionality.

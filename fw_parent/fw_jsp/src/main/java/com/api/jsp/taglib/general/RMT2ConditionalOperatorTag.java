@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 import com.SystemException;
+import com.api.constants.RMT2TagConst;
 import com.api.jsp.taglib.RMT2AbstractInputControl;
-import com.constants.RMT2TagConst;
 
 /**
  * This custom tag builds a HTML select control tha contains a list of

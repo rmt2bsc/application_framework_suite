@@ -11,8 +11,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.IterationTag;
 
+import com.api.constants.RMT2TagConst;
 import com.api.jsp.taglib.RMT2BodyTagSupportBase;
-import com.constants.RMT2TagConst;
 
 /**
  * This custom tag functions to iterate through a set of data that is arranged

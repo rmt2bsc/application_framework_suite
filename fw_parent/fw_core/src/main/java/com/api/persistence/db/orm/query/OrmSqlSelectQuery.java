@@ -12,14 +12,13 @@ import com.SystemException;
 import com.api.DaoApi;
 import com.api.ProductBuilder;
 import com.api.ProductBuilderException;
-
+import com.api.constants.RMT2SystemExceptionConst;
 //import com.api.config.PropertyFileSystemResourceConfigImpl;
 import com.api.persistence.db.DbSqlConst;
 import com.api.persistence.db.orm.bean.DataSourceColumn;
 import com.api.persistence.db.orm.query.pagination.PageCalculator;
 import com.api.persistence.db.orm.query.pagination.PaginationApi;
-import com.constants.RMT2SystemExceptionConst;
-import com.util.RMT2String;
+import com.api.util.RMT2String;
 
 /**
  * This class provides complex processes to construct and deconstruct SQL select

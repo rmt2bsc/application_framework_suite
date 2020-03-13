@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.api.config.old.ProviderConfig;
+import com.api.constants.GeneralConst;
+import com.api.constants.RMT2ServletConst;
 import com.api.jsp.taglib.RMT2TagSupportBase;
 import com.api.messaging.webservice.http.client.HttpClientResourceFactory;
 import com.api.messaging.webservice.http.client.HttpMessageSender;
@@ -14,8 +16,6 @@ import com.api.web.Request;
 import com.api.web.Response;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.web.security.RMT2SessionBean;
-import com.constants.GeneralConst;
-import com.constants.RMT2ServletConst;
 
 /**
  * Queries an external data source using the services module and exports the

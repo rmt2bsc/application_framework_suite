@@ -2,7 +2,7 @@ package com;
 
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
-import com.util.RMT2Utility;
+import com.api.util.RMT2Utility;
 
 /**
  * This class is an extension of RuntimeException that does not require the

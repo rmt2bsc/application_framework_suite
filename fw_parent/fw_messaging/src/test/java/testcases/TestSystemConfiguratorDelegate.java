@@ -19,8 +19,8 @@ import com.api.messaging.webservice.ServiceRegistry;
 import com.api.messaging.webservice.ServiceRegistryFactory;
 import com.api.persistence.db.DatabaseConnectionFactory;
 import com.api.pool.DatabaseConnectionPool;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
 
 /**
  * Performs the actual initialization of the application by loading system

@@ -9,7 +9,7 @@ import javax.servlet.jsp.JspException;
 
 import com.RMT2Exception;
 import com.api.jsp.taglib.RMT2TagSupportBase;
-import com.util.RMT2Utility;
+import com.api.util.RMT2Utility;
 
 /**
  * The purpose of this class is to locate and process a message object found on

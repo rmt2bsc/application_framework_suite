@@ -9,15 +9,15 @@ import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
+import com.api.constants.RMT2ServletConst;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.security.authentication.web.AuthenticationException;
 import com.api.security.authentication.web.AuthorizationException;
 import com.api.security.authentication.web.LogoutException;
 import com.api.security.authentication.web.UserCredentials;
+import com.api.util.RMT2String;
 import com.api.web.Request;
 import com.api.web.Session;
-import com.constants.RMT2ServletConst;
-import com.util.RMT2String;
 
 /**
  * Helper class for authenticating clients.

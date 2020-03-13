@@ -13,7 +13,7 @@ import com.api.config.ConfigConstants;
 import com.api.config.ConfigException;
 import com.api.persistence.db.DatabaseConnectionFactory;
 import com.api.pool.DatabaseConnectionPool;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * A stand alone configurator which functions to initialize the application by

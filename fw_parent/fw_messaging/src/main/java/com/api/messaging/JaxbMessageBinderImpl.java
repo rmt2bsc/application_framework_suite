@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.SystemException;
 import com.api.config.ConfigConstants;
-import com.constants.GeneralConst;
+import com.api.constants.GeneralConst;
 
 //import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 

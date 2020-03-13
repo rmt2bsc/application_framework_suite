@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import com.SystemException;
 import com.api.persistence.CannotCreateClientException;
 import com.api.persistence.CannotReadManagerConfigurationException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 
 import java.io.FileInputStream;
 import java.io.IOException;

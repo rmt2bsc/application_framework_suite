@@ -22,11 +22,11 @@ import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapResponseException;
 import com.api.messaging.webservice.soap.client.SoapBuilderException;
+import com.api.util.RMT2Date;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.jaxb.JaxbUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.util.RMT2Date;
 
 /**
  * Helper class for routing various types of messages to their respective

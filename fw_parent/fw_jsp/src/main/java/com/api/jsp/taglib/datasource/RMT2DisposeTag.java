@@ -2,9 +2,9 @@ package com.api.jsp.taglib.datasource;
 
 import javax.servlet.jsp.JspException;
 
+import com.api.constants.RMT2ServletConst;
 import com.api.jsp.taglib.RMT2TagSupportBase;
 import com.api.persistence.db.DatabaseConnectionBean;
-import com.constants.RMT2ServletConst;
 
 /**
  * This custom tag releases all resources such as connections, cope varibles,

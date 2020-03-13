@@ -8,7 +8,7 @@ import javax.swing.ListCellRenderer;
 
 import com.NotFoundException;
 import com.SystemException;
-import com.util.RMT2BeanUtility;
+import com.api.util.RMT2BeanUtility;
 
 /**
  * A DropDownBox renderer that is used to determine how a DropDownBox control is

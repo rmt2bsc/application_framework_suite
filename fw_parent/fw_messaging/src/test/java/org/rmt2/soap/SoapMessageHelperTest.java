@@ -24,10 +24,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.rmt2.jaxbtest.AddressType;
-import org.rmt2.jaxbtest.ObjectFactory;
-import org.rmt2.jaxbtest.PersonType;
-import org.rmt2.jaxbtest.ZipcodeType;
+import org.rmt2.jaxbtest.TestAddressType;
+import org.rmt2.jaxbtest.TestObjectFactory;
+import org.rmt2.jaxbtest.TestPersonType;
+import org.rmt2.jaxbtest.TestZipcodeType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -35,10 +35,10 @@ import com.InvalidDataException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapServiceException;
 import com.api.messaging.webservice.soap.engine.RMT2SoapEngine;
+import com.api.util.RMT2File;
 import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.xml.jaxb.JaxbUtil;
-import com.util.RMT2File;
 
 import testcases.TestCaseConstants;
 
@@ -170,13 +170,13 @@ public class SoapMessageHelperTest {
     }
 
     private String buildJaxbSoapRequest() {
-        ObjectFactory f = new ObjectFactory();
-        ZipcodeType z = f.createZipcodeType();
+        TestObjectFactory f = new TestObjectFactory();
+        TestZipcodeType z = f.createZipcodeType();
         z.setCity("Sheveport");
         z.setState("LA");
         z.setZipcode(BigInteger.valueOf(71106));
 
-        AddressType at = f.createAddressType();
+        TestAddressType at = f.createAddressType();
         at.setAddr1("4329 Harbor St");
         at.setAddr2("P.O. Box 1234");
         at.setAddr3("Building 324-a");
@@ -185,7 +185,7 @@ public class SoapMessageHelperTest {
         at.setPhoneHome("318-321-5432");
         at.setZip(z);
 
-        PersonType pt = f.createPersonType();
+        TestPersonType pt = f.createPersonType();
         pt.setBirthDate("1966-2-23");
         pt.setFirstName("Roy");
         pt.setLastName("Terrell");
@@ -603,21 +603,21 @@ public class SoapMessageHelperTest {
 
     private void assertJaxbPersonTypeResponse(Object jaxbObj) {
         Assert.assertNotNull(jaxbObj);
-        Assert.assertTrue(jaxbObj instanceof PersonType);
-        PersonType person = (PersonType) jaxbObj;
+        Assert.assertTrue(jaxbObj instanceof TestPersonType);
+        TestPersonType person = (TestPersonType) jaxbObj;
         Assert.assertEquals("Roy", person.getFirstName());
         Assert.assertEquals("Terrell", person.getLastName());
         Assert.assertEquals("1966-2-23", person.getBirthDate());
         Assert.assertEquals("444-55-5432", person.getSsn());
 
         Assert.assertNotNull(person.getAddress());
-        AddressType at = person.getAddress();
+        TestAddressType at = person.getAddress();
         Assert.assertEquals(BigInteger.valueOf(32), at.getAddrId());
         Assert.assertEquals("4329 Harbor St", at.getAddr1());
         Assert.assertEquals("318-321-5432", at.getPhoneHome());
 
         Assert.assertNotNull(person.getAddress().getZip());
-        ZipcodeType zt = person.getAddress().getZip();
+        TestZipcodeType zt = person.getAddress().getZip();
         Assert.assertEquals("Sheveport", zt.getCity());
         Assert.assertEquals("LA", zt.getState());
         Assert.assertEquals(BigInteger.valueOf(71106), zt.getZipcode());

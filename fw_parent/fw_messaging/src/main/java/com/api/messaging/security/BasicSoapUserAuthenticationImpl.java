@@ -14,15 +14,15 @@ import com.api.messaging.webservice.soap.client.SoapClientWrapper;
 import com.api.security.authentication.web.AuthenticationException;
 import com.api.security.authentication.web.AuthorizationException;
 import com.api.security.authentication.web.LogoutException;
+import com.api.util.RMT2Date;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
 import com.api.web.security.AbstractUserAuthenticationTemplateImpl;
 import com.api.web.security.RMT2SecurityToken;
 import com.api.web.security.RMT2SessionBean;
 import com.api.web.security.SessionBeanManager;
 import com.api.web.security.UserAuthenticationFactory;
 import com.api.web.security.UserAuthenticator;
-import com.util.RMT2Date;
-import com.util.RMT2File;
-import com.util.RMT2String;
 
 /**
  * SOAP implementation of interface,

@@ -9,8 +9,12 @@ import org.apache.log4j.Logger;
 import com.NotFoundException;
 import com.SystemException;
 import com.api.config.ConfigConstants;
+import com.api.constants.RMT2ServletConst;
 import com.api.persistence.db.orm.DataSourceConst;
 import com.api.security.RMT2TagQueryBean;
+import com.api.util.HostCompanyManager;
+import com.api.util.RMT2File;
+import com.api.util.RMT2String;
 import com.api.web.ActionCommandException;
 import com.api.web.Context;
 import com.api.web.ICommand;
@@ -18,10 +22,6 @@ import com.api.web.Request;
 import com.api.web.Response;
 import com.api.web.security.RMT2SessionBean;
 import com.api.web.util.RMT2WebUtility;
-import com.constants.RMT2ServletConst;
-import com.util.HostCompanyManager;
-import com.util.RMT2File;
-import com.util.RMT2String;
 
 /**
  * Abstract class that provides common functionality for generating PDF reports

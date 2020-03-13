@@ -2,8 +2,7 @@ package com.api.jsp.taglib.primitive;
 
 import com.SystemException;
 import com.api.jsp.taglib.RMT2AbstractInputControl;
-
-import com.util.RMT2Utility;
+import com.api.util.RMT2Utility;
 
 /**
  * This class builds HTML input controls using one of the primitive wrapper

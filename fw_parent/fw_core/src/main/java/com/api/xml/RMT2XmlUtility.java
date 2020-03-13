@@ -5,6 +5,7 @@ import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +33,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -40,6 +42,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -55,13 +61,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.NotFoundException;
+import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
+import com.api.constants.GeneralConst;
 import com.api.persistence.DatabaseException;
-import com.constants.GeneralConst;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 
 /**
  * A utility for performing commonly used XML operations. Conatins functionality
@@ -96,10 +103,8 @@ import com.util.RMT2Utility;
  * @author appdev
  * 
  */
-public class RMT2XmlUtility {
+public class RMT2XmlUtility extends RMT2Base {
     public static Logger logger = Logger.getLogger("RMT2XmlUtility");
-
-    private String msg;
 
     /**
      * Privately constructs a RMT2XmlUtility object.
@@ -157,8 +162,8 @@ public class RMT2XmlUtility {
     }
 
     /**
-     * Performs the transformation of a XSLT document to a file using the path
-     * names of the input and output documents.
+     * Transforms a XML document using XSL in which the transformed results are
+     * saved as a file.
      * <p>
      * This method implies that the source and target documents are retrieved
      * from and stored to disk.
@@ -168,15 +173,18 @@ public class RMT2XmlUtility {
      * @param xmlFileName
      *            File name of the input XML document.
      * @param outFileName
-     *            File name that will store the results of the transformation
+     *            File name that will store the results of the XML
+     *            transformation
      * @throws SystemException
      */
-    public void transformXslt(String xsltFileName, String xmlFileName,
-            String outFileName) throws SystemException {
+    public void transformXslt(String xsltFileName, String xmlFileName, String outFileName) throws SystemException {
         File xsltFile = new File(xsltFileName);
         File xmlFile = new File(xmlFileName);
-        File outFile = new File(outFileName);
-        this.transformXslt(xsltFile, xmlFile, outFile);
+        // File outFile = new File(outFileName);
+        OutputStream results = this.transformXslt(xsltFile, xmlFile, outFileName);
+        RMT2File.outputFile(((ByteArrayOutputStream) results).toByteArray(), outFileName);
+        // String filename = outSrc.getSystemId();
+        logger.info("XML document was successfully processed and the XSL transformation was saved as: " + outFileName);
     }
 
     /**
@@ -191,16 +199,17 @@ public class RMT2XmlUtility {
      *            File name of the XSLT input document.
      * @param xmlFileName
      *            File name of the input XML document.
-     * @param out
-     *            OutputStream, File, or Writer object which output will be
-     *            channeled.
+     * @param outSource
+     *            This is the source of the resulting transformation output
+     *            which is required to be either a String representing the
+     *            filename, File, OutputStream, or a Writer
+     * @return {@link OutputStream}
      * @throws SystemException
      */
-    public void transformXslt(String xsltFileName, String xmlFileName,
-            Object out) throws SystemException {
+    public OutputStream transformXslt(String xsltFileName, String xmlFileName, Object outSource) throws SystemException {
         File xsltFile = new File(xsltFileName);
         File xmlFile = new File(xmlFileName);
-        this.transformXslt(xsltFile, xmlFile, out);
+        return this.transformXslt(xsltFile, xmlFile, outSource);
     }
 
     /**
@@ -214,16 +223,18 @@ public class RMT2XmlUtility {
      *            A non-null File reference pointing to the XSLT file.
      * @param xmlFile
      *            A non-null File reference pointing to the XML file.
-     * @param outFile
-     *            A non-null File reference pointing to a valid output file.
+     * @param outSource
+     *            This is the source of the resulting transformation output
+     *            which is required to be either a String representing the
+     *            filename, File, OutputStream, or a Writer
+     * @return {@link OutputStream}
      * @throws SystemException
      */
-    public void transformXslt(File xsltFile, File xmlFile, Object out)
-            throws SystemException {
+    public OutputStream transformXslt(File xsltFile, File xmlFile, Object outSource) throws SystemException {
         String fileName = null;
 
         // All file references cannot be null
-        if (xsltFile != null && xmlFile != null && out != null) {
+        if (xsltFile != null && xmlFile != null && outSource != null) {
             // THe references are valid
         }
         else {
@@ -272,8 +283,7 @@ public class RMT2XmlUtility {
         try {
             xsltStream = new FileInputStream(xsltFile);
             xmlStream = new FileInputStream(xmlFile);
-            this.transformXslt(xsltStream, xsltFile.getAbsolutePath(),
-                    xmlStream, out);
+            return this.transformXslt(xsltStream, xsltFile.getAbsolutePath(), xmlStream, outSource);
         } catch (FileNotFoundException e) {
             this.msg = "Output file is a directory rather than a regular file, does not exist, cannot be created, or cannot be opened for some other reason";
             logger.log(Level.ERROR, this.msg);
@@ -289,7 +299,7 @@ public class RMT2XmlUtility {
             } catch (IOException e) {
                 this.msg = "A problem occurred closing either the XSLT, XML, or output files";
                 logger.log(Level.ERROR, this.msg);
-                throw new SystemException(this.msg);
+                throw new SystemException(this.msg, e);
             }
         }
     }
@@ -302,6 +312,9 @@ public class RMT2XmlUtility {
      * OutputStream objects, respectively. The input streams are converted to
      * StreamSource objects and the ouput stream is converted to a StreamResult
      * object.
+     * <p>
+     * The transformation results will be saved to a file in which the file name
+     * is assigned to the memmber variable, <i><xslResultsFileName/i>
      * 
      * @param xsltStream
      *            A non-null InputStream object representing the XSLT document.
@@ -310,27 +323,28 @@ public class RMT2XmlUtility {
      *            derived from a file. Otherwise, it is legal to be null.
      * @param xmlStream
      *            A non-null InputStream object representing the XML document.
-     * @param outStream
-     *            A non-null InputStream object representing the results of the
-     *            transformation.
+     * @param outSource
+     *            This is the source of the resulting transformation output
+     *            which is required to be either a String representing the
+     *            filename, File, OutputStream, or a Writer
+     * @return {@link OutputStream}
      * @throws SystemException
      */
-    public void transformXslt(InputStream xsltStream, String xsltPath,
-            InputStream xmlStream, Object out) throws SystemException {
+    public OutputStream transformXslt(InputStream xsltStream, String xsltPath, InputStream xmlStream, Object outSource)
+            throws SystemException {
         StreamSource xsltSrc = null;
         StreamSource xmlSrc = null;
         StreamResult outSrc = null;
 
         xsltSrc = new StreamSource(xsltStream, xsltPath);
         xmlSrc = new StreamSource(xmlStream);
-        outSrc = this.initResultStream(out);
+        outSrc = this.initResultStream(outSource);
 
         try {
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(xsltSrc);
             transformer.transform(xmlSrc, outSrc);
-            String filename = outSrc.getSystemId();
-            logger.log(Level.DEBUG, "Output source created: " + filename);
+            return outSrc.getOutputStream();
         } catch (Exception e) {
             e.printStackTrace();
             this.msg = "XSLT Transformation error: " + e.getMessage();
@@ -358,10 +372,11 @@ public class RMT2XmlUtility {
      *            A generic object which its runtime type is evaluated as either
      *            File, OutputStream, or Writer instance. This will represent
      *            the results of the transformation.
+     * @return the results as an instance of {@link OutputStream}
      * @throws SystemException
      *             For general transformation errors
      */
-    public void transform(String xslFileName, String xml, Object out)
+    public OutputStream transform(String xslFileName, String xml, Object out)
             throws SystemException {
         InputStream in = RMT2File.getFileInputStream(xslFileName);
         if (in == null) {
@@ -380,6 +395,7 @@ public class RMT2XmlUtility {
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(xsltSrc);
             transformer.transform(xmlSrc, outSrc);
+            return outSrc.getOutputStream();
         } catch (Exception e) {
             e.printStackTrace();
             this.msg = "XSLT Transformation error: " + e.getMessage();
@@ -427,10 +443,12 @@ public class RMT2XmlUtility {
     }
 
     /**
-     * Creates a StreamResult object out of outSrc.
+     * Creates a StreamResult object that will be used to contatin the XML
+     * transformation.
      * 
      * @param outSrc
-     *            An object of type OutputStream, Writer, or File.
+     *            An object of type OutputStream, Writer, File, or String which
+     *            serves as the outpput source of the XML transformation.
      * @return StreamResult.
      * @throws SystemException
      *             When ourSrc is of an invalid type or is null.
@@ -441,7 +459,13 @@ public class RMT2XmlUtility {
             this.msg = "Output source cannot be null";
             throw new SystemException(this.msg);
         }
-        if (outSrc instanceof File) {
+        if (outSrc instanceof String) {
+            // This is a String that will serve as the name of the file in which
+            // the XML transformation is saved.
+            OutputStream os = new ByteArrayOutputStream();
+            out = new StreamResult(os);
+        }
+        else if (outSrc instanceof File) {
             out = new StreamResult((File) outSrc);
         }
         else if (outSrc instanceof OutputStream) {
@@ -456,6 +480,93 @@ public class RMT2XmlUtility {
         }
         return out;
     }
+
+    /**
+     * Renders a XSLT Formatted Object document as a PDF stream in memeory.
+     * 
+     * @param xslFoFileName
+     *            The file path of the XSLT-FO document to be rendered.
+     * @return
+     * @throws SystemException
+     */
+    public ByteArrayOutputStream renderPdf(String xslFoFileName) throws SystemException {
+        // Set up input and output streams. Note: Using BufferedOutputStream for
+        // performance reasons (helpful with FileOutputStreams).
+        File inFile = new File(xslFoFileName);
+        ByteArrayOutputStream stream = this.renderPdf(inFile);
+        return stream;
+    }
+
+    /**
+     * Generates a PDF document from a XSLT Formatted Object document,
+     * <i>srcFileName</i>, using Apache Formatted Object Processeor.
+     * 
+     * @param xslFoFile
+     *            An instance of {@link File} representing the XSLT-FO document
+     *            to be rendered.
+     * @return ByteArrayOutputStream representing the PDF results.
+     * @throws SystemException
+     */
+    public ByteArrayOutputStream renderPdf(File xslFoFile) throws SystemException {
+        // Setup input and output for XSLT transformation Setup input stream
+        Source xslFoSource = new StreamSource(xslFoFile);
+        // Setup a buffer to obtain the content length
+        ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
+        this.renderPdf(xslFoSource, pdfStream);
+        return pdfStream;
+    }
+
+    /**
+     * Generates a PDF document from a XSLT Formatted Object document using
+     * Apache Formatted Object Processeor to a generic output stream
+     * 
+     * @param source
+     *            An instance of {@link Source} representing the XSL-FO document
+     *            to be transformed into a PDF.
+     * @param pdfStream
+     *            a generic output stream for direciting the generated results.
+     * @throws SystemException
+     */
+    public void renderPdf(Source source, OutputStream outStream) throws SystemException {
+
+        try {
+            // Resulting SAX events (the generated FO) must be piped through to
+            // FOP Construct fop with desired output format (reuse if you plan
+            // to render multiple documents!)
+            FopFactory fopFactory = FopFactory.newInstance();
+            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, outStream);
+            Result result = new SAXResult(fop.getDefaultHandler());
+
+            // Setup JAXP using identity transformer
+            TransformerFactory factory = TransformerFactory.newInstance();
+            Transformer transformer = factory.newTransformer();
+
+            // Start XSLT transformation and FOP processing
+            transformer.transform(source, result);
+            return;
+        } catch (TransformerConfigurationException e) {
+            this.msg = "TransformerConfigurationException: " + e.getMessage();
+            logger.log(Level.ERROR, this.msg);
+            throw new SystemException(this.msg);
+        } catch (TransformerException e) {
+            this.msg = "TransformerException: " + e.getMessage();
+            logger.log(Level.ERROR, this.msg);
+            throw new SystemException(this.msg);
+        } catch (FOPException e) {
+            this.msg = "FOPException: " + e.getMessage();
+            logger.log(Level.ERROR, this.msg);
+            throw new SystemException(this.msg);
+        } finally {
+            try {
+                outStream.close();
+            } catch (IOException e) {
+                this.msg = "IOException: " + e.getMessage();
+                logger.log(Level.ERROR, this.msg);
+                throw new SystemException(this.msg);
+            }
+        }
+    }
+
 
 
     public void serialize(Object obj, String filePath) throws SystemException {
@@ -520,8 +631,7 @@ public class RMT2XmlUtility {
      * @return
      * @throws SystemException
      */
-    public static org.w3c.dom.Document stringToDocument(String xmlSource)
-            throws SystemException {
+    public static org.w3c.dom.Document toDocument(String xmlSource) throws SystemException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder builder;
@@ -545,6 +655,17 @@ public class RMT2XmlUtility {
             logger.error(errMsg);
             throw new SystemException(errMsg);
         }
+    }
+
+    /**
+     * 
+     * @param xml
+     * @return
+     * @throws TransformerException
+     */
+    public static String prettyPrint(String xml) throws TransformerException {
+        org.w3c.dom.Document doc = toDocument(xml);
+        return prettyPrint(doc, true, true);
     }
 
     /**
@@ -584,7 +705,7 @@ public class RMT2XmlUtility {
      *             document parsing errors.
      */
     public static String getDocumentName(String xml) throws SystemException {
-        org.w3c.dom.Document doc = RMT2XmlUtility.stringToDocument(xml);
+        org.w3c.dom.Document doc = RMT2XmlUtility.toDocument(xml);
         Element e = doc.getDocumentElement();
         String docName = e.getTagName();
         return docName;
@@ -828,7 +949,7 @@ public class RMT2XmlUtility {
      */
     public static String getElementValue(String elementName, String xml) {
         org.w3c.dom.Document doc = null;
-        doc = RMT2XmlUtility.stringToDocument(xml);
+        doc = RMT2XmlUtility.toDocument(xml);
 
         // Get the target element element by tag name directly
         Node targetNode = doc.getElementsByTagName(elementName).item(0);
@@ -845,7 +966,7 @@ public class RMT2XmlUtility {
      */
     public static String setElementValue(String elementName, String value, String xml) {
         org.w3c.dom.Document doc = null;
-        doc = RMT2XmlUtility.stringToDocument(xml);
+        doc = RMT2XmlUtility.toDocument(xml);
         // Get the root element
         Node root = doc.getFirstChild();
 
@@ -866,8 +987,8 @@ public class RMT2XmlUtility {
      * @return
      * @throws TransformerException
      */
-    public static String printDocumentWithJdom(org.w3c.dom.Document document,
-            boolean pretty, boolean omitDeclaration) throws SystemException {
+    public static String prettyPrint(org.w3c.dom.Document document, boolean pretty, boolean omitDeclaration)
+            throws SystemException {
         DOMBuilder builder = new DOMBuilder();
         Document jdomDoc = builder.build(document);
 
@@ -898,7 +1019,7 @@ public class RMT2XmlUtility {
     public static InputSource getSaxInputSource(org.w3c.dom.Document doc)
             throws SystemException {
         // THE JDOM way to obtain XML string from Document instance...
-        String xml = RMT2XmlUtility.printDocumentWithJdom(doc, true, true);
+        String xml = RMT2XmlUtility.prettyPrint(doc, true, true);
         StringReader is = new StringReader(xml);
         InputSource insrc = new InputSource(is);
         return insrc;

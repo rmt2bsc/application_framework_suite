@@ -20,7 +20,7 @@ import com.api.DaoApiStub;
 import com.api.config.ConfigConstants;
 import com.api.ldap.operation.LdapOperation;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * Abstract class for providing basic functionality for a user to connect and/or

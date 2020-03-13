@@ -1,6 +1,6 @@
 package testcases;
 
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 public class TestCaseConstants {
 

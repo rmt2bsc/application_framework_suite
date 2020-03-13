@@ -33,7 +33,7 @@ import com.api.ldap.operation.LdapDeleteOperation;
 import com.api.ldap.operation.LdapModifyOperation;
 import com.api.ldap.operation.LdapSearchOperation;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2BeanUtility;
+import com.api.util.RMT2BeanUtility;
 
 /**
  * Concrete class for providing common functionality to interrogate, update,

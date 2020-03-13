@@ -45,7 +45,7 @@ public class JdomApiTest {
             DocumentBuilder parser = f.newDocumentBuilder();
             document = parser.parse(fileName);
 
-            strOutput = RMT2XmlUtility.printDocumentWithJdom(document, true,
+            strOutput = RMT2XmlUtility.prettyPrint(document, true,
                     false);
             System.out.println(strOutput);
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class JdomApiTest {
             DocumentBuilder parser = f.newDocumentBuilder();
             document = parser.parse(fileName);
 
-            strOutput = RMT2XmlUtility.printDocumentWithJdom(document, false,
+            strOutput = RMT2XmlUtility.prettyPrint(document, false,
                     true);
             System.out.println(strOutput);
         } catch (Exception e) {

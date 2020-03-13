@@ -7,11 +7,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
 import com.SystemException;
-import com.util.RMT2Utility;
-
 import com.api.DaoApi;
 import com.api.jsp.taglib.PageVariableHelper;
 import com.api.jsp.taglib.RMT2AbstractInputControl;
+import com.api.util.RMT2Utility;
 import com.api.xml.XmlApiFactory;
 
 /**

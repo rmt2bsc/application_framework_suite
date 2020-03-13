@@ -13,8 +13,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
+import com.api.util.RMT2BeanUtility;
 import com.ui.components.dropdownbox.DropDownBoxColumnDefinition;
-import com.util.RMT2BeanUtility;
 
 /**
  * A custom JComboBox editor for DataGrid cells.

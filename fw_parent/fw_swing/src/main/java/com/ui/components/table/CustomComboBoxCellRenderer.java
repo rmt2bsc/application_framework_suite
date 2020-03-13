@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import com.api.util.RMT2BeanUtility;
 import com.ui.components.dropdownbox.DropDownBoxColumnDefinition;
-import com.util.RMT2BeanUtility;
 
 /**
  * A custom renderer for DataGrid cells.

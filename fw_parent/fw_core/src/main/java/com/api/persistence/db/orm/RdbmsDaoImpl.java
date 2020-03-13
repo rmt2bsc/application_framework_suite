@@ -19,6 +19,7 @@ import com.api.Product;
 import com.api.ProductBuilder;
 import com.api.ProductBuilderException;
 import com.api.ProductDirector;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.DatabaseException;
 import com.api.persistence.db.DatabaseConnectionBean;
 import com.api.persistence.db.DbSqlConst;
@@ -26,9 +27,8 @@ import com.api.persistence.db.orm.bean.ObjectMapperAttrib;
 import com.api.persistence.db.orm.bean.TableUsageBean;
 import com.api.persistence.db.orm.query.OrmQueryBuilderFactory;
 import com.api.security.RMT2TagQueryBean;
-import com.constants.RMT2SystemExceptionConst;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 
 /**
  * This class contains methods responsible for the storage and retrieval of data

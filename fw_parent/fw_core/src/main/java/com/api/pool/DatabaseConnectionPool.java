@@ -8,9 +8,8 @@ import org.apache.log4j.Logger;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.ConnectionProvider;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.db.DatabaseConnectionBean;
-//import javax.servlet.http.HttpServletRequest;
-import com.constants.RMT2SystemExceptionConst;
 
 /**
  * This class provides the basic method implementations to setup and manage a

@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import com.NotFoundException;
 import com.RMT2BaseBean;
 import com.SystemException;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.db.DbSqlConst;
-import com.constants.RMT2SystemExceptionConst;
-import com.util.RMT2String;
+import com.api.util.RMT2String;
 
 /**
  * This class assists the DataSourceApi implementation to track and map database

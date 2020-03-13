@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.api.config.AppPropertyPool;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * Utility class that provides common functionality for resource

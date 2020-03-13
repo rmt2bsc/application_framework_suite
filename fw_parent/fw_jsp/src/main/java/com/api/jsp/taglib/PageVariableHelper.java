@@ -16,11 +16,11 @@ import com.api.DaoApi;
 import com.api.jsp.taglib.bean.dao.BeanDao;
 import com.api.jsp.taglib.bean.dao.BeanDaoFactory;
 import com.api.persistence.DatabaseException;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Date;
+import com.api.util.RMT2Money;
+import com.api.util.RMT2Utility;
 import com.api.xml.XmlDao;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Date;
-import com.util.RMT2Money;
-import com.util.RMT2Utility;
 
 /**
  * Provides a convenient implementation for identifying and obtaining the value

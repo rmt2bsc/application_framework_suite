@@ -20,8 +20,8 @@ import com.SystemException;
 import com.api.config.old.ProviderConfig;
 import com.api.messaging.rmi.RmiConstants;
 import com.api.messaging.rmi.service.RmiServiceCommand;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2File;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2File;
 
 /**
  * RMI engine server that functions as a setup procedure to create the RMI

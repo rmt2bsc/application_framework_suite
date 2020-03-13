@@ -14,11 +14,11 @@ import com.api.persistence.DatabaseException;
 import com.api.persistence.db.DbSqlConst;
 import com.api.persistence.db.orm.DataSourceConverter;
 import com.api.persistence.db.orm.bean.DataSourceColumn;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Date;
+import com.api.util.RMT2Utility;
 import com.api.web.Request;
 import com.api.web.util.RMT2WebUtility;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Date;
-import com.util.RMT2Utility;
 
 /**
  * Abstract class that provides methods for converting data from one source to

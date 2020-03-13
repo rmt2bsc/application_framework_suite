@@ -13,8 +13,8 @@ import com.SystemException;
 import com.api.DaoApi;
 import com.api.DaoApiStub;
 import com.api.persistence.DatabaseException;
-import com.util.RMT2BeanUtility;
-import com.util.RMT2Utility;
+import com.api.util.RMT2BeanUtility;
+import com.api.util.RMT2Utility;
 
 /**
  * This class implements the DaoApi interface by abstracting the functioanlity

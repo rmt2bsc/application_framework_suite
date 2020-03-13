@@ -7,9 +7,9 @@ import com.api.config.ConfigConstants;
 import com.api.config.old.ProviderConfig;
 import com.api.security.authentication.web.AuthenticationException;
 import com.api.security.authentication.web.LoginException;
+import com.api.util.RMT2Utility;
 import com.api.web.Request;
 import com.api.web.Session;
-import com.util.RMT2Utility;
 
 /**
  * Factory that creates instances of classes that are related to authentication

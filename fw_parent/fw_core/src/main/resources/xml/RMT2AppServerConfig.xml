@@ -21,6 +21,20 @@
 	<WebAppsDir>/Program Files/Apache Software Foundation/Tomcat 6.0/webapps</WebAppsDir>
 	<WebAppsDrive>c\:</WebAppsDrive>
 
+  <!-- ******************************* -->
+	<!-- Company Properties              -->
+	<!-- ******************************* -->
+	<CompanyProperties>
+	    <ContactId>1343</ContactId>
+      <CompanyName>RMT2 Business Systems Corp.</CompanyName>
+      <ContactFirstname>Roy</ContactFirstname>
+      <ContactLastname>Terrell</ContactLastname>
+      <ContactPhone>(214) 498-3935</ContactPhone>
+      <ContactEmail>rmt2bsc@gmail.com</ContactEmail>
+      <TaxId>752722282</TaxId>
+      <Website>rmt2.net</Website>
+	</CompanyProperties>
+	
 	
 	<!-- ******************************* -->
 	<!-- JVM System Properties           -->
@@ -42,6 +56,7 @@
 	   </EmailConfig>
 	   <ConsumerMsgHandlerMappingsKey>msg_handler_reg_pkg</ConsumerMsgHandlerMappingsKey>
 	   <ConsumerMsgHandlerMappingsLocation>org.rmt2.config.transactions</ConsumerMsgHandlerMappingsLocation>
+	   <XsltTransformer>net.sf.saxon.TransformerFactoryImpl</XsltTransformer>
 	</SystemProperties>
 	
 	<!-- ******************************************************************** -->

@@ -22,7 +22,7 @@ import javax.print.attribute.standard.PageRanges;
 import javax.swing.text.JTextComponent;
 
 import com.SystemException;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * This is a utility for printing the contents of the Swing components

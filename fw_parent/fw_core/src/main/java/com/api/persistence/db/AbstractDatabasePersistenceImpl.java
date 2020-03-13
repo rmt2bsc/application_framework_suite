@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.SystemException;
+import com.api.constants.RMT2SystemExceptionConst;
 import com.api.persistence.DatabaseException;
-import com.constants.RMT2SystemExceptionConst;
 
 /**
  * This class serves as a abstract base implementation of the persistence api in

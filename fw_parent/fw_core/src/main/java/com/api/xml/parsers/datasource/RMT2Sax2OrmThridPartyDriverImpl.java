@@ -23,9 +23,9 @@ import com.api.persistence.db.DbSqlConst;
 import com.api.persistence.db.orm.bean.DataSourceColumn;
 import com.api.persistence.db.orm.bean.ObjectMapperAttrib;
 import com.api.persistence.db.orm.bean.TableUsageBean;
+import com.api.util.RMT2File;
+import com.api.util.RMT2Utility;
 import com.api.xml.RMT2SaxAttributesBean;
-import com.util.RMT2File;
-import com.util.RMT2Utility;
 
 /**
  * Java XML class used to parse XML documents using the a pluggable third party

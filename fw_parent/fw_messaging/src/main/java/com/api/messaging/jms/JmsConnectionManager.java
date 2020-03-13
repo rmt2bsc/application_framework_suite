@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.api.config.SystemConfigurator;
 import com.api.config.jaxb.AppServerConfig;
-import com.util.RMT2BeanUtility;
+import com.api.util.RMT2BeanUtility;
 
 /**
  * Creates and manages one or more JMS connection objects as a collection.

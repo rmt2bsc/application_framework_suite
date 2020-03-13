@@ -28,13 +28,13 @@ import org.apache.log4j.Logger;
 import com.DateStringComparator;
 import com.GuiEnvSetup;
 import com.NumericStringComparator;
+import com.api.util.RMT2File;
 import com.ui.components.ColumnDefinitionException;
 import com.ui.event.CustomItemDoubleClickedEvent;
 import com.ui.event.CustomItemSelectedEvent;
 import com.ui.event.CustomSelectionListener;
 import com.ui.event.EventDispatcher;
 import com.ui.event.EventDispatcherImpl;
-import com.util.RMT2File;
 import com.util.RMT2SwingUtil;
 
 /**

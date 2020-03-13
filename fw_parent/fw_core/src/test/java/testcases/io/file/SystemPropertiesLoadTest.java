@@ -3,9 +3,9 @@ package testcases.io.file;
 import org.junit.Assert;
 import org.junit.Test;
 
-import testcases.TestCaseConstants;
+import com.api.util.RMT2File;
 
-import com.util.RMT2File;
+import testcases.TestCaseConstants;
 
 /**
  * Test loading resources from file system and classpath

@@ -11,10 +11,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import testcases.TestCaseConstants;
+import com.api.util.RMT2File;
+import com.api.util.RMT2ZipFileManager;
 
-import com.util.RMT2File;
-import com.util.RMT2ZipFileManager;
+import testcases.TestCaseConstants;
 
 /**
  * @author WinXP User

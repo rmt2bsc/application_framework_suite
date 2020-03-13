@@ -413,7 +413,7 @@ class SoapProductBuilderImpl extends RMT2Base implements SoapProductBuilder {
             SOAPBody soapBody = soapEnvelope.getBody();
 
             // Create Document instance from data
-            Document doc = RMT2XmlUtility.stringToDocument(bodyData);
+            Document doc = RMT2XmlUtility.toDocument(bodyData);
             soapBody.addDocument(doc);
         } catch (SOAPException e) {
             this.msg = "A SOAP error was detected as a result of trying to add a XML Doucument instance to the SOAP Body";

@@ -14,9 +14,9 @@ import com.SystemException;
 import com.api.DaoApi;
 import com.api.messaging.webservice.router.MessageRoutingInfo;
 import com.api.persistence.DatabaseException;
+import com.api.util.RMT2File;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.XmlApiFactory;
-import com.util.RMT2File;
 
 /**
  * An implementation of the ServiceRegistry interface where the service entries
@@ -173,7 +173,7 @@ class FileServiceRegistryLoaderImpl extends AbstractServiceRegistryImpl {
         rootElement = RMT2XmlUtility.getDocumentName(xml);
 
         try {
-            Document doc = RMT2XmlUtility.stringToDocument(xml);
+            Document doc = RMT2XmlUtility.toDocument(xml);
             Element e = doc.getDocumentElement();
             rootElement = e.getTagName();
         } catch (Exception e1) {

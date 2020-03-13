@@ -23,7 +23,7 @@ import com.api.messaging.rmi.client.RmiClientSession;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.messaging.webservice.http.client.HttpClientResourceFactory;
 import com.api.messaging.webservice.http.client.HttpMessageSender;
-import com.util.RMT2String2;
+import com.api.util.RMT2String2;
 
 /**
  * An abstract implementation of {@link MessagingRouter} providing common router

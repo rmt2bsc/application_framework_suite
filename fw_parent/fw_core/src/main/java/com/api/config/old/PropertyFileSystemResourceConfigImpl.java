@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.SystemException;
 import com.api.config.ConfigConstants;
 import com.api.config.ConfigException;
-import com.util.RMT2File;
+import com.api.util.RMT2File;
 
 /**
  * This class implements {@link com.api.config.ResourceConfigurator
