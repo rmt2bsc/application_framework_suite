@@ -161,7 +161,7 @@ public abstract class AbstractMessageDrivenBean {
                 errorDetails.setTransaction("unknown transaction");
                 errorDetails.setMessage(BUS_SERVER_ERROR);
                 errorDetails.setExtMessage(errMsg);
-                errorDetails.setReturnCode(-101);
+                errorDetails.setReturnCode(JmsConstants.RMT2_JMS_ERROR_MESSAGE_EXTRACTION_FAILURE);
                 errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
                 String xml = this.buildErrorResponse(errorDetails);
 
