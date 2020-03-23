@@ -187,8 +187,29 @@ public abstract class AbstractMessageDrivenBean {
         // Create handler mapping key name
         String commandKey = this.createCommandKey(app, module, trans);
 
-        // Load handler mappings based on application name.
-        ResourceBundle handlerMapping = this.getApplicationMappings(app);
+        // Load transacton code / message handler mappings based on
+        // application name.
+        ResourceBundle handlerMapping = null;
+        try {
+            handlerMapping = this.getApplicationMappings(app);
+        } catch (Exception e) {
+            String errMsg = "Unable to locate Transaction Code / Message Handler configuration.  ";
+
+            MessageHandlerCommonReplyStatus errorDetails = new MessageHandlerCommonReplyStatus();
+            errorDetails.setApplication(app);
+            errorDetails.setModule(module);
+            errorDetails.setTransaction(trans);
+            errorDetails.setMessage(BUS_SERVER_ERROR);
+            errorDetails.setExtMessage(errMsg + e.getMessage());
+            errorDetails.setReturnCode(JmsConstants.RMT2_JMS_ERROR_TRANSCODE_MSGHANDLER_CONFIG_NOTFOUND);
+            errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
+            String xml = this.buildErrorResponse(errorDetails);
+
+            MessageHandlerResults response = new MessageHandlerResults();
+            response.setPayload(xml);
+            logger.error(BUS_SERVER_ERROR + ":  " + errMsg, e);
+            return response;
+        }
 
         // Instantiate Handler class
         MessageHandlerCommand apiHandler = null;
@@ -203,7 +224,7 @@ public abstract class AbstractMessageDrivenBean {
             errorDetails.setTransaction(trans);
             errorDetails.setMessage(BUS_SERVER_ERROR);
             errorDetails.setExtMessage(errMsg);
-            errorDetails.setReturnCode(-201);
+            errorDetails.setReturnCode(JmsConstants.RMT2_JMS_ERROR_HANDLER_INVOCATION_PROBLEM);
             errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
             String xml = this.buildErrorResponse(errorDetails);
          
