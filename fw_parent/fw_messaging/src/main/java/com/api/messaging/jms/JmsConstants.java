@@ -72,6 +72,12 @@ public class JmsConstants {
     public static final int LISTEN_MODE_ASYNC = 101;
 
     /**
+     * RMT2 JMS Framework Error Codes
+     */
+    public static final int RMT2_JMS_ERROR_HANDLER_INVOCATION_PROBLEM = -201;
+    public static final int RMT2_JMS_ERROR_TRANSCODE_MSGHANDLER_CONFIG_NOTFOUND = -203;
+
+    /**
      * Create RmiConstants object
      */
     public JmsConstants() {
