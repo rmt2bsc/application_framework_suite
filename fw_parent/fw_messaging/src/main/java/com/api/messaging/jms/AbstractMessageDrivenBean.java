@@ -1,5 +1,6 @@
 package com.api.messaging.jms;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.jms.Destination;
@@ -18,6 +19,7 @@ import com.api.messaging.handler.MessageHandlerException;
 import com.api.messaging.handler.MessageHandlerResults;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.util.RMT2File;
+import com.api.util.RMT2String;
 import com.api.util.RMT2Utility;
 import com.api.xml.RMT2XmlUtility;
 
@@ -92,18 +94,7 @@ public abstract class AbstractMessageDrivenBean {
      */
     public void onMessage(Message message) {
         logger.info("Entering onMessage() method");
-
-        // Identify the Destination this message came from
-        Destination dest;
-        try {
-            dest = message.getJMSDestination();
-        } catch (JMSException e) {
-            throw new MessageHandlerException("Error obttaining message destination object", e);
-        }
-        String destName;
         this.jms = JmsClientManager.getInstance();
-        destName = this.jms.getInternalDestinationName(dest);
-        logger.info("Recieved message from destination, " + destName);
 
         // Process the message by its appropriate handler
         MessageHandlerResults results = this.processMessage(message);
@@ -146,6 +137,17 @@ public abstract class AbstractMessageDrivenBean {
      * @return an instance of {@link MessageHandlerResults}
      */
     protected MessageHandlerResults processMessage(Message message) {
+        // Identify the Destination this message came from
+        Destination actualDestinationObj = null;
+        String actualDestinationName = null;
+        try {
+            actualDestinationObj = message.getJMSDestination();
+            actualDestinationName = this.jms.getInternalDestinationName(actualDestinationObj);
+            logger.info("Recieved message from destination, " + actualDestinationName);
+        } catch (JMSException e) {
+            throw new MessageHandlerException("Error obttaining message destination object", e);
+        }
+
         // For now, accept only TextMessage types
         String requestPayload = null;
         String responsePayload = null;
@@ -183,6 +185,40 @@ public abstract class AbstractMessageDrivenBean {
         String app = RMT2XmlUtility.getElementValue(WebServiceConstants.APPLICATION, requestPayload);
         String module = RMT2XmlUtility.getElementValue(WebServiceConstants.MODULE, requestPayload);
         String trans = RMT2XmlUtility.getElementValue(WebServiceConstants.TRANSACTION, requestPayload);
+        String routing = RMT2XmlUtility.getElementValue(WebServiceConstants.ROUTING, requestPayload);
+
+        // Determine if the message was sent to the correct destination
+        // TODO: Provide logic to obtain system level flag to determine whether
+        // or not destination integrity should be performed
+        String msgRoutingDestinamtionName = null;
+        List<String> routingTokens = RMT2String.getTokens(routing, ":");
+        if (routingTokens != null && routingTokens.size() == 2) {
+            msgRoutingDestinamtionName = routingTokens.get(1);
+            if (!msgRoutingDestinamtionName.equalsIgnoreCase(actualDestinationName)) {
+                String errMsg = "Message was sent the incorrect destination.  Actual destination [" + actualDestinationName
+                        + "] Required destination [" + msgRoutingDestinamtionName + "]";
+
+                MessageHandlerCommonReplyStatus errorDetails = new MessageHandlerCommonReplyStatus();
+                errorDetails.setApplication(app);
+                errorDetails.setModule(module);
+                errorDetails.setTransaction(trans);
+                errorDetails.setMessage(BUS_SERVER_ERROR);
+                errorDetails.setExtMessage(errMsg);
+                errorDetails.setReturnCode(JmsConstants.RMT2_JMS_ERROR_TRANSCODE_MSGHANDLER_CONFIG_NOTFOUND);
+                errorDetails.setReturnStatus(WebServiceConstants.RETURN_STATUS_SERVER_ERROR);
+                String xml = this.buildErrorResponse(errorDetails);
+
+                MessageHandlerResults response = new MessageHandlerResults();
+                response.setPayload(xml);
+                logger.error(BUS_SERVER_ERROR + ":  " + errMsg);
+                return response;
+            }
+        }
+        else {
+            // TODO: remove this condition branch once the above destination
+            // integrity flag logic is implemented.
+            logger.info("Actual and Intended destination integrity check was bypassed!");
+        }
 
         // Create handler mapping key name
         String commandKey = this.createCommandKey(app, module, trans);

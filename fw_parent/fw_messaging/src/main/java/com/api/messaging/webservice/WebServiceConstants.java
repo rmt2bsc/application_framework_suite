@@ -138,4 +138,6 @@ public class WebServiceConstants {
 
     public static final String TRANSACTION = "transaction";
 
+    public static final String ROUTING = "routing";
+
 }
