@@ -205,7 +205,7 @@ public class SystemConfigurator extends RMT2Base {
     private void loadLocalProperties(AppServerConfig config) {
         AppPropertyPool props = AppPropertyPool.getInstance();
         props.addProperty("LoggerConfigPath", config.getLoggerConfigPath());
-        props.addProperty("ContainerManagedPool", config.getContainerManagedPool());
+        props.addSystemProperty("ContainerManagedPool", config.getContainerManagedPool());
         props.addSystemProperty("PageLinkMax", String.valueOf(config.getPageLinkMax()));
         props.addSystemProperty("PaginationPageSize", String.valueOf(config.getPaginationPageSize()));
         props.addSystemProperty("PollingPage", config.getPollingPage());
