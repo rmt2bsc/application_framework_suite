@@ -39,7 +39,6 @@ import org.apache.log4j.Logger;
 import com.NotFoundException;
 import com.RMT2RuntimeException;
 import com.SystemException;
-import com.api.config.ConfigConstants;
 
 /**
  * Class contains a collection general purpose File I/O utilities.
@@ -579,17 +578,6 @@ public class RMT2File {
         return props;
     }
 
-    /**
-     * Obtains the property value from <i>config.Appparms.propertes</i> using
-     * keyCode.
-     * 
-     * @param prop
-     *            The key name
-     * @return The property value.
-     */
-    public static final String getAppParmProperty(String prop) {
-        return RMT2File.getPropertyValue(ConfigConstants.CONFIG_APP, prop);
-    }
 
     /**
      * Obtains the property value using keyCode from within the selected
