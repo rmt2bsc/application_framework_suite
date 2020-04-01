@@ -220,6 +220,7 @@ public class SystemConfigurator extends RMT2Base {
         props.addSystemProperty("WebAppMapping", config.getWebAppMapping());
         props.addSystemProperty("WebAppsDir", config.getWebAppsDir());
         props.addSystemProperty("WebAppsDrive", config.getWebAppsDrive());
+        props.addSystemProperty("dbmsVendor", config.getDbmsVendor());
     }
 
     /**

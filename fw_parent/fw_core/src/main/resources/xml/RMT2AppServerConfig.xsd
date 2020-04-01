@@ -23,6 +23,16 @@
         <xs:element type="xs:string" name="WebAppsDir"/>
         <xs:element type="xs:string" name="WebAppsDrive"/>
         
+        <!-- DBMS Vendor Identity                               -->
+        <!-- ASA  = Sybase SQL Anywhere, Sybase Adaptive Server -->
+        <!-- ASE  = Sybase Adaptive Server Enterprise           -->
+        <!-- ORA  = Oracle                                      -->
+        <!-- TSQL = Microsoft SQL Server                        -->
+        <!-- DB2  = IBM DB2                                     -->
+        <!-- INFX = Informix                                    -->
+        <xs:element type="xs:string" name="dbmsVendor"/>
+        
+        
         <xs:element name="CompanyProperties">
           <xs:annotation>
             <xs:documentation>*******************************  Main Company Properties           *******************************</xs:documentation>
