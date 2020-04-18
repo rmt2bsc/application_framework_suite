@@ -1,10 +1,6 @@
 package com.api.messaging.email.smtp;
 
-import java.util.Map;
-
 import com.api.messaging.MessageManager;
-import com.api.messaging.email.EmailException;
-import com.api.messaging.email.EmailMessageBean;
 
 /**
  * Interface that provides methods for setting up and sending messages via the
@@ -81,35 +77,5 @@ import com.api.messaging.email.EmailMessageBean;
 public interface SmtpApi extends MessageManager {
 
     String REQUIRED_EMAIL_ATTACHMENT = "images/logotip.jpg";
-
-    /**
-     * Using the concepts of "Mail Merge", this method creates and transmits an
-     * email message to its destination. Uses a template document to dynamically
-     * bind data values to one or more place holders contained in the template.
-     * 
-     * @param emailData
-     *            {@link com.aviall.apps.dotcom.util.email.EmailMessageBean
-     *            EmailMessageBean} containing data values for <i>From</i>,
-     *            <i>To</i>, <i>Subject</i>, and <i>Attachments</i> email
-     *            components. The Body component is not requrired since the
-     *            content of the template will be processed as the email body.
-     * @param tempData
-     *            A Map containing the data that will be used to substitute
-     *            values for any place holders existing in the template
-     *            document. A Map should be created containg the data that will
-     *            dynamically substitute the place holders in the Velocity
-     *            document. The hash key names represent the place holder
-     *            variables in the document and should be spelled exactly the
-     *            same. The hash values represent the data value that will
-     *            substitute the mapped place holder in the Velocity document.
-     * @param tempName
-     *            The name of the template document to process. Do not include
-     *            any path information as well as the file extension since this
-     *            process requires the template extension to exist as ".vm".
-     * @return int
-     * @throws AviallEmailException
-     */
-    int sendMessage(EmailMessageBean emailData, Map<Object, Object> tempData,
-            String tempName) throws EmailException;
 
 }
