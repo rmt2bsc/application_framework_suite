@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -120,7 +119,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
      *            EmailMessageBean} containing data representing the components
      *            that comprises an email structure: 'From', 'To', 'Subject',
      *            'Body', and any attachments.
-     * @return int Always returns 1.
+     * @return int The SMTP return code.
      * @throws MessageException
      *             SMTP server is invalid or not named, validation errors,
      *             invalid assignment of data values to the email message, email
@@ -139,20 +138,13 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
         try {
             this.validate();
             Message msg = this.setupEmailComponents();
-            this.transportMessageSmtp(msg);
-            return 1;
+            return this.transportMessageSmtp(msg);
         } catch (EmailException e) {
             throw new MessageException(e);
         } catch (ProviderConnectionException e) {
             e.printStackTrace();
             throw new MessageException(e);
         }
-    }
-
-
-    @Override
-    public int sendMessage(EmailMessageBean emailData, Map<Object, Object> tempData, String tempName) throws EmailException {
-        return 0;
     }
 
     /**
@@ -261,7 +253,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
         }
     }
 
-    private void transportMessageSmtp(Message msg) throws EmailException {
+    private int transportMessageSmtp(Message msg) throws EmailException {
         try {
             // Setup SMTP transport
             SMTPTransport t = (SMTPTransport) this.emailSession.getTransport("smtp");
@@ -277,6 +269,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
 
             // Close SMTP transport
             t.close();
+            return t.getLastReturnCode();
         } catch (Exception e) {
             this.msg = "A problem occured attempting to setup SMTP transport, connect to SMTP server, sending the email message, or closing the SMTP transport";
             logger.error(this.msg, e);
