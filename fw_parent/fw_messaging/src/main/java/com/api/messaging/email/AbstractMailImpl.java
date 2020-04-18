@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
+import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -26,9 +27,9 @@ import com.api.util.RMT2String;
  */
 public abstract class AbstractMailImpl extends AbstractMessagingImpl {
 
-    private Session emailSession;
+    protected Session emailSession;
 
-    protected MimeMessage email;
+    protected Message email;
 
     protected EmailMessageBean emailBean;
 
@@ -74,15 +75,14 @@ public abstract class AbstractMailImpl extends AbstractMessagingImpl {
      * @see com.api.messaging.AbstractMessagingImpl#getConnection()
      */
     @Override
-    public Object connect(ProviderConfig config)
-            throws ProviderConnectionException {
+    public Object connect(ProviderConfig config) throws ProviderConnectionException {
         Authenticator auth = new SMTPAuthenticator();
 
         // Initialize E-Mail Session
-        this.emailSession = Session.getDefaultInstance(props, auth);
+        this.emailSession = Session.getInstance(props, auth);
         // Create a MIME style email message
         this.email = new MimeMessage(this.emailSession);
-        return this.emailSession;
+        return this.email;
     }
 
     /**

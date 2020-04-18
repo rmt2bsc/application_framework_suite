@@ -1,30 +1,25 @@
 package com.api.messaging.email.smtp;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.mail.AuthenticationFailedException;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.IllegalWriteException;
+import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.SendFailedException;
-import javax.mail.Transport;
+import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 
 import com.SystemException;
 import com.api.config.old.ProviderConfig;
@@ -33,6 +28,7 @@ import com.api.messaging.MessageException;
 import com.api.messaging.email.AbstractMailImpl;
 import com.api.messaging.email.EmailException;
 import com.api.messaging.email.EmailMessageBean;
+import com.sun.mail.smtp.SMTPTransport;
 
 /**
  * This class implements SmtpApi interface which is used for sending emails
@@ -45,8 +41,6 @@ import com.api.messaging.email.EmailMessageBean;
 class SmtpImpl extends AbstractMailImpl implements SmtpApi {
 
     private Logger logger = Logger.getLogger(AbstractMailImpl.class);
-
-    private boolean useTemplate;
 
     /**
      * Creates an CommonMailImpl object which the identification of the host
@@ -80,16 +74,15 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
     }
 
     /**
-     * Set up properties that is required to establish a connection to the SMTP
-     * server
+     * Set Session with properties that is required to establish a connection to
+     * the SMTP server
      * 
      * (non-Javadoc)
      * 
      * @see com.api.messaging.AbstractMessagingImpl#getConnection()
      */
     @Override
-    public Object connect(ProviderConfig config)
-            throws ProviderConnectionException {
+    public Object connect(ProviderConfig config) throws ProviderConnectionException {
         props.put("mail.transport.protocol", "smtp");
         this.props.put("mail.smtp.host", this.config.getHost());
 
@@ -98,6 +91,10 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
             // Enable SMTP authentication
             props.put("mail.smtp.auth", "true");
         }
+
+        // TODO: This is gmail specific. Add to AppServer configuration file
+        props.put("mail.smtp.port", "25");
+        props.put("mail.smtp.starttls.enable", "true"); // TLS
         return super.connect(config);
     }
 
@@ -141,9 +138,8 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
         }
         try {
             this.validate();
-            this.connect(this.config);
-            this.setupMessage();
-            this.transportMessage();
+            Message msg = this.setupEmailComponents();
+            this.transportMessageSmtp(msg);
             return 1;
         } catch (EmailException e) {
             throw new MessageException(e);
@@ -153,148 +149,10 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
         }
     }
 
-    /**
-     * Creates and sends an email message using the concepts of "Mail Merge"
-     * using the template engine, Velocity, to build dynamic content.
-     * <i>tempRootName</i> is the targeted template document containing the
-     * place holder variables that will be substituted by embedded dynamic
-     * content.
-     * 
-     * @param emailData
-     *            An instance of
-     *            {@link com.aviall.apps.dotcom.util.email.EmailMessageBean
-     *            EmailMessageBean} containing data representing the components
-     *            that comprises an email structure: 'From', 'To', 'Subject',
-     *            and any attachments. Content for the body component is not
-     *            reuqired since this method will be dynamically managing it.
-     * @param tempData
-     *            A Map containing the data that will replace the template's
-     *            place holder variables.
-     * @param tempRootName
-     *            The root filename of the template that is to be processed. Do
-     *            not include the file extension since this process requires the
-     *            template extension to exist as ".vm".
-     * @return int Always return 1.
-     * @throws EmailException
-     *             When the email template resource cannot be found, tempalte
-     *             parsing failed due to a syntax error, the invocation of the
-     *             template failed, or a general SMTP error(s).
-     */
-    public int sendMessage(EmailMessageBean emailData,
-            Map<Object, Object> tempData, String tempRootName)
-            throws EmailException {
 
-        this.useTemplate = true;
-        this.emailBean = emailData;
-        this.validate();
-        this.setupMessage();
-
-        // Manage the velocity template
-        VelocityContext context = null;
-        Template template = null;
-        String tempName = null;
-        try {
-            // Create an instance of the Velocity engine
-            VelocityEngine engine = this.createTemplateEngine();
-
-            // Identify the template we want to work with
-            tempName = tempRootName + ".vm";
-            template = engine.getTemplate(tempName);
-
-            // Apply dynamic data values to email template.
-            context = this.createTemplateContext(tempData, tempRootName);
-            StringWriter writer = new StringWriter();
-            template.merge(context, writer);
-            writer.close();
-
-            // Assign results of template merge to the body of the actual mime
-            // message
-            this.emailBean.setBody(writer.getBuffer().toString(), null);
-            this.email.setContent(this.emailBean.assembleBody());
-        } catch (ResourceNotFoundException e) {
-            throw new EmailException("Email template, " + tempName
-                    + ", could not be found");
-        } catch (ParseErrorException e) {
-            throw new EmailException(
-                    "Syntax error occurred in email template, " + template
-                            + ".  Problem parsing the template");
-        } catch (MethodInvocationException e) {
-            throw new EmailException("The invocation of email template, "
-                    + template + ", threw an exception");
-        } catch (Exception e) {
-            throw new EmailException(
-                    "A general SMTP error occurred for email template, "
-                            + template + ".  Additional message: "
-                            + e.getMessage());
-        }
-
-        // Send email
-        this.transportMessage();
-        return 1;
-    }
-
-    /**
-     * Creates an instance of the Velocity runtime engine which employs the
-     * 'Classpath' resource loader to manage templates.
-     * 
-     * @return VelocityEngine
-     * @throws EmailException
-     *             engine failed to be initialized.
-     */
-    private VelocityEngine createTemplateEngine() throws EmailException {
-        // Identify and configure resource loader properties
-        String resourceType = System.getProperty("mail.resourcetype");
-        Properties props = new Properties();
-        String resourceLoader = "resource.loader";
-        String loaderName = null;
-        String implClass = null;
-        String path = ".resource.loader.path";
-
-        if (resourceType.equalsIgnoreCase("file")) {
-            // Setup file resource loader
-            loaderName = "filesystem";
-            implClass = loaderName + ".resource.loader.class";
-            String filePath = System.getProperty("mail.templatepath");
-            path = loaderName + path;
-            props.setProperty(resourceLoader, loaderName);
-            props.setProperty(implClass, FileResourceLoader.class.getName());
-            props.setProperty(path, filePath);
-
-        }
-        else if (resourceType.equalsIgnoreCase("class")) {
-            // Setup class resource loader
-            loaderName = "classpath";
-            implClass = loaderName + ".resource.loader.class";
-            props.setProperty(resourceLoader, loaderName);
-            props.setProperty(implClass,
-                    ClasspathResourceLoader.class.getName());
-        }
-
-        // Initialize velocity engine.
-        VelocityEngine engine = new VelocityEngine();
-        try {
-            engine.init(props);
-            return engine;
-        } catch (Exception e) {
-            throw new EmailException(e);
-        }
-    }
-
-    /**
-     * Creates the Velocity context instance using a Map of template data values
-     * and the root name of the template file that will be processed.
-     * 
-     * @param data
-     *            The data that is to be applied to the template.
-     * @param tempName
-     *            The name of the template file without the file extension.
-     * @return {@link VelocityContext}
-     */
-    private VelocityContext createTemplateContext(Map<Object, Object> data,
-            String tempName) {
-        VelocityContext context = new VelocityContext();
-        context.put(tempName, data);
-        return context;
+    @Override
+    public int sendMessage(EmailMessageBean emailData, Map<Object, Object> tempData, String tempName) throws EmailException {
+        return 0;
     }
 
     /**
@@ -308,8 +166,7 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
      */
     private void validate() throws EmailException {
         if (this.emailBean == null) {
-            throw new EmailException(
-                    "Email bean object is not properly intialized");
+            throw new EmailException("Email bean object is not properly intialized");
         }
         if (this.emailBean.getFromAddress() == null) {
             throw new EmailException("Email From-Address is required");
@@ -328,12 +185,13 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
      *             that is flagged as not modifyable or the occurrence of a
      *             general messaging error.
      */
-    private void setupMessage() throws EmailException {
+    private Message setupEmailComponents() throws EmailException {
         InternetAddress addr[];
+        Message email = (Message) this.connect(this.config);
         String component = null;
 
         // Create a MIME style email message
-        if (this.email == null) {
+        if (email == null) {
             this.msg = "Seupt of Email MIME message operation failed.  Mime Message has not been initialized";
             logger.log(Level.ERROR, this.msg);
             throw new EmailException(this.msg);
@@ -342,120 +200,125 @@ class SmtpImpl extends AbstractMailImpl implements SmtpApi {
         // Begin initializing E-Mail Components
         try {
             component = this.emailBean.getFromAddress().toString();
-            this.email.setFrom(this.emailBean.getFromAddress());
+            email.setFrom(this.emailBean.getFromAddress());
 
             // Add To addresses
             component = InternetAddress.toString(this.emailBean.getToAddress());
             component = "To Recipients";
-            this.email.setRecipients(MimeMessage.RecipientType.TO,
-                    this.emailBean.getToAddress());
+            email.setRecipients(MimeMessage.RecipientType.TO, this.emailBean.getToAddress());
 
             // Check if we need to add CC Recipients
             component = "CC Recipients";
             addr = this.emailBean.getCCAddress();
             if (addr != null && addr.length > 0) {
-                this.email.setRecipients(MimeMessage.RecipientType.CC, addr);
+                email.setRecipients(MimeMessage.RecipientType.CC, addr);
             }
 
             // Check if we need to add BCC Recipients
             component = "BCC Recipients";
             addr = this.emailBean.getBCCAddress();
             if (addr != null && addr.length > 0) {
-                this.email.setRecipients(MimeMessage.RecipientType.BCC, addr);
+                email.setRecipients(MimeMessage.RecipientType.BCC, addr);
             }
 
             component = "Subject Line";
-            this.email.setSubject(this.emailBean.getSubject());
+            email.setSubject(this.emailBean.getSubject());
             component = "Sent Date";
-            this.email.setSentDate(new Date());
+            email.setSentDate(new Date());
             component = "Header Line";
-            this.email.setHeader("X-Mailer", "MailFormJava");
+            email.setHeader("X-Mailer", "MailFormJava");
 
-            // Do not manipulate body content if we are processing the body via
-            // Velocity
-            if (!this.useTemplate) {
-                component = "Body Content";
-                this.email.setContent(this.emailBean.assembleBody());
-            }
+            Multipart mp = new MimeMultipart();
+
+            // HTML email body
+            email.setDataHandler(new DataHandler(new HTMLDataSource(this.emailBean.getBody())));
+
+            // MimeBodyPart mbp = new MimeBodyPart();
+            // mbp.setContent(this.emailBean.getBody(),
+            // EmailMessageBean.HTML_CONTENT);
+            // mbp.setDataHandler(new DataHandler(new
+            // HTMLDataSource(this.emailBean.getBody())));
+            // mp.addBodyPart(mbp);
+
+            // Add required attachment
+            // this.emailBean.addAttachment(SmtpApi.REQUIRED_EMAIL_ATTACHMENT);
+
+            // Add ramining attachments from client, if available
+            // List<MimeBodyPart> clientAttachments =
+            // this.emailBean.getAttachments();
+            // for (MimeBodyPart attachment : clientAttachments) {
+            // mp.addBodyPart(attachment);
+            // }
+            // email.setContent(mp);
+
+            return email;
         } catch (IllegalWriteException e) {
-            throw new EmailException(
-                    "The following email bean componenet can not be modified: "
-                            + component);
+            throw new EmailException("The following email bean componenet can not be modified: " + component);
         } catch (IllegalStateException e) {
-            throw new EmailException(
-                    "The following email bean componenet exist in a read-only folder: "
-                            + component);
+            throw new EmailException("The following email bean componenet exist in a read-only folder: " + component);
         } catch (MessagingException e) {
-            throw new EmailException(
-                    "A generic messaging error occurred for email bean component: "
-                            + component);
+            throw new EmailException("A generic messaging error occurred for email bean component: " + component);
         }
     }
+
+    private void transportMessageSmtp(Message msg) throws EmailException {
+        try {
+            // Setup SMTP transport
+            SMTPTransport t = (SMTPTransport) this.emailSession.getTransport("smtp");
+
+            // connect to server
+            t.connect(this.config.getHost(), this.config.getUserId(), this.config.getPassword());
+
+            // send message
+            t.sendMessage(msg, msg.getAllRecipients());
+
+            // Display server response
+            logger.info("Response: " + t.getLastServerResponse());
+
+            // Close SMTP transport
+            t.close();
+        } catch (Exception e) {
+            this.msg = "A problem occured attempting to setup SMTP transport, connect to SMTP server, sending the email message, or closing the SMTP transport";
+            logger.error(this.msg, e);
+            throw new EmailException(this.msg, e);
+        }
+    }
+    
 
     /**
-     * Performs the actual routing of message. If authentication is required,
-     * then a transport object is instantiated in order to email the message.
-     * Otherwise, the message is sent using a static call to "send" of the
-     * Transport object. Various Exceptions are caught based on a given issue.
      * 
-     * @throws EmailException
+     * @author appdev
+     *
      */
-    private void transportMessage() throws EmailException {
-        String msg = null;
-        Transport tp;
+    static class HTMLDataSource implements DataSource {
 
-        try {
-            if (this.config.isAuthenticate()) {
-                if (this.getEmailSession() == null) {
-                    this.msg = "Send message operation failed.  Connection to SMTP server has not be established";
-                    logger.log(Level.ERROR, this.msg);
-                    throw new EmailException(this.msg);
-                }
-                // Address addr[] = this.emailBean.getToAddress();
-                tp = this.getEmailSession().getTransport();
-                try {
-                    tp.connect(this.config.getHost(), this.config.getUserId(),
-                            this.config.getPassword());
-                } catch (Throwable t) {
-                    throw new EmailException(t.getMessage());
-                }
-                if (tp.isConnected()) {
-                    // this.email.saveChanges();
-                    // Must use the Transport's sendMessage method to transport
-                    // email since authentication is required.
-                    tp.sendMessage(this.email, this.email.getAllRecipients());
-                    tp.close();
-                    tp = null;
-                }
-            }
-            else {
-                // Send message the simple way
-                Transport.send(this.email);
-            }
-            System.out.println("Email was sent successfully to "
-                    + this.emailBean.getRecipients());
-        } catch (NoSuchProviderException e) {
-            throw new EmailException("No Such SMTP Provider Exist", e);
-        } catch (AuthenticationFailedException e) {
-            throw new EmailException("Authentication Failed", e);
-        } catch (IllegalStateException e) {
-            msg = "Illegal State error occurred for recipient(s): "
-                    + this.emailBean.getRecipients()
-                    + ".  Additional details: " + e.getMessage();
-            throw new EmailException(msg, e);
-        } catch (SendFailedException e) {
-            msg = "Email send failed error occurred for recipient(s): "
-                    + this.emailBean.getRecipients()
-                    + ".  Additional details: " + e.getMessage();
-            throw new EmailException(msg, e);
-        } catch (MessagingException e) {
-            msg = "Messaging error occurred for recipient(s): "
-                    + this.emailBean.getRecipients()
-                    + ".  Additional details: " + e.getMessage();
-            e.printStackTrace();
-            throw new EmailException(msg, e);
+        private String html;
+
+        public HTMLDataSource(String htmlString) {
+            html = htmlString;
         }
 
-    }
+        @Override
+        public InputStream getInputStream() throws IOException {
+            if (html == null) {
+                throw new IOException("html message is null!");
+            }
+            return new ByteArrayInputStream(html.getBytes());
+        }
 
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            throw new IOException("This DataHandler cannot write HTML");
+        }
+
+        @Override
+        public String getContentType() {
+            return "text/html";
+        }
+
+        @Override
+        public String getName() {
+            return "HTMLDataSource";
+        }
+    }
 }

@@ -80,6 +80,8 @@ import com.api.messaging.email.EmailMessageBean;
  */
 public interface SmtpApi extends MessageManager {
 
+    String REQUIRED_EMAIL_ATTACHMENT = "images/logotip.jpg";
+
     /**
      * Using the concepts of "Mail Merge", this method creates and transmits an
      * email message to its destination. Uses a template document to dynamically

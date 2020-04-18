@@ -100,15 +100,15 @@ public class ConfigConstants {
     /** Encryption cycle count variable name */
     public static String PROPNAME_ENCRYPT_CYCLE = "encryptCycle";
     /** SMTP mail authentication variable name */
-    public static String PROPNAME_MAIL_AUTH = "mailAuthentication";
+    public static String PROPNAME_MAIL_AUTH = "Authentication";
     /** SMTP password variable name */
-    public static String PROPNAME_MAIL_PW = "mailPassword";
+    public static String PROPNAME_MAIL_PW = "MailPassword";
     /** SMTP user id variable name */
-    public static String PROPNAME_MAIL_UID = "mailUserId";
+    public static String PROPNAME_MAIL_UID = "MailUserId";
     /** POP server variable name */
     public static String PROPNAME_POP_SERVER = "mailHostPop3";
     /** SMTP Server variable name */
-    public static String PROPNAME_SMTP_SERVER = "mailHostSmtp";
+    public static String PROPNAME_SMTP_SERVER = "HostSmtp";
     /** INternal SMTP Domain variable name */
     public static String PROPNAME_INTERNAL_SMTP_DOMAIN = "mailInternalSmtpDomain";
     /** The name that points to the datasource directory */

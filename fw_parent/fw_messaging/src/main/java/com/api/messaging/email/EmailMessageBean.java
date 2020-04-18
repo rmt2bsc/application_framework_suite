@@ -1,21 +1,20 @@
 package com.api.messaging.email;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
-
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
-import javax.mail.internet.AddressException;
-
-import javax.activation.FileDataSource;
-import javax.activation.DataHandler;
+import org.apache.log4j.Logger;
 
 /**
  * This class represents an eMail envelope. This bean contains the data
@@ -28,6 +27,8 @@ import javax.activation.DataHandler;
 public class EmailMessageBean implements Serializable {
     private static final long serialVersionUID = 4343627609079776162L;
 
+    private static final Logger logger = Logger.getLogger(EmailMessageBean.class);
+
     private InternetAddress fromAddress;
 
     private InternetAddress toAddress[];
@@ -38,7 +39,9 @@ public class EmailMessageBean implements Serializable {
 
     private String recipients;
 
-    private MimeBodyPart body;
+    private String body;
+
+    private String bodyMimeType;
 
     private MimeMultipart mainBody;
 
@@ -205,7 +208,7 @@ public class EmailMessageBean implements Serializable {
      * 
      * @return MimeBodyPart
      */
-    public MimeBodyPart getBody() {
+    public String getBody() {
         return this.body;
     }
 
@@ -218,20 +221,9 @@ public class EmailMessageBean implements Serializable {
      * @param mimeType
      *            The MIME type. Defaults to HTML content when passed as null.
      */
-    public void setBody(Object content, String mimeType) {
-
-        try {
-            if (mimeType == null) {
-                // Default to text/plain
-                mimeType = System.getProperty("mail.defaultcontent");
-            }
-            if (this.body == null) {
-                this.body = new MimeBodyPart();
-            }
-            this.body.setContent(content, mimeType);
-        } catch (MessagingException e) {
-            this.body = null;
-        }
+    public void setBody(String content, String mimeType) {
+        this.body = content;
+        this.bodyMimeType = mimeType;
     }
 
     /**
@@ -244,25 +236,19 @@ public class EmailMessageBean implements Serializable {
     }
 
     /**
-     * Creates an email attachment by using the file name of the resource. The
-     * resource should exist somewhere in the file system.
+     * Addes a file to the list of MimeBodyPart attachments.
      * 
      * @param fileName
      *            The complete path and file name of the fiel system resource to
      *            attach to the email.
      */
-    public void setAttachments(String fileName) {
+    public void addAttachment(String fileName) {
         MimeBodyPart obj = new MimeBodyPart();
         try {
             // Put a file in the second part
             FileDataSource fds = new FileDataSource(fileName);
             obj.setDataHandler(new DataHandler(fds));
             obj.setFileName(fds.getName());
-
-            // Add attachment to list of attachments for this EMail
-            // if (this.attachments == null) {
-            // this.attachments = new ArrayList<MimeBodyPart>();
-            // }
             this.attachments.add(obj);
             return;
         } catch (MessagingException e) {
@@ -288,8 +274,7 @@ public class EmailMessageBean implements Serializable {
      *            needed since <i>fileName</i> will serve to simply name the
      *            attachment.
      */
-    public void setAttachments(Object content, String contentType,
-            String fileName) {
+    public void setAttachments(Object content, String contentType, String fileName) {
         MimeBodyPart obj = new MimeBodyPart();
         try {
             // Put a file in the second part
@@ -354,8 +339,7 @@ public class EmailMessageBean implements Serializable {
      * @return String list of emails separated by semi-colons.
      */
     public static String addressToString(InternetAddress addresses[]) {
-        return EmailMessageBean.addressToString(addresses,
-                EmailMessageBean.ADDR_DELIM_SEMICOLON);
+        return EmailMessageBean.addressToString(addresses, EmailMessageBean.ADDR_DELIM_SEMICOLON);
     }
 
     /**
@@ -408,13 +392,11 @@ public class EmailMessageBean implements Serializable {
      *            emails.
      * @return String list of emails separated by the specified delimiter.
      */
-    private static String addressToString(InternetAddress addresses[],
-            String delimiter) {
+    private static String addressToString(InternetAddress addresses[], String delimiter) {
         String results = "";
         for (int ndx = 0; ndx < addresses.length; ndx++) {
             if (results.length() > 0) {
-                results += ";"
-                        + EmailMessageBean.addressToString(addresses[ndx]);
+                results += ";" + EmailMessageBean.addressToString(addresses[ndx]);
             }
             else {
                 results += EmailMessageBean.addressToString(addresses[ndx]);
@@ -459,34 +441,6 @@ public class EmailMessageBean implements Serializable {
      */
     public int getContentType() {
         return this.contentType;
-    }
-
-    /**
-     * Builds the email body and adds any available attachements.
-     * 
-     * @return MimeMultipart
-     * @throws EMailException
-     *             If the body and/or attachments could not be added to the
-     *             MimeMulitpart object.
-     */
-    public MimeMultipart assembleBody() throws EmailException {
-        MimeBodyPart temp;
-
-        try {
-            // Add Main Body Content
-            if (this.body != null) {
-                this.mainBody.addBodyPart(this.body);
-            }
-
-            // Add any attachments, if applicable
-            for (int ndx = 0; ndx < this.attachments.size(); ndx++) {
-                temp = (MimeBodyPart) this.attachments.get(ndx);
-                this.mainBody.addBodyPart(temp);
-            }
-            return this.mainBody;
-        } catch (MessagingException e) {
-            throw new EmailException(e);
-        }
     }
 
     public String getRecipients() {

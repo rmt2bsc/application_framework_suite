@@ -179,8 +179,8 @@ public class SystemConfigurator extends RMT2Base {
                 props.addSystemProperty("HostPop3", emailProps.getHostPop3());
                 props.addSystemProperty("HostSmtp", emailProps.getHostSmtp());
                 props.addSystemProperty("InternalSmtpDomain", emailProps.getInternalSmtpDomain());
-                props.addSystemProperty("UserId", emailProps.getUserId());
-                props.addSystemProperty("Password", emailProps.getPassword());
+                props.addSystemProperty("MailUserId", emailProps.getUserId());
+                props.addSystemProperty("MailPassword", emailProps.getPassword());
                 props.addSystemProperty("Resourcetype", emailProps.getResourcetype());
                 props.addSystemProperty("TemplatePath", emailProps.getTemplatePath());
             }
