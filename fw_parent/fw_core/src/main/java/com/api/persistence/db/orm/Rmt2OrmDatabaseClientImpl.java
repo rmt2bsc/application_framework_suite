@@ -136,7 +136,8 @@ class Rmt2OrmDatabaseClientImpl extends RMT2Base implements PersistenceClient {
         }
         try {
             con.commit();
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
+            // con.setAutoCommit(true);
         } catch (SQLException e) {
             this.msg = "Error occurred while committing and/or setting auto commit property to \"false\" for database transaction";
             throw new DatabaseTransactionErrorException(this.msg, e);
@@ -157,7 +158,8 @@ class Rmt2OrmDatabaseClientImpl extends RMT2Base implements PersistenceClient {
         }
         try {
             con.rollback();
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
+            // con.setAutoCommit(true);
         } catch (SQLException e) {
             this.msg = "Error occurred while rolling back and/or setting auto commit property to \"false\" for database transaction";
             throw new DatabaseTransactionErrorException(this.msg, e);
