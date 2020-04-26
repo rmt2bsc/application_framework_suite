@@ -114,12 +114,14 @@ class Rmt2OrmDatabaseClientImpl extends RMT2Base implements PersistenceClient {
             this.msg = "Unable to start database transaction due to invalid or null connection object";
             throw new DatabaseTransactionErrorException(this.msg);
         }
-        try {
-            con.setAutoCommit(false);
-        } catch (SQLException e) {
-            this.msg = "Error occurred while starting database transaction due to inability to set auto commit property to \"true\"";
-            throw new DatabaseTransactionErrorException(this.msg, e);
-        }
+        // IS-41: Removed the handling of "autoCommit" feature
+        // try {
+        // con.setAutoCommit(false);
+        // } catch (SQLException e) {
+        // this.msg =
+        // "Error occurred while starting database transaction due to inability to set auto commit property to \"true\"";
+        // throw new DatabaseTransactionErrorException(this.msg, e);
+        // }
     }
 
     /**
@@ -136,7 +138,7 @@ class Rmt2OrmDatabaseClientImpl extends RMT2Base implements PersistenceClient {
         }
         try {
             con.commit();
-            con.setAutoCommit(false);
+            // IS-41: Removed the handling of "autoCommit" feature
             // con.setAutoCommit(true);
         } catch (SQLException e) {
             this.msg = "Error occurred while committing and/or setting auto commit property to \"false\" for database transaction";
@@ -158,7 +160,7 @@ class Rmt2OrmDatabaseClientImpl extends RMT2Base implements PersistenceClient {
         }
         try {
             con.rollback();
-            con.setAutoCommit(false);
+            // IS-41: Removed the handling of "autoCommit" feature
             // con.setAutoCommit(true);
         } catch (SQLException e) {
             this.msg = "Error occurred while rolling back and/or setting auto commit property to \"false\" for database transaction";

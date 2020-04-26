@@ -104,6 +104,9 @@ public class WebContextConnectionProviderImpl extends
                 this.msg = "Unable to obtain JDBC connection via DataSource JNDI configuration";
                 throw new CannotConnectException(this.msg);
             }
+            // IS-41: Turn of the auto commit feature for every connection
+            // obtained.
+            con.setAutoCommit(false);
             return con;
         } catch (SQLException e) {
             this.msg = "Database Server is down! - " + e.getMessage();
