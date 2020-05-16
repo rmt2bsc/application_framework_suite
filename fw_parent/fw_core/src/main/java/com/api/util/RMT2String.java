@@ -65,6 +65,29 @@ public class RMT2String {
     }
 
     /**
+     * Creates a string of ch totaling count.
+     * 
+     * @param value
+     *            String to duplicate
+     * @param count
+     *            Total number of times to duplicatd
+     * @return String
+     */
+    public static final String dupString(String value, int count) {
+
+        String result = "";
+
+        if (count <= 0) {
+            return null;
+        }
+        for (int ndx = 1; ndx <= count; ndx++) {
+            result += value;
+        }
+
+        return result;
+    }
+
+    /**
      * Adds leading or trailing zeros to an long value.
      * <p>
      * <p>
