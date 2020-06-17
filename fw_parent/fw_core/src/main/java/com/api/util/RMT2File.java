@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
@@ -1881,9 +1882,24 @@ public class RMT2File {
      * @return String as the full path;
      */
     public static final String resolveRelativeFilePath(String path) {
-        URL url = ClassLoader.getSystemResource(path);
-        String fullPath = url.getFile();
-        return fullPath;
+        if (path == null) {
+            return null;
+        }
+
+        RMT2File obj = new RMT2File();
+        URL res = obj.getClass().getClassLoader().getResource(path);
+        File file = null;
+        try {
+            file = Paths.get(res.toURI()).toFile();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return file.getAbsolutePath();
+
+        // The old way, which is not working anymore.
+        // URL url = ClassLoader.getSystemResource(path);
+        // String fullPath = url.getFile();
+        // return fullPath;
     }
     
     
@@ -2048,6 +2064,24 @@ public class RMT2File {
         byte binaryData[] = getFileContentsAsBytes(srcFilePath);
         String data = RMT2Base64Encoder.encode(binaryData);
         return data;
+    }
+
+    /**
+     * Removes the Windows drive identifier (drive letter and colon) from the
+     * file path.
+     * 
+     * @param fileName
+     *            sourcce filename
+     * @return String file name without the drive identifier or the original
+     *         file name in cases where there drive identifier does not exist in
+     *         the file name.
+     */
+    public static final String removeWindowsDriveFromFilename(String fileName) {
+        List<String> tokens = RMT2String.getTokens(fileName, ":");
+        if (tokens.size() == 2) {
+            return tokens.get(1);
+        }
+        return fileName;
     }
 
 } // end class
