@@ -1883,11 +1883,16 @@ public class RMT2File {
      */
     public static final String resolveRelativeFilePath(String path) {
         if (path == null) {
+            logger.warn("Resource, " + path + ", was received as null");
             return null;
         }
 
         RMT2File obj = new RMT2File();
         URL res = obj.getClass().getClassLoader().getResource(path);
+        if (res == null) {
+            logger.error("Resource, " + path + ", was not found");
+            return null;
+        }
         File file = null;
         try {
             file = Paths.get(res.toURI()).toFile();
