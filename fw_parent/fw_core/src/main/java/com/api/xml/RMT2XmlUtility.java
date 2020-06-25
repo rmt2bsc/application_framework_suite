@@ -100,6 +100,14 @@ import com.api.util.RMT2Utility;
  * <li>ObjectOutput</li>
  * </ul>
  * 
+ * <pre>
+ * Change Log 
+ * ===========================================================================
+ * IS-49: Changed the ordering of the JRE in Import/Export configuration of the
+ * Build Path to the top of the list to eliminate compile time error regarding
+ * org.w3c.dom.Node.gettextcontent() being undefined.
+ * </pre>
+ * 
  * @author appdev
  * 
  */
@@ -779,6 +787,7 @@ public class RMT2XmlUtility extends RMT2Base {
             }
             // get your node value
             if (node.getNodeValue() != null) {
+                // IS-49: Fixed compile time error
                 nodeString.append(node.getTextContent());
             }
 
@@ -953,6 +962,7 @@ public class RMT2XmlUtility extends RMT2Base {
 
         // Get the target element element by tag name directly
         Node targetNode = doc.getElementsByTagName(elementName).item(0);
+        // IS-49: Fixed compile time error
         String value = targetNode.getTextContent();
         return value;
     }
