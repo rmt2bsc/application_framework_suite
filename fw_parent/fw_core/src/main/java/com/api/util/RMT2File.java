@@ -881,7 +881,7 @@ public class RMT2File {
         }
 
         try {
-            boolean result = newDir.mkdir();
+            boolean result = newDir.mkdirs();
             return result;
         } catch (Exception e) {
             msg = "Problem creating directory, " + dir + ",  due to general exception";
@@ -2087,6 +2087,22 @@ public class RMT2File {
             return tokens.get(1);
         }
         return fileName;
+    }
+
+    /**
+     * Convert the Windows filename to UNIX or UNC style filename.
+     * <p>
+     * It basically removes drive letters and/or changes back slashes to forward
+     * slashes.
+     * 
+     * @param fileName
+     *            String the filename to convert
+     * @return String converted filename
+     */
+    public static final String convertToUnixStyle(String fileName) {
+        String temp = RMT2File.removeWindowsDriveFromFilename(fileName);
+        temp = RMT2String.replaceAll(temp, "/", "\\\\");
+        return temp;
     }
 
 } // end class
