@@ -294,8 +294,8 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
 
     private void createCriteria(String _property, String _criteria) {
         // Take care of escaping any occurrences of single quote literals
-        String val = RMT2String.replaceAll2(_criteria, "''", "'");
-        this.criteria.put(_property, val);
+        // String val = RMT2String.replaceAll2(_criteria, "''", "'");
+        this.criteria.put(_property, _criteria);
     }
     
     
