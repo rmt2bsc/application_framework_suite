@@ -234,12 +234,19 @@ public class RMT2String {
         }
         StringBuffer buf = new StringBuffer();
         String parts[] = source.split(delim);
-        for (int ndx = 0; ndx < parts.length; ndx++) {
-            buf.append(parts[ndx]);
-            if ((ndx + 1) < parts.length) {
-                buf.append(replacement);
+        if (parts.length > 1) {
+            for (int ndx = 0; ndx < parts.length; ndx++) {
+                buf.append(parts[ndx]);
+                if ((ndx + 1) < parts.length) {
+                    buf.append(replacement);
+                }
             }
         }
+        else {
+            // In the event delimiter is at the end of String argument
+            buf.append(RMT2String.replace(source, replacement, delim));
+        }
+
         return buf.toString();
     }
 
