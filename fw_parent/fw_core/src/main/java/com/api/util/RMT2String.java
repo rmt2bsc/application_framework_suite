@@ -97,8 +97,7 @@ public class RMT2String {
      * @param source
      *            The number to pad
      * @param precision
-     *            The total number of digits to exect as a result of this
-     *            operation.
+     *            The total number of digits as a result of this operation.
      * @param direction
      *            -1=leading and 1=trailing
      * @return Padded number.
