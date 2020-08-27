@@ -220,15 +220,18 @@ public class RMT2SystemUtility {
     }
 
     /**
+     * Returns the name of the computer host relative to the runtime of this
+     * method invocation
      * 
-     * @return
+     * @return String
      */
     public static String getHostname() {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (Exception ex) {
+            return "localhost";
         }
-        return "localhost";
+
     }
 
     /**
@@ -264,9 +267,18 @@ public class RMT2SystemUtility {
     }
 
     /**
+     * Returns the name of the host in which the host name is in the format of
+     * <i><hostname>.<lower level domain>.<top level domain></i>.
+     * <p>
+     * For example,
+     * <ul>
+     * <li>rmt2.net</li>
+     * <li>example.co.uk</li>
+     * </ul>
      * 
      * @param hostname
-     * @return
+     *            hostname in String format
+     * @return String
      */
     public static String shortName(String hostname) {
         int index;
@@ -287,9 +299,18 @@ public class RMT2SystemUtility {
     }
 
     /**
+     * Returns the name of the host in which the host name is in the format of
+     * <i><hostname>.<lower level domain>.<top level domain></i>.
+     * <p>
+     * For example,
+     * <ul>
+     * <li>rmt2.net</li>
+     * <li>example.co.uk</li>
+     * </ul>
      * 
      * @param hostname
-     * @return
+     *            an instance of {@link InetAddress}
+     * @return String
      */
     public static String shortName(InetAddress hostname) {
         if (hostname == null)
@@ -305,8 +326,9 @@ public class RMT2SystemUtility {
     }
 
     /**
+     * Returns the version of java used.
      * 
-     * @return
+     * @return int as RMT2 java version.
      */
     public static int getJavaVersion() {
         String version = System.getProperty("java.version");
@@ -326,6 +348,22 @@ public class RMT2SystemUtility {
                 return 16;
             if (version.startsWith("6"))
                 return 16;
+            if (version.startsWith("7"))
+                return 17;
+            if (version.startsWith("8"))
+                return 18;
+            if (version.startsWith("9"))
+                return 19;
+            if (version.startsWith("10"))
+                return 20;
+            if (version.startsWith("11"))
+                return 21;
+            if (version.startsWith("12"))
+                return 22;
+            if (version.startsWith("13"))
+                return 23;
+            if (version.startsWith("14"))
+                return 24;
         }
         return retval;
     }
