@@ -538,7 +538,9 @@ public class RMT2Date {
      *         user timestamp.
      */
     public static final UserTimestamp getUserTimeStamp(String loginId) {
-        String message = null;
+        if (loginId == null) {
+            loginId = "Unknown";
+        }
         java.util.Date currentDate = new java.util.Date();
         UserTimestamp ut = UserTimestamp.getInstance();
         ut.setDateCreated(currentDate);
