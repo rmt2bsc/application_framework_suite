@@ -539,11 +539,6 @@ public class RMT2Date {
      */
     public static final UserTimestamp getUserTimeStamp(String loginId) {
         String message = null;
-        if (loginId == null) {
-            message = "Login id is unknown for the UserTimeStamp object";
-            logger.warn(message);
-            loginId = "Unknown";
-        }
         java.util.Date currentDate = new java.util.Date();
         UserTimestamp ut = UserTimestamp.getInstance();
         ut.setDateCreated(currentDate);
