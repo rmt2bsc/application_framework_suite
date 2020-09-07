@@ -228,6 +228,24 @@ public class RMT2File {
     }
 
     /**
+     * Creates an instance of File by loading the file from the resources folder
+     * within the class path.
+     * 
+     * @param path
+     *            location of the file within the class path
+     * @return an instance of {@link File}
+     */
+    public static final File getFileInstanceFromClassPath(String path) {
+        if (path == null) {
+            return null;
+        }
+        RMT2File obj = new RMT2File();
+        ClassLoader classLoader = obj.getClass().getClassLoader();
+        File file = new File(classLoader.getResource(path).getFile());
+        return file;
+    }
+
+    /**
      * Verifies that _pathname is a valid Directory or File.
      * 
      * @param fileName
