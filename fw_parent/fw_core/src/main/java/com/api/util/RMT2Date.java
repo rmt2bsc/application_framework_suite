@@ -904,6 +904,27 @@ public class RMT2Date {
     }
 
     /**
+     * Takes an n amount of milliseconds and converts to a List where each List
+     * element is a parsed representation of the time in HH:MM:SS format.
+     * 
+     * @param millisec
+     * @return
+     */
+    public static List<Integer> convertMillSecondsToList(int millisec) {
+        int millis = millisec % 1000;
+        int secs = (millisec / 1000) % 60;
+        int mins = (millisec / (1000 * 60)) % 60;
+        int hours = (millisec / (1000 * 60 * 60)) % 24;
+
+        List<Integer> list = new ArrayList<Integer>();
+
+        list.add(hours);
+        list.add(mins);
+        list.add(secs);
+        return list;
+    }
+
+    /**
      * Takes an n amount of seconds and converts to a String in HH:MM:SS format.
      * First, the hour is obtained by dividing the total seconds by 3600, then
      * take the remainder of 3600 and divide that by 60 to get minutes, and get
