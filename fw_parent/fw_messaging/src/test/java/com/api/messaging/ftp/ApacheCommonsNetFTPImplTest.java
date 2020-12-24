@@ -28,6 +28,7 @@ public class ApacheCommonsNetFTPImplTest {
     private static final String TEST_PASSWORD = "hoover";
     private static final String TEST_DIR_NONRECURSIVE = "multimedia/audio/non_ripped/813/Recolor";
     private static final String TEST_DIR_RECURSIVE = "multimedia/audio/non_ripped/Afterlife";
+    private static final String TEST_DIR_RECURSIVE_ALL = "multimedia/audio";
     private static final String TEST_SINGLE_FILE = TEST_DIR_NONRECURSIVE + "813-Recolor-06-256 Colors.mp3";
     private static final int TEST_NORECURSION_FILE_COUNT = 8;
     private static final int TEST_RECURSION_FILE_COUNT = 45;
@@ -120,6 +121,16 @@ public class ApacheCommonsNetFTPImplTest {
         List<String> files = api.listDirectory(TEST_DIR_RECURSIVE, true);
         Assert.assertNotNull(files);
         Assert.assertEquals(TEST_RECURSION_FILE_COUNT, files.size());
+    }
+
+    @Test
+    public void testSuccess_Directory_Listing_Recursive_All() {
+        FtpApi<FTPFile> api = FtpFactory.getInstance(TEST_HOST, TEST_PORT, TEST_USER, TEST_PASSWORD);
+        Assert.assertNotNull(api);
+
+        List<String> files = api.listDirectory(TEST_DIR_RECURSIVE_ALL, true);
+        Assert.assertNotNull(files);
+        Assert.assertTrue(files.size() > 30000);
     }
 
     @Test
