@@ -2,9 +2,12 @@ package com.api.messaging.ftp;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
@@ -24,12 +27,13 @@ import com.api.util.assistants.VerifyException;
  * @author RTerrell
  * 
  */
-class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
+class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi<FTPFile> {
 
     private static final Logger logger = Logger.getLogger(ApacheCommonsNetFTPImpl.class);
 
     private FTPClient ftp;
     private int port;
+    private List<String> recursiveListing;
 
     /**
      * Creates an ApacheCommonsNetFTPImpl object which the identification of the
@@ -186,17 +190,65 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
     }
 
     @Override
-    public Serializable downloadFile(String path) throws MessageException {
+    public List<String> listDirectory(String directory, boolean subFolders) throws MessageException {
+        String[] array = null;
+        try {
+            if (subFolders) {
+                this.recursiveListing = new ArrayList<>();
+                this.listDirectoryAndSubfolders(directory, null);
+                return this.recursiveListing;
+            }
+            else {
+                array = this.ftp.listNames(directory);
+                return Arrays.asList(array);
+            }
+        } catch (IOException e) {
+            throw new SystemException("Failure to list directory, " + directory);
+        }
+    }
+
+    /**
+     * 
+     * @param parentDir
+     * @param curDir
+     * @throws MessageException
+     */
+    protected void listDirectoryAndSubfolders(String parentDir, String curDir) throws MessageException {
+        String dirToList = parentDir;
+        if (curDir != null) {
+            dirToList += "/" + curDir;
+        }
+        FTPFile[] subFiles;
+        try {
+            subFiles = this.ftp.listFiles(dirToList);
+        } catch (IOException e) {
+            throw new SystemException("Error listing files in directory, " + dirToList);
+        }
+        if (subFiles != null && subFiles.length > 0) {
+            for (FTPFile aFile : subFiles) {
+                String currentFileName = aFile.getName();
+                if (currentFileName.equals(".") || currentFileName.equals("..")) {
+                    // skip parent directory and directory itself
+                    continue;
+                }
+                if (aFile.isDirectory()) {
+                    this.listDirectoryAndSubfolders(dirToList, currentFileName);
+                }
+                else {
+                    // Add file name to list
+                    this.recursiveListing.add(dirToList + "/" + currentFileName);
+                }
+            }
+        }
+    }
+
+    @Override
+    public FTPFile[] downloadFile(String path) throws MessageException {
         return null;
     }
 
     @Override
-    public Serializable downloadFile(String directory, boolean subFolders) throws MessageException {
-        return null;
-    }
-
-    @Override
-    public List<String> getDirectoryListing(String directory, boolean subFolders) throws MessageException {
+    public FTPFile[] downloadFile(String directory, boolean subFolders) throws MessageException {
         return null;
     }
 
@@ -225,10 +277,6 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
     public Object sendMessage(Serializable emailData) throws MessageException {
         return null;
     }
-
-
-
-
 
 
 

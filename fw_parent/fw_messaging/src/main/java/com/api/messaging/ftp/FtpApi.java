@@ -1,6 +1,5 @@
 package com.api.messaging.ftp;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.api.messaging.MessageException;
@@ -13,7 +12,7 @@ import com.api.messaging.MessageManager;
  * @author RTerrell
  * 
  */
-public interface FtpApi extends MessageManager {
+public interface FtpApi<T> extends MessageManager {
 
 
     /**
@@ -25,7 +24,7 @@ public interface FtpApi extends MessageManager {
      *         file.
      * @throws FtpException
      */
-    Serializable downloadFile(String path) throws MessageException;
+    T[] downloadFile(String path) throws MessageException;
 
     /**
      * Downloads one or more files from a directory on the FTP server
@@ -40,7 +39,7 @@ public interface FtpApi extends MessageManager {
      *         representing the downloaded files.
      * @throws FtpException
      */
-    Serializable downloadFile(String directory, boolean subFolders) throws MessageException;
+    T[] downloadFile(String directory, boolean subFolders) throws MessageException;
 
     /**
      * List the contents of a directory on a FTP server.
@@ -54,5 +53,5 @@ public interface FtpApi extends MessageManager {
      * @return List of Strings containing all files and directories found.
      * @throws FtpException
      */
-    List<String> getDirectoryListing(String directory, boolean subFolders) throws MessageException;
+    List<String> listDirectory(String directory, boolean subFolders) throws MessageException;
 }
