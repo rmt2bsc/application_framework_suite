@@ -250,10 +250,11 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
 
     @Override
     public String downloadFile(String remoteFile) throws MessageException {
-        long rc = 1;
+        long fileSize = 1;
         String downLoadLoc = System.getProperty("SerialPath");
         String outputPath = downLoadLoc + config.getSessionId() + "/";
         String outputFile = outputPath + RMT2File.getFileName(remoteFile);
+        String downloadedFilePath = null;
         try {
             this.ftp.enterLocalPassiveMode();
             this.ftp.setFileType(FTP.BINARY_FILE_TYPE);
@@ -277,16 +278,17 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
 
             if (success) {
                 logger.info(remoteFile + ": OK");
-                rc = downLoadFile.length();
+                fileSize = downLoadFile.length();
+                downloadedFilePath = outputFile;
             }
             else {
                 logger.error(remoteFile + ": FAILED");
-                rc = 0;
+                fileSize = 0;
             }
         } catch (IOException e) {
             logger.error("Eror ocurred downloading fiel, " + remoteFile, e);
         }
-        return outputFile;
+        return downloadedFilePath;
     }
 
     @Override
@@ -319,71 +321,5 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
     public Object sendMessage(Serializable emailData) throws MessageException {
         return null;
     }
-
-
-
-// private int transportMessageSmtp(Message msg) throws EmailException {
-    // try {
-    // // Setup SMTP transport
-    // SMTPTransport t = (SMTPTransport) this.emailSession.getTransport("smtp");
-    //
-    // // connect to server
-    // t.connect(this.config.getHost(), this.config.getUserId(),
-    // this.config.getPassword());
-    //
-    // // send message
-    // t.sendMessage(msg, msg.getAllRecipients());
-    //
-    // // Display server response
-    // logger.info("Response: " + t.getLastServerResponse());
-    //
-    // // Close SMTP transport
-    // t.close();
-    // return t.getLastReturnCode();
-    // } catch (Exception e) {
-    // this.msg =
-    // "A problem occured attempting to setup SMTP transport, connect to SMTP server, sending the email message, or closing the SMTP transport";
-    // logger.error(this.msg, e);
-    // throw new EmailException(this.msg, e);
-    // }
-    // }
-    //
-    //
-    // /**
-    // *
-    // * @author appdev
-    // *
-    // */
-    // static class HTMLDataSource implements DataSource {
-    //
-    // private String html;
-    //
-    // public HTMLDataSource(String htmlString) {
-    // html = htmlString;
-    // }
-    //
-    // @Override
-    // public InputStream getInputStream() throws IOException {
-    // if (html == null) {
-    // throw new IOException("html message is null!");
-    // }
-    // return new ByteArrayInputStream(html.getBytes());
-    // }
-    //
-    // @Override
-    // public OutputStream getOutputStream() throws IOException {
-    // throw new IOException("This DataHandler cannot write HTML");
-    // }
-    //
-    // @Override
-    // public String getContentType() {
-    // return "text/html";
-    // }
-    //
-    // @Override
-    // public String getName() {
-    // return "HTMLDataSource";
-    // }
-    // }
 
 }
