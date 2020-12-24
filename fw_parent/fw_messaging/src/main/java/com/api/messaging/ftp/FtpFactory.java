@@ -27,14 +27,17 @@ public class FtpFactory extends MessagingResourceFactory {
      *            the FTP user id
      * @param password
      *            the FTP password
+     * @param sessionId
+     *            a unique id representing the user's session
      * @return instance of {@link FtpApi}
      */
-    public static final FtpApi getInstance(String host, String port, String userId, String password) {
+    public static final FtpApi getInstance(String host, String port, String userId, String password, String sessionId) {
         ProviderConfig config = FtpFactory.getConfigInstance();
         config.setHost(host);
         config.setUserId(userId);
         config.setPassword(password);
         config.setPort(port);
+        config.setSessionId(sessionId);
         return FtpFactory.getInstance(config);
     }
 

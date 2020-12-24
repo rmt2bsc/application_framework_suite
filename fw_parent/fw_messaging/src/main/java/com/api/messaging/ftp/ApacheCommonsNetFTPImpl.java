@@ -1,11 +1,16 @@
 package com.api.messaging.ftp;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
@@ -17,6 +22,7 @@ import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
 import com.api.messaging.AbstractMessagingImpl;
 import com.api.messaging.MessageException;
+import com.api.util.RMT2File;
 import com.api.util.RMT2Money;
 import com.api.util.assistants.Verifier;
 import com.api.util.assistants.VerifyException;
@@ -27,7 +33,7 @@ import com.api.util.assistants.VerifyException;
  * @author RTerrell
  * 
  */
-class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi<FTPFile> {
+class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
 
     private static final Logger logger = Logger.getLogger(ApacheCommonsNetFTPImpl.class);
 
@@ -210,13 +216,13 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi<FT
     /**
      * 
      * @param parentDir
-     * @param curDir
+     * @param currentDir
      * @throws MessageException
      */
-    protected void listDirectoryAndSubfolders(String parentDir, String curDir) throws MessageException {
+    protected void listDirectoryAndSubfolders(String parentDir, String currentDir) throws MessageException {
         String dirToList = parentDir;
-        if (curDir != null) {
-            dirToList += "/" + curDir;
+        if (currentDir != null) {
+            dirToList += "/" + currentDir;
         }
         FTPFile[] subFiles;
         try {
@@ -243,13 +249,49 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi<FT
     }
 
     @Override
-    public FTPFile[] downloadFile(String path) throws MessageException {
-        return null;
+    public String downloadFile(String remoteFile) throws MessageException {
+        long rc = 1;
+        String downLoadLoc = System.getProperty("SerialPath");
+        String outputPath = downLoadLoc + config.getSessionId() + "/";
+        String outputFile = outputPath + RMT2File.getFileName(remoteFile);
+        try {
+            this.ftp.enterLocalPassiveMode();
+            this.ftp.setFileType(FTP.BINARY_FILE_TYPE);
+
+            // Create directory if it does not exists.
+            File downLoadDir = new File(outputPath);
+            boolean mkdirRc = false;
+            if (!downLoadDir.exists()) {
+                mkdirRc = downLoadDir.mkdir();
+                if (mkdirRc) {
+                    logger.info(outputPath + " directory was created to house downloads");
+                }
+            }
+
+            // Download file to specified location
+            File downLoadFile = new File(outputFile);
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(downLoadFile));
+            boolean success = this.ftp.retrieveFile(remoteFile, os);
+            os.flush();
+            os.close();
+
+            if (success) {
+                logger.info(remoteFile + ": OK");
+                rc = downLoadFile.length();
+            }
+            else {
+                logger.error(remoteFile + ": FAILED");
+                rc = 0;
+            }
+        } catch (IOException e) {
+            logger.error("Eror ocurred downloading fiel, " + remoteFile, e);
+        }
+        return outputFile;
     }
 
     @Override
-    public FTPFile[] downloadFile(String directory, boolean subFolders) throws MessageException {
-        return null;
+    public int downloadFile(String directory, boolean subFolders) throws MessageException {
+        return 0;
     }
 
     @Override

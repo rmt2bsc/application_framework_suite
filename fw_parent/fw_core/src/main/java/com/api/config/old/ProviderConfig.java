@@ -68,6 +68,8 @@ public class ProviderConfig extends RMT2Base {
 
     private String provider;
 
+    private String sessionId;
+
     /**
      * Default constructor
      */
@@ -331,6 +333,21 @@ public class ProviderConfig extends RMT2Base {
      */
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    /**
+     * @return the sessionId
+     */
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    /**
+     * @param sessionId
+     *            the sessionId to set
+     */
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
 }
