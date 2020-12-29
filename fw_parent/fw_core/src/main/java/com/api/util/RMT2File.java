@@ -167,6 +167,22 @@ public class RMT2File {
     }
 
     /**
+     * Returns only the path of the file.
+     * 
+     * @param path
+     *            the full file path of the file name.
+     * @return path directory minus the filename.
+     */
+    public static final String getFilePathDirectory(String path) {
+        if (path == null) {
+            return null;
+        }
+        File f = new File(path);
+        String pathOnly = f.getParent();
+        return pathOnly;
+    }
+
+    /**
      * Return the file's path without including its drive letter.
      * 
      * @param fileName
@@ -870,6 +886,37 @@ public class RMT2File {
             msg = "General file IO error occurred";
             RMT2File.logger.log(Level.ERROR, msg);
             throw new SystemException(msg);
+        }
+    }
+
+    /**
+     * Create directory to serve as the user session work area.
+     * 
+     * @return the full path of the user session work area directory that was
+     *         created.
+     */
+    public static final String createUserSessionWorkArea() {
+        String workArea;
+        workArea = System.getProperty("user.home");
+        workArea += File.separator + ".RMT2-Sessions";
+
+        // Create sessions directory if it does not exists.
+        try {
+            File workAreaFile = new File(workArea);
+            boolean mkdirRc = false;
+            if (!workAreaFile.exists()) {
+                mkdirRc = workAreaFile.mkdir();
+                if (mkdirRc) {
+                    logger.info(workArea + " directory was created as the User Session Work Area");
+                }
+            }
+            else {
+                logger.info(workArea + " directory already exists as the User Session Work Area");
+            }
+            return workArea;
+        } catch (Exception e) {
+            logger.error("Failed to create user session work area", e);
+            return null;
         }
     }
 

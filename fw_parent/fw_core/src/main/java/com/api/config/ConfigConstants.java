@@ -36,6 +36,7 @@ public class ConfigConstants {
     public static final String API_APP_TITLE_KEY = "apptitle";
     public static final String API_APP_CODE_KEY = "appcode";
     public static final String API_APP_MODULE_VALUE = "unknown";
+    public static final String API_DUMMY_SESSION_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /** Envirionment variable name */
     public static String PROPNAME_ENVIRONMENT = "ENVIRONMENT";

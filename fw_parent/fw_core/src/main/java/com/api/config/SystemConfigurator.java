@@ -49,6 +49,8 @@ public class SystemConfigurator extends RMT2Base {
 
     private String env;
 
+    private String userSessionWorkArea;
+
     private static AppServerConfig config;
 
     private static Map<String, AppServerConfig.DestinationMappings.Destination> destinationXref;
@@ -115,6 +117,9 @@ public class SystemConfigurator extends RMT2Base {
             }
         }
         logger.info("Loading of remaining JAXB contexts complete.");
+
+        // Create user session work area
+        this.userSessionWorkArea = RMT2File.createUserSessionWorkArea();
 
         // Load system and application properties for the web app being
         // initialized.
@@ -215,7 +220,11 @@ public class SystemConfigurator extends RMT2Base {
         props.addSystemProperty("RptXsltPath", config.getRptXsltPath());
         props.addSystemProperty("SerialDrive", config.getSerialDrive());
         props.addSystemProperty("SerialExt", config.getSerialExt());
-        props.addSystemProperty("SerialPath", config.getSerialPath());
+
+        // TODO: Since SerialPath is calculated as the User Session Work Area,
+        // remove "SerialPath" XML element from the AppServer config file to
+        // eliminate confusion.
+        props.addSystemProperty("SerialPath", this.userSessionWorkArea);
         props.addSystemProperty("TimeoutInterval", String.valueOf(config.getTimeoutInterval()));
         props.addSystemProperty("WebAppMapping", config.getWebAppMapping());
         props.addSystemProperty("WebAppsDir", config.getWebAppsDir());
