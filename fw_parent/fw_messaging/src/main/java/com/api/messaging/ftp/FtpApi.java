@@ -1,5 +1,6 @@
 package com.api.messaging.ftp;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.api.messaging.MessageException;
@@ -52,4 +53,32 @@ public interface FtpApi extends MessageManager {
      * @throws FtpException
      */
     List<String> listDirectory(String directory, boolean subFolders) throws MessageException;
+
+    /**
+     * Determines if the full file path is a directory.
+     * 
+     * @param path
+     *            the full path of the directory
+     * @return true when proved to be a directory. Otherwise, false.
+     * @throws IOException
+     */
+    boolean isDirectory(String path) throws IOException;
+
+    /**
+     * Determines if the full path is a file.
+     * 
+     * @param path
+     *            the full path of the file
+     * @return true when proved to be a file. Otherwise, false.
+     * @throws IOException
+     */
+    boolean isFile(String path) throws IOException;
+
+    /**
+     * Get the location of the user's session work area where data serializaton
+     * and intermitted file manipulation occurs.
+     * 
+     * @return the directory path of the user session work area.
+     */
+    String getUserSessionWorkArea();
 }

@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
     private FTPClient ftp;
     private int port;
     private List<String> recursiveListing;
+    private String userSessionWorkArea;
 
     /**
      * Creates an ApacheCommonsNetFTPImpl object which the identification of the
@@ -251,21 +253,21 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
     @Override
     public String downloadFile(String remoteFile) throws MessageException {
         long fileSize = 1;
-        String downLoadLoc = System.getProperty("SerialPath");
-        String outputPath = downLoadLoc + config.getSessionId() + "/";
-        String outputFile = outputPath + RMT2File.getFileName(remoteFile);
+        String userWorkArea = System.getProperty("SerialPath");
+        this.userSessionWorkArea = userWorkArea + File.separator + config.getSessionId() + File.separator;
+        String outputFile = userSessionWorkArea + RMT2File.getFileName(remoteFile);
         String downloadedFilePath = null;
         try {
             this.ftp.enterLocalPassiveMode();
             this.ftp.setFileType(FTP.BINARY_FILE_TYPE);
 
             // Create directory if it does not exists.
-            File downLoadDir = new File(outputPath);
+            File downLoadDir = new File(userSessionWorkArea);
             boolean mkdirRc = false;
             if (!downLoadDir.exists()) {
                 mkdirRc = downLoadDir.mkdir();
                 if (mkdirRc) {
-                    logger.info(outputPath + " directory was created to house downloads");
+                    logger.info(userSessionWorkArea + " directory was created to house downloads");
                 }
             }
 
@@ -320,6 +322,33 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
      */
     public Object sendMessage(Serializable emailData) throws MessageException {
         return null;
+    }
+
+    /**
+     * @return the userSessionWorkArea
+     */
+    public String getUserSessionWorkArea() {
+        return userSessionWorkArea;
+    }
+
+    @Override
+    public boolean isDirectory(String path) throws IOException {
+        this.ftp.changeWorkingDirectory(path);
+        int rc = this.ftp.getReplyCode();
+        if (rc == 550) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isFile(String path) throws IOException {
+        InputStream inputStream = this.ftp.retrieveFileStream(path);
+        int rc = this.ftp.getReplyCode();
+        if (inputStream == null || rc == 550) {
+            return false;
+        }
+        return true;
     }
 
 }

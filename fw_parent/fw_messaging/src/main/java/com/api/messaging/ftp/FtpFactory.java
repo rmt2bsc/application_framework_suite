@@ -32,7 +32,7 @@ public class FtpFactory extends MessagingResourceFactory {
      * @return instance of {@link FtpApi}
      */
     public static final FtpApi getInstance(String host, String port, String userId, String password, String sessionId) {
-        ProviderConfig config = FtpFactory.getConfigInstance();
+        ProviderConfig config = MessagingResourceFactory.getConfigInstance();
         config.setHost(host);
         config.setUserId(userId);
         config.setPassword(password);
