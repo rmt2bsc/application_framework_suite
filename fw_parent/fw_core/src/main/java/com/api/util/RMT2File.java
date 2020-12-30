@@ -242,6 +242,35 @@ public class RMT2File {
         }
         return results2;
     }
+    
+    /**
+     * In the event the runtime is Windows OS, convert directory separators to
+     * forward slashes
+     * 
+     * @param path
+     *            the full file/directory path to convert
+     * @return the path in UNC file format.
+     */
+    public static final String changePathToUNC(String path) {
+        if (path == null) {
+            return null;
+        }
+        String results = null;
+        List<String> t = RMT2String.getTokens(path, "\\");
+        if (t != null && t.size() > 1) {
+            StringBuilder buf = new StringBuilder();
+            for (String item : t) {
+                buf.append(item);
+                buf.append("/");
+            }
+            results = buf.toString();
+        }
+        else {
+            // There were no changes needed.
+            results = path;
+        }
+        return results;
+    }
 
     /**
      * Creates an instance of File by loading the file from the resources folder
