@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 
 import com.RMT2RuntimeException;
+import com.SystemException;
 import com.api.messaging.handler.MessageHandlerCommand;
 import com.api.messaging.handler.MessageHandlerCommandException;
 import com.api.messaging.handler.MessageHandlerCommonReplyStatus;
@@ -55,7 +56,7 @@ import com.api.xml.RMT2XmlUtility;
 public abstract class AbstractMessageDrivenBean {
     private static Logger logger = Logger.getLogger(AbstractMessageDrivenBean.class);
     
-    protected static final String BUS_SERVER_ERROR = "Business API Server Error was encountered";
+    protected static final String BUS_SERVER_ERROR = "Business API Server Error was encountered.  Contact application support";
 
     protected ResourceBundle mappings;
 
@@ -267,6 +268,7 @@ public abstract class AbstractMessageDrivenBean {
             MessageHandlerResults response = new MessageHandlerResults();
             response.setPayload(xml);
             logger.error(BUS_SERVER_ERROR + ":  " + errMsg, e);
+            logger.info(xml);
             return response;
         }
 
@@ -343,11 +345,19 @@ public abstract class AbstractMessageDrivenBean {
      * @return an instance of {@link MessageHandlerCommand}
      */
     private MessageHandlerCommand getApiHandlerInstance(String commandKey, ResourceBundle config) {
-        // Get handler class from mapping file
-        String handlerClassName = config.getString(commandKey + ".handler");
+        String handlerClassName = null;
+        MessageHandlerCommand handler = null;
+        try {
+            // Get handler class from mapping file
+            handlerClassName = config.getString(commandKey + ".handler");
+            // Instantiate Handler class
+            handler = (MessageHandlerCommand) RMT2Utility.getClassInstance(handlerClassName);
+        } catch (Exception e) {
+            throw new SystemException("Failed to create handler, " + commandKey + ".handler"
+                    + ".  Check handler mapping configuration",
+                    e);
+        }
 
-        // Instantiate Handler class
-        MessageHandlerCommand handler = (MessageHandlerCommand) RMT2Utility.getClassInstance(handlerClassName);
         return handler;
     }
 }
