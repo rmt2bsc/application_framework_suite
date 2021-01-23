@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
 import com.RMT2Base;
 
 /**
@@ -19,8 +16,6 @@ import com.RMT2Base;
  * 
  */
 public class RMT2FileDirectoryFilter extends RMT2Base implements FileFilter {
-    private static Logger logger = Logger
-            .getLogger(RMT2FileDirectoryFilter.class);
 
     private List<String> wildcards;
 
@@ -31,8 +26,6 @@ public class RMT2FileDirectoryFilter extends RMT2Base implements FileFilter {
      * the directory query.
      */
     public RMT2FileDirectoryFilter() {
-        RMT2FileDirectoryFilter.logger
-                .log(Level.INFO, RMT2Base.LOGGER_INIT_MSG);
         return;
     }
 
