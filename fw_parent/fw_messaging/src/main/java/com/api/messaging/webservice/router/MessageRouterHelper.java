@@ -278,6 +278,9 @@ public class MessageRouterHelper extends RMT2Base {
         Serializable jaxPayload = this.routeMessage(routeInfo, xml);
 
         // Try marshall response payload as XML and dump contents to logger
+        if (jaxPayload == null) {
+            return null;
+        }
         try {
             xml = this.convertPayloadToXml(jaxPayload);
             logger.info("Routing Response: ");
@@ -314,7 +317,7 @@ public class MessageRouterHelper extends RMT2Base {
         // Route message to business server
         Serializable results = (Serializable) router.routeMessage(routeInfo, payload);
         Serializable jaxbPayload = null;
-        if (results instanceof MessageHandlerResults) {
+        if (results != null && results instanceof MessageHandlerResults) {
             jaxbPayload = ((MessageHandlerResults) results).getPayload();
         }
         return jaxbPayload;
