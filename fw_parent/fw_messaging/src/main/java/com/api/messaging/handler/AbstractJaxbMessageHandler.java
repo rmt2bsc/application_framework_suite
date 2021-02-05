@@ -93,7 +93,9 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             String userWorkArea = System.getProperty("SerialPath");
             RMT2File.createDirectory(userWorkArea + File.separatorChar + this.sessionId);
         } catch (Exception e) {
-            throw new MessageHandlerException(WebServiceConstants.ERROR_MSG_SESSIONID_REQUIRED);
+            logger.warn(WebServiceConstants.ERROR_MSG_SESSIONID_MISSING);
+            // throw new
+            // MessageHandlerException(WebServiceConstants.ERROR_MSG_SESSIONID_REQUIRED);
         }
 
         try {
