@@ -140,4 +140,8 @@ public class WebServiceConstants {
 
     public static final String ROUTING = "routing";
 
+    public static final String SESSIONID = "session_id";
+
+    public static final String ERROR_MSG_SESSIONID_REQUIRED = "The user's session id or security token is required when accessing web services";
+
 }

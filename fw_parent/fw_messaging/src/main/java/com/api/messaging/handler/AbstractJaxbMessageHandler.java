@@ -1,6 +1,7 @@
 package com.api.messaging.handler;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.OutputStream;
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import com.api.config.ConfigConstants;
 import com.api.config.SystemConfigurator;
 import com.api.messaging.InvalidRequestException;
 import com.api.messaging.webservice.WebServiceConstants;
+import com.api.util.RMT2File;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.jaxb.JaxbUtil;
 import com.api.xml.jaxb.JaxbUtilException;
@@ -52,6 +54,8 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
     
     protected String command;
 
+    protected String sessionId;
+
     /**
      * Creates a AbstractMessageHandler 
      */
@@ -82,6 +86,16 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
         
         MessageHandlerResults results = null;
         String reqXml = this.getPayloadAsString();
+        try {
+            // Create user's work area in which the session id or security token
+            // is required.
+            this.sessionId = RMT2XmlUtility.getElementValue(WebServiceConstants.SESSIONID, reqXml);
+            String userWorkArea = System.getProperty("SerialPath");
+            RMT2File.createDirectory(userWorkArea + File.separatorChar + this.sessionId);
+        } catch (Exception e) {
+            throw new MessageHandlerException(WebServiceConstants.ERROR_MSG_SESSIONID_REQUIRED);
+        }
+
         try {
             // Unmarshall XML String
             this.requestObj = (T1) this.jaxb.unMarshalMessage(reqXml);
