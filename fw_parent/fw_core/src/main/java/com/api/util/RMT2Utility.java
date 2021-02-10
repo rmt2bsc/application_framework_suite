@@ -372,20 +372,20 @@ public class RMT2Utility {
             return obj;
         } catch (ExceptionInInitializerError e) {
             msg += " The initialization provoked by this method failed: ";
-            throw new SystemException(msg);
+            throw new SystemException(msg, e);
         } catch (LinkageError e) {
             msg += " Linkage failed";
-            throw new SystemException(msg);
+            throw new SystemException(msg, e);
         } catch (ClassNotFoundException e) {
             msg += " The class could not be found";
-            throw new SystemException(msg);
+            throw new SystemException(msg, e);
         } catch (IllegalAccessException e) {
             msg += " The class or its nullary constructor is not accessible";
-            throw new SystemException(msg);
+            throw new SystemException(msg, e);
         } catch (InstantiationException e) {
             msg += "Failure due to either 1) class represents an abstract class, an interface, an array class, a primitive type, or void;";
             msg += " 2) the class has no nullary constructor; or  3) for some other reason";
-            throw new SystemException(msg);
+            throw new SystemException(msg, e);
         }
     }
 

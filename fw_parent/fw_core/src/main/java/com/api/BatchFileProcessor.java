@@ -1,6 +1,7 @@
 package com.api;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import com.api.foundation.TransactionApi;
@@ -114,4 +115,38 @@ public interface BatchFileProcessor extends TransactionApi {
     Object processSingleFile(File file, Object parent)
             throws BatchFileException;
 
+    /**
+     * @return the startTime
+     */
+    public Date getStartTime();
+
+    /**
+     * @return the endTime
+     */
+    public Date getEndTime();
+
+    /**
+     * @return the successCnt
+     */
+    public int getSuccessCnt();
+
+    /**
+     * @return the errorCnt
+     */
+    public int getErrorCnt();
+
+    /**
+     * @return the nonAvFileCnt
+     */
+    public int getNonAvFileCnt();
+
+    /**
+     * @return the totCnt
+     */
+    public int getTotCnt();
+
+    /**
+     * @return the fileErrorMsg
+     */
+    public List<String> getFileErrorMsg();
 }

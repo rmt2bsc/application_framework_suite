@@ -538,10 +538,7 @@ public class RMT2Date {
      *         user timestamp.
      */
     public static final UserTimestamp getUserTimeStamp(String loginId) {
-        String message = null;
         if (loginId == null) {
-            message = "Login id is unknown for the UserTimeStamp object";
-            logger.warn(message);
             loginId = "Unknown";
         }
         java.util.Date currentDate = new java.util.Date();
@@ -897,6 +894,27 @@ public class RMT2Date {
         remain = seconds % 3600;
         int mins = remain / 60;
         int secs = remain % 60;
+
+        List<Integer> list = new ArrayList<Integer>();
+
+        list.add(hours);
+        list.add(mins);
+        list.add(secs);
+        return list;
+    }
+
+    /**
+     * Takes an n amount of milliseconds and converts to a List where each List
+     * element is a parsed representation of the time in HH:MM:SS format.
+     * 
+     * @param millisec
+     * @return
+     */
+    public static List<Integer> convertMillSecondsToList(int millisec) {
+        int millis = millisec % 1000;
+        int secs = (millisec / 1000) % 60;
+        int mins = (millisec / (1000 * 60)) % 60;
+        int hours = (millisec / (1000 * 60 * 60)) % 24;
 
         List<Integer> list = new ArrayList<Integer>();
 

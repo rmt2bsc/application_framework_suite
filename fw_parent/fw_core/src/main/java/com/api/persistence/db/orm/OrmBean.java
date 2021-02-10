@@ -9,15 +9,12 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.NotFoundException;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
-import com.api.config.old.AbstractSystemConfigImpl;
 import com.api.util.RMT2BeanUtility;
 import com.api.util.RMT2Date;
-import com.api.util.RMT2File;
 import com.api.util.RMT2String;
 import com.api.util.RMT2Utility;
 
@@ -40,7 +37,7 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
 
     /** A String literal representing the database equality */
     public static final String DB_EQUAL = "eq";
-
+    
     /**
      * Collection that stores the names of ORM bean properties that are to be
      * flagged as null when time to be persisted to the database. This is
@@ -297,8 +294,8 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
 
     private void createCriteria(String _property, String _criteria) {
         // Take care of escaping any occurrences of single quote literals
-        String val = RMT2String.replaceAll2(_criteria, "''", "'");
-        this.criteria.put(_property, val);
+        // String val = RMT2String.replaceAll2(_criteria, "''", "'");
+        this.criteria.put(_property, _criteria);
     }
     
     
@@ -395,28 +392,14 @@ public abstract class OrmBean extends RMT2Base implements Serializable {
      */
     public void addCriteria(String property, java.util.Date criteria) {
         try {
-            String dbmsId = AppPropertyPool
-                    .getProperty(ConfigConstants.PROPNAME_DBMS_VENDOR);
-            // Be able to obtain dbms id in web and stand alone application
-            // contexts
-            if (dbmsId == null) {
-                // PropertyFileSystemResourceConfigImpl config = new
-                // PropertyFileSystemResourceConfigImpl();
-                dbmsId = RMT2File
-                        .getAppParmProperty(ConfigConstants.PROPNAME_DBMS_VENDOR);
-                if (dbmsId == null) {
-                    throw new NotFoundException(
-                            "Date property, "
-                                    + property
-                                    + ", for RMT2 ORM object could not be manipulated due to the database vendor is not configured for this application");
-                }
-            }
-            String dbmsVal = AbstractSystemConfigImpl.getDbmsType(dbmsId);
+            String dbmsId = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_DBMS_VENDOR);
+
+            // String dbmsVal = OrmBean.DBMS_TYPES.get(dbmsId);
             String temp = null;
-            if (dbmsVal.equals(ConfigConstants.DBMSTYPE_SQLSERVER)) {
+            if (dbmsId.equals(ConfigConstants.DBMSTYPE_SQLSERVER)) {
                 temp = RMT2Date.formatDate(criteria, "MM/dd/yyyy HH:mm:ss");
             }
-            else if (dbmsVal.equals(ConfigConstants.DBMSTYPE_ASA)) {
+            else if (dbmsId.equals(ConfigConstants.DBMSTYPE_ASA)) {
                 temp = RMT2Date.formatDate(criteria, "yyyy/MM/dd HH:mm:ss");
             }
             

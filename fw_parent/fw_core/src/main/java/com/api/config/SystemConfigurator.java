@@ -49,6 +49,8 @@ public class SystemConfigurator extends RMT2Base {
 
     private String env;
 
+    private String userSessionWorkArea;
+
     private static AppServerConfig config;
 
     private static Map<String, AppServerConfig.DestinationMappings.Destination> destinationXref;
@@ -116,6 +118,9 @@ public class SystemConfigurator extends RMT2Base {
         }
         logger.info("Loading of remaining JAXB contexts complete.");
 
+        // Create user session work area
+        this.userSessionWorkArea = RMT2File.createUserSessionWorkArea();
+
         // Load system and application properties for the web app being
         // initialized.
         logger.info("Loading core system/application properties...");
@@ -179,8 +184,8 @@ public class SystemConfigurator extends RMT2Base {
                 props.addSystemProperty("HostPop3", emailProps.getHostPop3());
                 props.addSystemProperty("HostSmtp", emailProps.getHostSmtp());
                 props.addSystemProperty("InternalSmtpDomain", emailProps.getInternalSmtpDomain());
-                props.addSystemProperty("UserId", emailProps.getUserId());
-                props.addSystemProperty("Password", emailProps.getPassword());
+                props.addSystemProperty("MailUserId", emailProps.getUserId());
+                props.addSystemProperty("MailPassword", emailProps.getPassword());
                 props.addSystemProperty("Resourcetype", emailProps.getResourcetype());
                 props.addSystemProperty("TemplatePath", emailProps.getTemplatePath());
             }
@@ -205,7 +210,7 @@ public class SystemConfigurator extends RMT2Base {
     private void loadLocalProperties(AppServerConfig config) {
         AppPropertyPool props = AppPropertyPool.getInstance();
         props.addProperty("LoggerConfigPath", config.getLoggerConfigPath());
-        props.addProperty("ContainerManagedPool", config.getContainerManagedPool());
+        props.addSystemProperty("ContainerManagedPool", config.getContainerManagedPool());
         props.addSystemProperty("PageLinkMax", String.valueOf(config.getPageLinkMax()));
         props.addSystemProperty("PaginationPageSize", String.valueOf(config.getPaginationPageSize()));
         props.addSystemProperty("PollingPage", config.getPollingPage());
@@ -215,11 +220,16 @@ public class SystemConfigurator extends RMT2Base {
         props.addSystemProperty("RptXsltPath", config.getRptXsltPath());
         props.addSystemProperty("SerialDrive", config.getSerialDrive());
         props.addSystemProperty("SerialExt", config.getSerialExt());
-        props.addSystemProperty("SerialPath", config.getSerialPath());
+
+        // TODO: Since SerialPath is calculated as the User Session Work Area,
+        // remove "SerialPath" XML element from the AppServer config file to
+        // eliminate confusion.
+        props.addSystemProperty("SerialPath", this.userSessionWorkArea);
         props.addSystemProperty("TimeoutInterval", String.valueOf(config.getTimeoutInterval()));
         props.addSystemProperty("WebAppMapping", config.getWebAppMapping());
         props.addSystemProperty("WebAppsDir", config.getWebAppsDir());
         props.addSystemProperty("WebAppsDrive", config.getWebAppsDrive());
+        props.addSystemProperty("dbmsVendor", config.getDbmsVendor());
     }
 
     /**

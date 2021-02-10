@@ -28,6 +28,14 @@ import com.api.persistence.DatabaseException;
  * query a XML document and to navigate the document bi-directionally. The idea
  * is to think of and manipulate the document as a table of rows and columns.
  * 
+ * <pre>
+ * Change Log 
+ * ===========================================================================
+ * IS-49: Changed the ordering of the JRE in Import/Export configuration of the
+ * Build Path to the top of the list to eliminate compile time error regarding
+ * org.w3c.dom.Node.gettextcontent() being undefined.
+ * </pre>
+ * 
  * @author roy.terrell
  * 
  */
@@ -428,6 +436,7 @@ public class XmlDaoImpl extends DaoApiStub implements XmlDao {
     protected String getColumnValue(Node node) {
         if (node.getNodeName() != null) {
             if (node.getNodeName().equals("#text")) {
+                // IS-49: Fixed compile time error
                 return node.getTextContent();
             }
 

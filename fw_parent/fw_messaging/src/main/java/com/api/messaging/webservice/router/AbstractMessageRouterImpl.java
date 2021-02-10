@@ -99,18 +99,22 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
         // Need to obtain the message id for the response message instead of
         // sending null.
-        try {
-            // If reply message id is not available, then set it to the request
-            // message id with the String, "_RESPONSE", appended to it.
-            if (srvc.getReplyMessageId() == null) {
-                results.setMessageId(srvc.getMessageId() + "_RESPONSE");
+        if (results != null) {
+            try {
+                // If reply message id is not available, then set it to the
+                // request message id with the String, "_RESPONSE", appended to
+                // it.
+                if (srvc.getReplyMessageId() == null) {
+                    results.setMessageId(srvc.getMessageId() + "_RESPONSE");
+                }
+                else {
+                    results.setMessageId(srvc.getReplyMessageId());
+                }
+            } catch (InvalidDataException e) {
+                throw new MessageRoutingException(e);
             }
-            else {
-                results.setMessageId(srvc.getReplyMessageId());
-            }
-        } catch (InvalidDataException e) {
-            throw new MessageRoutingException(e);
         }
+
         return results;
     }
 

@@ -100,6 +100,14 @@ import com.api.util.RMT2Utility;
  * <li>ObjectOutput</li>
  * </ul>
  * 
+ * <pre>
+ * Change Log 
+ * ===========================================================================
+ * IS-49: Changed the ordering of the JRE in Import/Export configuration of the
+ * Build Path to the top of the list to eliminate compile time error regarding
+ * org.w3c.dom.Node.gettextcontent() being undefined.
+ * </pre>
+ * 
  * @author appdev
  * 
  */
@@ -640,19 +648,16 @@ public class RMT2XmlUtility extends RMT2Base {
             builder = factory.newDocumentBuilder();
             return builder.parse(new InputSource(new StringReader(xmlSource)));
         } catch (ParserConfigurationException e) {
-            errMsg = "Unable to convert XML String to Document instance due to a parser configuration problem for the XML DocumentBuilder interface : "
-                    + e.getMessage();
-            logger.error(errMsg);
+            errMsg = "Parser configuration error occurred for the XML DocumentBuilder interface";
+            logger.error(errMsg, e);
             throw new SystemException(errMsg);
         } catch (SAXException e) {
-            errMsg = "Unable to convert XML String to Document instance due to the existence of an error related to the actual parsing of the XML document:  "
-                    + e.getMessage();
-            logger.error(errMsg);
+            errMsg = "Failure to create XML document instance due to malformed XML String:  " + xmlSource;
+            logger.error(errMsg, e);
             throw new SystemException(errMsg);
         } catch (IOException e) {
-            errMsg = "Unable to convert XML String to Document instance due to general IO error(s):  "
-                    + e.getMessage();
-            logger.error(errMsg);
+            errMsg = "Failure to create XML document instance due to  general IO error(s)";
+            logger.error(errMsg, e);
             throw new SystemException(errMsg);
         }
     }
@@ -779,6 +784,7 @@ public class RMT2XmlUtility extends RMT2Base {
             }
             // get your node value
             if (node.getNodeValue() != null) {
+                // IS-49: Fixed compile time error
                 nodeString.append(node.getTextContent());
             }
 
@@ -953,6 +959,7 @@ public class RMT2XmlUtility extends RMT2Base {
 
         // Get the target element element by tag name directly
         Node targetNode = doc.getElementsByTagName(elementName).item(0);
+        // IS-49: Fixed compile time error
         String value = targetNode.getTextContent();
         return value;
     }

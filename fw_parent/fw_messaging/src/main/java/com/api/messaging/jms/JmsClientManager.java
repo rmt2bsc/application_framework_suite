@@ -39,6 +39,7 @@ import com.RMT2RuntimeException;
  */
 public class JmsClientManager {
     private static Logger LOGGER = Logger.getLogger(JmsClientManager.class);
+    private static final String JNDI_DESTINATION_PREFIX = "openejb:Resource/";
 
     /**
      * Connection to the JMS provider is set up once for all class instances
@@ -73,8 +74,7 @@ public class JmsClientManager {
 
         MessageConsumer consumer = null;
 
-        public JMSDestination(Destination destination, Session session,
-                MessageProducer producer, MessageConsumer consumer) {
+        public JMSDestination(Destination destination, Session session, MessageProducer producer, MessageConsumer consumer) {
             this.destination = destination;
             this.session = session;
             this.producer = producer;
@@ -138,15 +138,13 @@ public class JmsClientManager {
      * @return
      */
     public static JmsClientManager getInstance(String systemId) {
-        JmsConnectionManager jmsConMgr = JmsConnectionManager
-                .getJmsConnectionManger();
+        JmsConnectionManager jmsConMgr = JmsConnectionManager.getJmsConnectionManger();
 
         // Get the appropriate JMS connection based on the messaging
         // system specified in transaction's configuration.
         Connection con = jmsConMgr.getConnection(systemId);
         if (con == null) {
-            throw new RMT2RuntimeException(
-                    "Error obtaining a connection for JMS client instance");
+            throw new RMT2RuntimeException("Error obtaining a connection for JMS client instance");
         }
 
         // Associate JMS connection with the client
@@ -167,7 +165,7 @@ public class JmsClientManager {
         } catch (Exception e) {
             this.errMsg = "Unable to locate JMS object, " + name
                     + ", via JNDI directory lookup";
-            LOGGER.warn(this.errMsg, e);
+            LOGGER.warn(this.errMsg);
             throw new RuntimeException(this.errMsg, e);
         }
     }
@@ -184,9 +182,23 @@ public class JmsClientManager {
         // Look for an existing Destination for the given name
         JMSDestination jmsDest = jmsDestinations.get(name);
 
-        // If not found, by default, create Queue destination now
+        // If destination is not found locally, try obtain via JNDI
         if (jmsDest == null) {
-            this.createDestination(name, Queue.class);
+            Object dest = this.lookupJndiObject(JNDI_DESTINATION_PREFIX + name);
+            if (dest != null) {
+                if (dest instanceof Topic) {
+                    this.createDestination(name, Topic.class);
+                }
+                else if (dest instanceof Queue) {
+                    this.createDestination(name, Queue.class);
+                }
+            }
+            else {
+                // If destination not found via JNDI, by default, create Topic
+                // destination now
+                this.createDestination(name, Topic.class);
+            }
+            // Get destination wrapper that was just created
             jmsDest = jmsDestinations.get(name);
         }
         return jmsDest;
@@ -215,11 +227,9 @@ public class JmsClientManager {
      *            An instance of an implementaton of {@link MessageListener}.
      * @throws Exception
      */
-    protected void setupAsynchConsumer(JMSDestination jmsDest,
-            MessageListener callback) throws Exception {
+    protected void setupAsynchConsumer(JMSDestination jmsDest, MessageListener callback) throws Exception {
         if (jmsDest.consumer == null) {
-            jmsDest.consumer = jmsDest.session
-                    .createConsumer(jmsDest.destination);
+            jmsDest.consumer = jmsDest.session.createConsumer(jmsDest.destination);
         }
         jmsDest.consumer.setMessageListener(callback);
     }
@@ -235,8 +245,7 @@ public class JmsClientManager {
      * @return an instance of {@link Message}
      * @throws Exception
      */
-    protected Message setupSynchConsumer(JMSDestination jmsDest, int timeout)
-            throws Exception {
+    protected Message setupSynchConsumer(JMSDestination jmsDest, int timeout) throws Exception {
         if (jmsDest.consumer == null) {
             jmsDest.consumer = jmsDest.session
                     .createConsumer(jmsDest.destination);
@@ -268,8 +277,7 @@ public class JmsClientManager {
      * @return the JMS replyTo destination that was created.
      * @throws Exception
      */
-    public Destination createReplyToDestination(String requestMsgDestName,
-            Message msg) throws Exception {
+    public Destination createReplyToDestination(String requestMsgDestName, Message msg) throws Exception {
         Class tempDestClass = null;
         JMSDestination jmsDest = getJMSDestination(requestMsgDestName);
         if (jmsDest.destination instanceof Queue) {
@@ -280,8 +288,7 @@ public class JmsClientManager {
         }
 
         // Create the actual temporary destination.
-        Destination tempDest = this
-                .createReplyToDestination(msg, tempDestClass);
+        Destination tempDest = this.createReplyToDestination(msg, tempDestClass);
 
         // Pair temporary destination with the JMSDestinaiton entry so we can
         // easily track and delete during JMS resource cleanup.
@@ -308,11 +315,9 @@ public class JmsClientManager {
      *             than <i>javax.jms.TemporaryTopic</i> or
      *             <i>javax.jms.TemporaryQueue</i>.
      */
-    protected Destination createReplyToDestination(Message requestMsg,
-            Class destType) throws Exception {
+    protected Destination createReplyToDestination(Message requestMsg, Class destType) throws Exception {
         if (destType == null) {
-            throw new RuntimeException(
-                    "Reply To Destination class type cannot be null");
+            throw new RuntimeException("Reply To Destination class type cannot be null");
         }
         Session session = this.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
@@ -328,8 +333,7 @@ public class JmsClientManager {
         }
         else {
             // force destination to be either TemporaryTopic or TemporaryQueue
-            throw new RuntimeException(
-                    "Reply To Destination class type must be of type TemporaryQueue or TemporaryTopic");
+            throw new RuntimeException("Reply To Destination class type must be of type TemporaryQueue or TemporaryTopic");
         }
         this.createReplyToDestination(requestMsg, replyToDest);
 
@@ -360,8 +364,7 @@ public class JmsClientManager {
      * @throws Exception
      *             General JMS error.
      */
-    protected void createReplyToDestination(Message msg, Destination replyToDest)
-            throws Exception {
+    protected void createReplyToDestination(Message msg, Destination replyToDest) throws Exception {
         msg.setJMSReplyTo(replyToDest);
     }
 
@@ -404,8 +407,7 @@ public class JmsClientManager {
      *            parameter is ignored.
      * @throws Exception
      */
-    public void createDestination(String name, Class type, boolean transacted,
-            int ackMode) throws Exception {
+    public void createDestination(String name, Class type, boolean transacted, int ackMode) throws Exception {
 
         // If the destination already exists, just return
         if (jmsDestinations.get(name) != null)
@@ -421,15 +423,11 @@ public class JmsClientManager {
             try {
                 LOGGER.info("Begin JNDI lookup of destination, " + name + "...");
                 destination = (Destination) lookupJndiObject(name);
-                String jmsDestName = this
-                        .getInternalDestinationName(destination);
-                LOGGER.info("JNDI lookup of destination, " + name
-                        + ", was successful!!");
-                LOGGER.info("JNDI destination name is mapped to JMS destination, "
-                        + jmsDestName);
+                String jmsDestName = this.getInternalDestinationName(destination);
+                LOGGER.info("JNDI lookup of destination, " + name + ", was successful!!");
+                LOGGER.info("JNDI destination name is mapped to JMS destination, " + jmsDestName);
             } catch (Exception e) {
-                LOGGER.warn("Unable to lookup JMS destination via JNDI: "
-                        + name);
+                LOGGER.warn("Unable to lookup JMS destination via JNDI: " + name);
                 destination = null;
             }
         }
@@ -438,8 +436,7 @@ public class JmsClientManager {
         }
 
         if (destination == null) {
-            LOGGER.info("JMS destination, " + name
-                    + ", will be created directly.");
+            LOGGER.info("JMS destination, " + name + ", will be created directly.");
             // Create a topic or queue as specified
             if (type.getName().equals("javax.jms.Queue")) {
                 LOGGER.info("setupDestination() - creating Queue");
@@ -451,8 +448,7 @@ public class JmsClientManager {
             }
         }
 
-        JMSDestination jmsDest = new JMSDestination(destination, session, null,
-                null);
+        JMSDestination jmsDest = new JMSDestination(destination, session, null, null);
         jmsDestinations.put(name, jmsDest);
     }
 
@@ -467,10 +463,8 @@ public class JmsClientManager {
      * @param callback
      * @throws Exception
      */
-    public void listen(String destName, MessageListener callback)
-            throws Exception {
-        LOGGER.info("JmsClientManager.listen(" + destName + ", " + callback
-                + ")");
+    public void listen(String destName, MessageListener callback) throws Exception {
+        LOGGER.info("JmsClientManager.listen(" + destName + ", " + callback + ")");
 
         JMSDestination jmsDest = getJMSDestination(destName);
 
@@ -525,8 +519,7 @@ public class JmsClientManager {
      * @param callback
      * @throws Exception
      */
-    public void listen(Destination dest, MessageListener callback)
-            throws Exception {
+    public void listen(Destination dest, MessageListener callback) throws Exception {
         Session s = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         MessageConsumer c = s.createConsumer(dest);
         c.setMessageListener(callback);
@@ -661,44 +654,35 @@ public class JmsClientManager {
                 if (jmsDest.replyToDestination != null) {
                     String tempDestName = null;
                     try {
-                        tempDestName = this
-                                .getInternalDestinationName(jmsDest.replyToDestination);
+                        tempDestName = this.getInternalDestinationName(jmsDest.replyToDestination);
                     } catch (Exception e) {
                         tempDestName = "[Unknown]";
                     }
                     try {
                         if (jmsDest.replyToDestination instanceof TemporaryTopic) {
-                            ((TemporaryTopic) jmsDest.replyToDestination)
-                                    .delete();
+                            ((TemporaryTopic) jmsDest.replyToDestination).delete();
                         }
                         if (jmsDest.replyToDestination instanceof TemporaryQueue) {
-                            ((TemporaryQueue) jmsDest.replyToDestination)
-                                    .delete();
+                            ((TemporaryQueue) jmsDest.replyToDestination).delete();
                         }
-                        LOGGER.info("Temporary destination was deleted: "
-                                + tempDestName);
+                        LOGGER.info("Temporary destination was deleted: " + tempDestName);
                     } catch (Exception e) {
-                        LOGGER.error("Problem closing temporary JMS destination: "
-                                + e.getMessage());
-                        e.printStackTrace();
+                        LOGGER.error("Problem closing temporary JMS destination: " + e.getMessage());
                     }
                 }
 
                 // Close out all JMS related state
                 if (jmsDest.producer != null) {
                     jmsDest.producer.close();
-                    LOGGER.info("JMS producer closed for destination, "
-                            + destName);
+                    LOGGER.info("JMS producer closed for destination, " + destName);
                 }
                 if (jmsDest.consumer != null) {
                     jmsDest.consumer.close();
-                    LOGGER.info("JMS consumer closed for destination, "
-                            + destName);
+                    LOGGER.info("JMS consumer closed for destination, " + destName);
                 }
                 if (jmsDest.session != null) {
                     jmsDest.session.close();
-                    LOGGER.info("JMS session closed for destination, "
-                            + destName);
+                    LOGGER.info("JMS session closed for destination, " + destName);
                 }
 
                 jmsDest.destination = null;
@@ -736,7 +720,6 @@ public class JmsClientManager {
             } catch (JMSException e) {
                 this.errMsg = "Problem identifying JMS destination name";
                 LOGGER.error(this.errMsg);
-                e.printStackTrace();
                 throw new JmsClientManagerException(this.errMsg, e);
             }
         }
@@ -758,8 +741,7 @@ public class JmsClientManager {
                 destination = (Destination) lookupJndiObject(jndiName);
                 destName = this.getInternalDestinationName(destination);
             } catch (Exception e) {
-                this.errMsg = "Unable to lookup JMS destination via JNDI name: "
-                        + jndiName;
+                this.errMsg = "Unable to lookup JMS destination via JNDI name: " + jndiName;
                 LOGGER.warn(this.errMsg);
                 throw new JmsClientManagerException(this.errMsg, e);
             }
@@ -783,8 +765,7 @@ public class JmsClientManager {
      *         Otherwise, an instance of {@link ObjectMessage} is returned.
      * @throws Exception
      */
-    protected Message createJMSMessage(Serializable obj, Session session)
-            throws Exception {
+    protected Message createJMSMessage(Serializable obj, Session session) throws Exception {
         if (obj instanceof String) {
             TextMessage textMsg = session.createTextMessage();
             textMsg.setText((String) obj);

@@ -151,8 +151,7 @@ public class JmsConnectionManager {
             return;
         }
 
-        List<AppServerConfig.MessagingSystemsInfo.System> systems = config
-                .getMessagingSystemsInfo().getSystem();
+        List<AppServerConfig.MessagingSystemsInfo.System> systems = config.getMessagingSystemsInfo().getSystem();
         for (AppServerConfig.MessagingSystemsInfo.System sys : systems) {
             LOGGER.info("==================================================");
             LOGGER.info("Begin configuring JMS connection...");
@@ -162,11 +161,9 @@ public class JmsConnectionManager {
             } catch (JmsConnectiontManagerException e) {
                 errMsg = "Failed to initialize JMS connection(s)";
                 LOGGER.fatal(errMsg);
-                e.printStackTrace();
                 throw new JmsClientManagerException(errMsg, e);
             }
-            LOGGER.info("Configuring JMS connection for " + sys.getName()
-                    + " completed.");
+            LOGGER.info("Configuring JMS connection for " + sys.getName() + " completed.");
             LOGGER.info("==================================================\n\n");
         }
     }
@@ -183,8 +180,7 @@ public class JmsConnectionManager {
      * @throws JmsConnectiontManagerException
      *             Error creating the JMS connection.
      */
-    public void createConnection(Properties config)
-            throws JmsConnectiontManagerException {
+    public void createConnection(Properties config) throws JmsConnectiontManagerException {
         JmsConnectionInfo info = new JmsConnectionInfo();
         info.system = config.getProperty("system");
 
@@ -194,22 +190,18 @@ public class JmsConnectionManager {
             info.initalContextFactory = config.getProperty("initialContext");
         }
         info.providerUrl = config.getProperty("connectionURL");
-        info.useAuth = Boolean.parseBoolean(config
-                .getProperty("authentication"));
+        info.useAuth = Boolean.parseBoolean(config.getProperty("authentication"));
         if (info.useAuth) {
             info.userName = config.getProperty("username");
             info.password = config.getProperty("password");
         }
-        info.maxConnectAttempts = Integer.parseInt(config
-                .getProperty("maxConnectAttempts"));
-        info.connectAttemptInterval = Integer.parseInt(config
-                .getProperty("connectAttemptInterval"));
+        info.maxConnectAttempts = Integer.parseInt(config.getProperty("maxConnectAttempts"));
+        info.connectAttemptInterval = Integer.parseInt(config.getProperty("connectAttemptInterval"));
 
         this.createConnection(info);
         if (info.con != null) {
             JmsConnectionManager.CONNECTIONS.put(info.system, info);
         }
-
     }
 
     /**
@@ -222,8 +214,7 @@ public class JmsConnectionManager {
      *             Error establishing a JMS connection using the data contained
      *             in <i>config</i>.
      */
-    private void createConnection(JmsConnectionInfo info)
-            throws JmsConnectiontManagerException {
+    private void createConnection(JmsConnectionInfo info) throws JmsConnectiontManagerException {
         try {
             Connection con;
             // Get a JMS Connection
@@ -243,10 +234,8 @@ public class JmsConnectionManager {
             LOGGER.info("Provider URL: " + info.providerUrl);
             LOGGER.info("JNDI enabled: " + info.useJndi);
             if (info.useJndi) {
-                LOGGER.info("Initial Context Factory Class: "
-                        + info.connectionFactory);
-                LOGGER.info("Connection Factory Name: "
-                        + info.initalContextFactory);
+                LOGGER.info("Initial Context Factory Class: " + info.connectionFactory);
+                LOGGER.info("Connection Factory Name: " + info.initalContextFactory);
             }
             LOGGER.info("Authentication enabled: " + info.useAuth);
             if (info.useAuth) {
@@ -254,10 +243,8 @@ public class JmsConnectionManager {
             }
             info.con = con;
         } catch (Exception e) {
-            this.errMsg = "Error establishing a JMS connection for "
-                    + info.system;
+            this.errMsg = "Error establishing a JMS connection for " + info.system;
             LOGGER.error(this.errMsg);
-            e.printStackTrace();
             throw new JmsConnectiontManagerException(this.errMsg, e);
         }
     }
@@ -278,8 +265,7 @@ public class JmsConnectionManager {
             return info.con;
         }
         else {
-            msg = messagingSystem
-                    + " JMS connection does not exist and must be created";
+            msg = messagingSystem + " JMS connection does not exist and must be created";
             LOGGER.warn(msg);
             return null;
         }
@@ -296,14 +282,12 @@ public class JmsConnectionManager {
     private JmsConnectionInfo getConnectionInfo(String messagingSystem) {
         String msg = null;
         // Check to see if already connected to JMS
-        JmsConnectionInfo info = JmsConnectionManager.CONNECTIONS
-                .get(messagingSystem);
+        JmsConnectionInfo info = JmsConnectionManager.CONNECTIONS.get(messagingSystem);
         if (info != null) {
             return info;
         }
         else {
-            msg = "JMS connection information is unavailable for system, "
-                    + messagingSystem;
+            msg = "JMS connection information is unavailable for system, " + messagingSystem;
             LOGGER.error(msg);
             return null;
         }
@@ -350,8 +334,7 @@ public class JmsConnectionManager {
             if (info.initalContextFactory != null) {
                 try {
                     RMT2BeanUtility util = new RMT2BeanUtility();
-                    return (ConnectionFactory) util
-                            .createBean(info.initalContextFactory);
+                    return (ConnectionFactory) util.createBean(info.initalContextFactory);
                 } catch (Exception e) {
                     errMsg = "Error obtaining JMS Connection Factory via direct instantiation";
                     LOGGER.error(errMsg);
@@ -373,33 +356,29 @@ public class JmsConnectionManager {
     private Object lookupConnectionFactory(JmsConnectionInfo info) {
         try {
             if (jndi == null) {
-                LOGGER.info("Getting JNDI Intial Context for " + info.system
-                        + "...");
+                LOGGER.info("Getting JNDI Intial Context for " + info.system + "...");
                 Hashtable<String, String> props = new Hashtable<String, String>();
                 props.put(Context.PROVIDER_URL, info.providerUrl);
-                props.put(Context.INITIAL_CONTEXT_FACTORY,
-                        info.initalContextFactory);
+                props.put(Context.INITIAL_CONTEXT_FACTORY, info.initalContextFactory);
                 if (info.useAuth) {
                     props.put(Context.SECURITY_PRINCIPAL, info.userName);
                     props.put(Context.SECURITY_CREDENTIALS, info.password);
                 }
                 LOGGER.info("JNDI Provider URL: " + info.providerUrl);
-                LOGGER.info("JNDI Intial Context Factory: "
-                        + info.connectionFactory);
+                LOGGER.info("JNDI Intial Context Factory: " + info.connectionFactory);
                 LOGGER.info("JNDI User Name: " + info.userName);
                 LOGGER.info("JNDI Password: " + info.password);
+
+                // Obtain reference to new JNDI Context
                 jndi = new InitialContext(props);
             }
             Object factory = jndi.lookup(info.connectionFactory);
-            LOGGER.info("JNDI Intial Context successfully obtained for "
-                    + info.system + "\n");
+            LOGGER.info("JNDI Intial Context successfully obtained for " + info.system + "\n");
             return factory;
         } catch (Exception e) {
-            String errMsg = "Failed JNDI lookup of Connection Factory, "
-                    + info.initalContextFactory + ", for system, "
+            String errMsg = "Failed JNDI lookup of Connection Factory, " + info.initalContextFactory + ", for system, "
                     + info.system;
             LOGGER.warn(errMsg);
-            e.printStackTrace();
             throw new RuntimeException(errMsg, e);
         }
     }
@@ -500,8 +479,7 @@ public class JmsConnectionManager {
 
         @Override
         public void onException(JMSException ex) {
-            LOGGER.fatal("Connection to the " + conInfo.system
-                    + " JMS Server has been lost.", ex);
+            LOGGER.fatal("Connection to the " + conInfo.system + " JMS Server has been lost.", ex);
             recoverConnection();
         }
 
@@ -513,9 +491,7 @@ public class JmsConnectionManager {
          * HATS Server manually.
          */
         public void recoverConnection() {
-            LOGGER.info(this.systeToRecover
-                    + "Attempting to reestablish connection for "
-                    + conInfo.system + "... ");
+            LOGGER.info(this.systeToRecover + "Attempting to reestablish connection for " + conInfo.system + "... ");
             try {
                 removeConnection(this.conInfo);
             } catch (JmsConnectiontManagerException e) {
@@ -524,19 +500,16 @@ public class JmsConnectionManager {
             int recoverAttempts = 1;
             boolean connected = false;
             while (!connected && recoverAttempts <= conInfo.maxConnectAttempts) {
-                LOGGER.info("Attempt # " + recoverAttempts + " in recovering "
-                        + conInfo.system + " connection...");
+                LOGGER.info("Attempt # " + recoverAttempts + " in recovering " + conInfo.system + " connection...");
                 try {
                     createConnection(conInfo);
                     if (isConnected(conInfo.system)) {
                         connected = true;
-                        LOGGER.info(conInfo.system
-                                + " connection recovered successfully!");
+                        LOGGER.info(conInfo.system + " connection recovered successfully!");
                         break;
                     }
                 } catch (JmsConnectiontManagerException e) {
-                    LOGGER.warn(conInfo.system
-                            + " system is still down...will try again in "
+                    LOGGER.warn(conInfo.system + " system is still down...will try again in "
                             + (conInfo.connectAttemptInterval * 1000)
                             + " seconds.");
                     // Pause loop for a specified time interval
@@ -550,11 +523,9 @@ public class JmsConnectionManager {
             }
 
             if (!connected && recoverAttempts > conInfo.maxConnectAttempts) {
-                LOGGER.error("Failed to recover connection to "
-                        + conInfo.system
+                LOGGER.error("Failed to recover connection to " + conInfo.system
                         + " JMS server.  Host server will have to be restarted manually!");
             }
-
         }
     }
 

@@ -65,6 +65,29 @@ public class RMT2String {
     }
 
     /**
+     * Creates a string of ch totaling count.
+     * 
+     * @param value
+     *            String to duplicate
+     * @param count
+     *            Total number of times to duplicatd
+     * @return String
+     */
+    public static final String dupString(String value, int count) {
+
+        String result = "";
+
+        if (count <= 0) {
+            return null;
+        }
+        for (int ndx = 1; ndx <= count; ndx++) {
+            result += value;
+        }
+
+        return result;
+    }
+
+    /**
      * Adds leading or trailing zeros to an long value.
      * <p>
      * <p>
@@ -74,8 +97,7 @@ public class RMT2String {
      * @param source
      *            The number to pad
      * @param precision
-     *            The total number of digits to exect as a result of this
-     *            operation.
+     *            The total number of digits as a result of this operation.
      * @param direction
      *            -1=leading and 1=trailing
      * @return Padded number.
@@ -211,12 +233,19 @@ public class RMT2String {
         }
         StringBuffer buf = new StringBuffer();
         String parts[] = source.split(delim);
-        for (int ndx = 0; ndx < parts.length; ndx++) {
-            buf.append(parts[ndx]);
-            if ((ndx + 1) < parts.length) {
-                buf.append(replacement);
+        if (parts.length > 1) {
+            for (int ndx = 0; ndx < parts.length; ndx++) {
+                buf.append(parts[ndx]);
+                if ((ndx + 1) < parts.length) {
+                    buf.append(replacement);
+                }
             }
         }
+        else {
+            // In the event delimiter is at the end of String argument
+            buf.append(RMT2String.replace(source, replacement, delim));
+        }
+
         return buf.toString();
     }
 

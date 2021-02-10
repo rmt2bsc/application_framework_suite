@@ -58,6 +58,14 @@ import com.api.xml.jaxb.JaxbUtil;
  * Contains common SOAP Messaging functionality that both the SOAP client and
  * server processes can benefit from.
  * 
+ * <pre>
+ * Change Log 
+ * ===========================================================================
+ * IS-49: Changed the ordering of the JRE in Import/Export configuration of the
+ * Build Path to the top of the list to eliminate compile time error regarding
+ * org.w3c.dom.Node.gettextcontent() being undefined.
+ * </pre>
+ * 
  * @author appdev
  * 
  */
@@ -375,6 +383,7 @@ public class SoapMessageHelper extends RMT2Base {
                 SOAPHeaderElement item = iter.next();
                 Name n = item.getElementName();
                 String elementName = n.getQualifiedName();
+                // IS-49: Fixed compile time error
                 String value = item.getTextContent();
                 headers.put(elementName, value);
             }
@@ -413,6 +422,7 @@ public class SoapMessageHelper extends RMT2Base {
             String elementName = n.getQualifiedName();
             // Try qualified name first.
             if (targetElementName.equals(elementName)) {
+                // IS-49: Fixed compile time error
                 value = item.getTextContent();
                 return value;
             }
@@ -421,6 +431,7 @@ public class SoapMessageHelper extends RMT2Base {
             if (splitHeadName != null && splitHeadName.length == 2) {
                 String unqualElementName = splitHeadName[1];
                 if (targetElementName.equals(unqualElementName)) {
+                    // IS-49: Fixed compile time error
                     value = item.getTextContent();
                     return value;
                 }

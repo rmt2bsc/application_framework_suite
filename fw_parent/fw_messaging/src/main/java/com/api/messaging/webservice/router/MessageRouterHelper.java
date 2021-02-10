@@ -262,14 +262,25 @@ public class MessageRouterHelper extends RMT2Base {
         String xml = this.convertPayloadToXml(payload);
         logger.info("Routing Request: ");
         logger.info(xml);
-        
-        // Setup header informtation in the payload
-        String modifiedPayload = this.setPayloadHeaderValues(routeInfo, xml);
 
+        // Get delivery mode which should of been set by the client and not
+        // included in the server configuration
+        if (routeInfo.getDeliveryMode() == null) {
+            String deliveryMode = RMT2XmlUtility.getElementValue("delivery_mode", xml);
+            if (deliveryMode == null) {
+                throw new MessageRoutingException("Routing of message, " + messageId
+                        + ",  has failed due to the inability to identify the delivery mode");
+            }
+            routeInfo.setDeliveryMode(deliveryMode);
+        }
+        
         // Route message to business server
-        Serializable jaxPayload = this.routeMessage(routeInfo, modifiedPayload);
+        Serializable jaxPayload = this.routeMessage(routeInfo, xml);
 
         // Try marshall response payload as XML and dump contents to logger
+        if (jaxPayload == null) {
+            return null;
+        }
         try {
             xml = this.convertPayloadToXml(jaxPayload);
             logger.info("Routing Response: ");
@@ -306,7 +317,7 @@ public class MessageRouterHelper extends RMT2Base {
         // Route message to business server
         Serializable results = (Serializable) router.routeMessage(routeInfo, payload);
         Serializable jaxbPayload = null;
-        if (results instanceof MessageHandlerResults) {
+        if (results != null && results instanceof MessageHandlerResults) {
             jaxbPayload = ((MessageHandlerResults) results).getPayload();
         }
         return jaxbPayload;

@@ -6,7 +6,6 @@ import com.RMT2Base;
 import com.SystemException;
 import com.api.config.old.ProviderConfig;
 import com.api.config.old.ProviderConnectionException;
-import com.api.messaging.MessageException;
 
 /**
  * @author RTerrell
@@ -41,18 +40,18 @@ public abstract class AbstractMessagingImpl extends RMT2Base {
         return this.config;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * 
-     * @see com.api.messaging.MessageManager#getConnection()
+     * @param config
+     * @return
+     * @throws ProviderConnectionException
      */
     public abstract Object connect(ProviderConfig config)
             throws ProviderConnectionException;
 
-    /*
-     * (non-Javadoc)
+    /**
      * 
-     * @see com.api.messaging.MessageManager#getHost()
+     * @return
      */
     public String getHost() {
         return this.config.getHost();

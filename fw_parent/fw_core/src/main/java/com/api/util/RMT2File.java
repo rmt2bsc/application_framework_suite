@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
@@ -39,7 +40,6 @@ import org.apache.log4j.Logger;
 import com.NotFoundException;
 import com.RMT2RuntimeException;
 import com.SystemException;
-import com.api.config.ConfigConstants;
 
 /**
  * Class contains a collection general purpose File I/O utilities.
@@ -167,6 +167,22 @@ public class RMT2File {
     }
 
     /**
+     * Returns only the path of the file.
+     * 
+     * @param path
+     *            the full file path of the file name.
+     * @return path directory minus the filename.
+     */
+    public static final String getFilePathDirectory(String path) {
+        if (path == null) {
+            return null;
+        }
+        File f = new File(path);
+        String pathOnly = f.getParent();
+        return pathOnly;
+    }
+
+    /**
      * Return the file's path without including its drive letter.
      * 
      * @param fileName
@@ -225,6 +241,53 @@ public class RMT2File {
             results2 = results[1].split("/");
         }
         return results2;
+    }
+    
+    /**
+     * In the event the runtime is Windows OS, convert directory separators to
+     * forward slashes
+     * 
+     * @param path
+     *            the full file/directory path to convert
+     * @return the path in UNC file format.
+     */
+    public static final String changePathToUNC(String path) {
+        if (path == null) {
+            return null;
+        }
+        String results = null;
+        List<String> t = RMT2String.getTokens(path, "\\");
+        if (t != null && t.size() > 1) {
+            StringBuilder buf = new StringBuilder();
+            for (String item : t) {
+                buf.append(item);
+                buf.append("/");
+            }
+            results = buf.toString();
+        }
+        else {
+            // There were no changes needed.
+            results = path;
+        }
+        return results;
+    }
+
+    /**
+     * Creates an instance of File by loading the file from the resources folder
+     * within the class path.
+     * 
+     * @param path
+     *            location of the file within the class path
+     * @return an instance of {@link File}
+     */
+    public static final File getFileInstanceFromClassPath(String path) {
+        if (path == null) {
+            return null;
+        }
+        RMT2File obj = new RMT2File();
+        ClassLoader classLoader = obj.getClass().getClassLoader();
+        File file = new File(classLoader.getResource(path).getFile());
+        return file;
     }
 
     /**
@@ -579,17 +642,6 @@ public class RMT2File {
         return props;
     }
 
-    /**
-     * Obtains the property value from <i>config.Appparms.propertes</i> using
-     * keyCode.
-     * 
-     * @param prop
-     *            The key name
-     * @return The property value.
-     */
-    public static final String getAppParmProperty(String prop) {
-        return RMT2File.getPropertyValue(ConfigConstants.CONFIG_APP, prop);
-    }
 
     /**
      * Obtains the property value using keyCode from within the selected
@@ -867,6 +919,37 @@ public class RMT2File {
     }
 
     /**
+     * Create directory to serve as the user session work area.
+     * 
+     * @return the full path of the user session work area directory that was
+     *         created.
+     */
+    public static final String createUserSessionWorkArea() {
+        String workArea;
+        workArea = System.getProperty("user.home");
+        workArea += File.separator + ".RMT2-Sessions";
+
+        // Create sessions directory if it does not exists.
+        try {
+            File workAreaFile = new File(workArea);
+            boolean mkdirRc = false;
+            if (!workAreaFile.exists()) {
+                mkdirRc = workAreaFile.mkdir();
+                if (mkdirRc) {
+                    logger.info(workArea + " directory was created as the User Session Work Area");
+                }
+            }
+            else {
+                logger.info(workArea + " directory already exists as the User Session Work Area");
+            }
+            return workArea;
+        } catch (Exception e) {
+            logger.error("Failed to create user session work area", e);
+            return null;
+        }
+    }
+
+    /**
      * Creates a single directory.
      * 
      * @param dir
@@ -892,7 +975,7 @@ public class RMT2File {
         }
 
         try {
-            boolean result = newDir.mkdir();
+            boolean result = newDir.mkdirs();
             return result;
         } catch (Exception e) {
             msg = "Problem creating directory, " + dir + ",  due to general exception";
@@ -1893,9 +1976,29 @@ public class RMT2File {
      * @return String as the full path;
      */
     public static final String resolveRelativeFilePath(String path) {
-        URL url = ClassLoader.getSystemResource(path);
-        String fullPath = url.getFile();
-        return fullPath;
+        if (path == null) {
+            logger.warn("Resource, " + path + ", was received as null");
+            return null;
+        }
+
+        RMT2File obj = new RMT2File();
+        URL res = obj.getClass().getClassLoader().getResource(path);
+        if (res == null) {
+            logger.error("Resource, " + path + ", was not found");
+            return null;
+        }
+        File file = null;
+        try {
+            file = Paths.get(res.toURI()).toFile();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return file.getAbsolutePath();
+
+        // The old way, which is not working anymore.
+        // URL url = ClassLoader.getSystemResource(path);
+        // String fullPath = url.getFile();
+        // return fullPath;
     }
     
     
@@ -2060,6 +2163,40 @@ public class RMT2File {
         byte binaryData[] = getFileContentsAsBytes(srcFilePath);
         String data = RMT2Base64Encoder.encode(binaryData);
         return data;
+    }
+
+    /**
+     * Removes the Windows drive identifier (drive letter and colon) from the
+     * file path.
+     * 
+     * @param fileName
+     *            sourcce filename
+     * @return String file name without the drive identifier or the original
+     *         file name in cases where there drive identifier does not exist in
+     *         the file name.
+     */
+    public static final String removeWindowsDriveFromFilename(String fileName) {
+        List<String> tokens = RMT2String.getTokens(fileName, ":");
+        if (tokens.size() == 2) {
+            return tokens.get(1);
+        }
+        return fileName;
+    }
+
+    /**
+     * Convert the Windows filename to UNIX or UNC style filename.
+     * <p>
+     * It basically removes drive letters and/or changes back slashes to forward
+     * slashes.
+     * 
+     * @param fileName
+     *            String the filename to convert
+     * @return String converted filename
+     */
+    public static final String convertToUnixStyle(String fileName) {
+        String temp = RMT2File.removeWindowsDriveFromFilename(fileName);
+        temp = RMT2String.replaceAll(temp, "/", "\\\\");
+        return temp;
     }
 
 } // end class

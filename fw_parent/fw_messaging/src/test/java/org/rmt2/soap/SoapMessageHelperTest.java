@@ -31,6 +31,8 @@ import org.rmt2.jaxbtest.TestZipcodeType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import testcases.TestCaseConstants;
+
 import com.InvalidDataException;
 import com.api.messaging.webservice.soap.SoapMessageHelper;
 import com.api.messaging.webservice.soap.SoapServiceException;
@@ -40,13 +42,19 @@ import com.api.web.Request;
 import com.api.web.controller.scope.HttpVariableScopeFactory;
 import com.api.xml.jaxb.JaxbUtil;
 
-import testcases.TestCaseConstants;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HttpVariableScopeFactory.class, SoapMessageHelper.class,
         RMT2SoapEngine.class })
 /**
  * Test the SoapMessageHelper class
+ * 
+ * <pre>
+ * Change Log 
+ * ===========================================================================
+ * IS-49: Changed the ordering of the JRE in Import/Export configuration of the
+ * Build Path to the top of the list to eliminate compile time error regarding
+ * org.w3c.dom.Node.gettextcontent() being undefined.
+ * </pre>
  * 
  * @author appdev
  *
@@ -55,39 +63,7 @@ public class SoapMessageHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        // PowerMockito.mockStatic(HttpVariableScopeFactory.class);
-        // String serviceId = "test service id";
-        // HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        // HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        // Request mockGenericRequest = mock(Request.class);
-        // SOAPMessage mockSoapMsg = mock(SOAPMessage.class);
-        //
-        // when(HttpVariableScopeFactory.createHttpRequest(mockRequest))
-        // .thenReturn(mockGenericRequest);
-        //
-        // when(mockRequest.getRequestURL()).thenReturn(
-        // new StringBuffer("http://test/url"));
-        //
-        // try {
-        // MessageRouterHelper mockMsgRouterHelper =
-        // mock(MessageRouterHelper.class);
-        // whenNew(MessageRouterHelper.class).withNoArguments().thenReturn(
-        // mockMsgRouterHelper);
-        // when(mockMsgRouterHelper.routeSoapMessage(serviceId, mockSoapMsg))
-        // .thenReturn(mockSoapMsg);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // Assert.fail("Unable to mock the construction of MessageRouterHelper
-        // class");
-        // }
-        //
-        // try {
-        // RMT2SoapEngine engine = new RMT2SoapEngine();
-        // engine.processRequest(mockRequest, mockResponse);
-        // } catch (StatelessControllerProcessingException e) {
-        // e.printStackTrace();
-        // Assert.fail("RMT2SoapEngine unit test operation failed");
-        // }
+        return;
     }
 
     @After
@@ -242,6 +218,7 @@ public class SoapMessageHelperTest {
             Assert.assertNotNull(node);
             nodeName = node.getNodeName();
             Assert.assertEquals("username", nodeName);
+            // IS-49: Fixed compile time error
             String val = node.getTextContent();
             Assert.assertNotNull(val);
             Assert.assertEquals("rterrell", val);
@@ -253,6 +230,7 @@ public class SoapMessageHelperTest {
             Assert.assertNotNull(node);
             nodeName = node.getNodeName();
             Assert.assertEquals("password", nodeName);
+            // IS-49: Fixed compile time error
             val = node.getTextContent();
             Assert.assertNotNull(val);
             Assert.assertEquals("test1234", val);
