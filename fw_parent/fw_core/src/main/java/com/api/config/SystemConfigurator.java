@@ -119,7 +119,7 @@ public class SystemConfigurator extends RMT2Base {
         logger.info("Loading of remaining JAXB contexts complete.");
 
         // Create user session work area
-        this.userSessionWorkArea = RMT2File.createUserSessionWorkArea();
+        this.userSessionWorkArea = RMT2File.createUserWorkArea();
 
         // Load system and application properties for the web app being
         // initialized.
