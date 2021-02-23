@@ -919,15 +919,48 @@ public class RMT2File {
     }
 
     /**
-     * Create directory to serve as the user session work area.
+     * Create directory to serve as the user's general work area.
      * 
      * @return the full path of the user session work area directory that was
      *         created.
      */
-    public static final String createUserSessionWorkArea() {
+    public static final String createUserWorkArea() {
         String workArea;
         workArea = System.getProperty("user.home");
         workArea += File.separator + ".RMT2-Sessions";
+
+        // Create general user's work area directory if it does not exists.
+        try {
+            File workAreaFile = new File(workArea);
+            boolean mkdirRc = false;
+            if (!workAreaFile.exists()) {
+                mkdirRc = workAreaFile.mkdir();
+                if (mkdirRc) {
+                    logger.info(workArea + " directory was created as the User Work Area");
+                }
+            }
+            else {
+                logger.info(workArea + " directory already exists as the User Work Area");
+            }
+            return workArea;
+        } catch (Exception e) {
+            logger.error("Failed to create user work area", e);
+            return null;
+        }
+    }
+    
+    /**
+     * Create directory to serve as the session work area for s specific user's session.
+     * 
+     * @param sessionId the user's session id or security token
+     * @return the full path of the user's work area directory.
+     */
+    public static final String createUserSessionWorkArea(String sessionId) {
+        String workArea = RMT2File.createUserWorkArea();
+        if (sessionId == null) {
+            return workArea;
+        }
+        workArea += File.separatorChar + sessionId;
 
         // Create sessions directory if it does not exists.
         try {
@@ -936,7 +969,7 @@ public class RMT2File {
             if (!workAreaFile.exists()) {
                 mkdirRc = workAreaFile.mkdir();
                 if (mkdirRc) {
-                    logger.info(workArea + " directory was created as the User Session Work Area");
+                    logger.info(workArea + " directory was created as the Session Work Area for a specific user's session, " + sessionId);
                 }
             }
             else {
