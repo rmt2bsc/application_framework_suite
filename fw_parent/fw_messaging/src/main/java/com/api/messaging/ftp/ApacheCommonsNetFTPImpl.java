@@ -256,10 +256,10 @@ class ApacheCommonsNetFTPImpl extends AbstractMessagingImpl implements FtpApi {
             return null;
         }
         
-        remoteFile = RMT2File.changePathToUNC(remoteFile);
+//        remoteFile = RMT2File.changePathToUNC(remoteFile);
         long fileSize = 1;
         String userWorkArea = System.getProperty("SerialPath");
-        this.userSessionWorkArea = userWorkArea + File.separator + config.getSessionId() + File.separator;
+        this.userSessionWorkArea = File.separator + userWorkArea + File.separator + config.getSessionId() + File.separator;
         String outputFile = userSessionWorkArea + RMT2File.getFileName(remoteFile);
         String downloadedFilePath = null;
         try {

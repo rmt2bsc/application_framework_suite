@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.SocketException;
@@ -38,11 +39,11 @@ public class ApacheCommonsNetFTPImplTest {
     private static final String TEST_PORT = "21";
     private static final String TEST_USER = "royterrell";
     private static final String TEST_PASSWORD = "hoover";
-    private static final String TEST_DIR_NONRECURSIVE = "multimedia/audio/non_ripped/813/Recolor";
+    private static final String TEST_DIR_NONRECURSIVE = "multimedia" + File.separator + "audio" + File.separator + "non_ripped" + File.separator + "813" + File.separator + "Recolor";
     private static final String TEST_DIR_RECURSIVE = "multimedia/audio/non_ripped/Afterlife";
     private static final String TEST_DIR_RECURSIVE_ALL = "multimedia/audio";
-    private static final String TEST_SINGLE_FILE = TEST_DIR_NONRECURSIVE + "/813-Recolor-06-256 Colors.mp3";
-    private static final String TEST_DOWNLOADED_FILE_PATH = "/temp/" + TEST_USER_SESSION_ID + "/"
+    private static final String TEST_SINGLE_FILE = TEST_DIR_NONRECURSIVE + File.separator + "813-Recolor-06-256 Colors.mp3";
+    private static final String TEST_DOWNLOADED_FILE_PATH = File.separator + "temp" + File.separator + TEST_USER_SESSION_ID + File.separator
             + "813-Recolor-06-256 Colors.mp3";
     private static final int TEST_FILE_COUNT = 8;
 
@@ -56,7 +57,7 @@ public class ApacheCommonsNetFTPImplTest {
      */
     @Before
     public void setUp() throws Exception {
-        System.setProperty("SerialPath", "/temp/");
+        System.setProperty("SerialPath", "temp");
         
         this.mockFtp = Mockito.mock(FTPClient.class);
         PowerMockito.whenNew(FTPClient.class).withNoArguments().thenReturn(mockFtp);
