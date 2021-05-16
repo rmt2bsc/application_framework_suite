@@ -23,6 +23,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.api.util.RMT2File;
 import com.api.util.RMT2Money;
 
 /**
@@ -43,9 +44,10 @@ public class ApacheCommonsNetFTPImplTest {
     private static final String TEST_DIR_RECURSIVE = "multimedia/audio/non_ripped/Afterlife";
     private static final String TEST_DIR_RECURSIVE_ALL = "multimedia/audio";
     private static final String TEST_SINGLE_FILE = TEST_DIR_NONRECURSIVE + File.separator + "813-Recolor-06-256 Colors.mp3";
-    private static final String TEST_DOWNLOADED_FILE_PATH = File.separator + "temp" + File.separator + TEST_USER_SESSION_ID + File.separator
-            + "813-Recolor-06-256 Colors.mp3";
+    private static final String TEST_DOWNLOADED_FILE_PATH = RMT2File.createUserWorkArea() + File.separator + TEST_USER_SESSION_ID + File.separator
+            + "word_test.doc";
     private static final int TEST_FILE_COUNT = 8;
+    private static final String TEST_DOWNLOAD_FILE = "data" + File.separator + "word_test.doc";
 
 
     private FTPClient mockFtp;
@@ -250,7 +252,7 @@ public class ApacheCommonsNetFTPImplTest {
         FtpApi api = FtpFactory.getInstance(TEST_HOST, TEST_PORT, TEST_USER, TEST_PASSWORD, TEST_USER_SESSION_ID);
         Assert.assertNotNull(api);
 
-        String rc = api.downloadFile(TEST_SINGLE_FILE);
+        String rc = api.downloadFile(TEST_DOWNLOAD_FILE);
         Assert.assertEquals(TEST_DOWNLOADED_FILE_PATH, rc);
     }
 }
