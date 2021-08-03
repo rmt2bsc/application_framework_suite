@@ -1,13 +1,12 @@
 package com.api.jsp.taglib.security;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.IterationTag;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.api.constants.RMT2ServletConst;
-import com.api.security.authentication.web.AuthenticationException;
 import com.api.web.security.RMT2SecurityToken;
 import com.api.web.security.RMT2SessionBean;
 
