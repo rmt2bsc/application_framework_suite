@@ -114,9 +114,6 @@ public class RMT2SoapEngine extends AbstractServlet {
             sm = helper.getSoapInstance(genericRequest);
             String soapXml = helper.toString(sm);
 
-            // Extract SOAP Body
-            String payloadXml = helper.getBody(sm);
-
             // get SOAP attachments, if applicable.
             List<DataHandler> attachments = helper.extractAttachments(sm);
 
@@ -125,7 +122,7 @@ public class RMT2SoapEngine extends AbstractServlet {
 
             // Invoke the service. The consumer is required to send the response
             // as a valid SOAP String.
-            results = this.invokeService(serviceId, payloadXml, attachments);
+            results = this.invokeService(serviceId, soapXml, attachments);
 
             // Return the results of the service invocation to the requestor.
             this.sendResponse(genericResponse, results);
