@@ -22,7 +22,7 @@ public class SoapConstants {
     /**
      * The return code representing a successful SOAP message invocation.
      */
-    public static final int RETURNCODE_SUCCESS = 1;
+    public static final int RETURNCODE_SUCCESS = 0;
 
     /**
      * The return code representing a failed SOAP message invocation.
