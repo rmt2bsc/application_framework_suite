@@ -374,19 +374,28 @@ public class MessageRouterHelper extends RMT2Base {
 
         // Marshall payload
         String bodyXml = null;
-        try {
-            JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
-            bodyXml = jaxbUtil.marshalMessage(results.getPayload());
-        } catch (Exception e) {
-            this.msg = "Error occurred trying to marshall the payload of the SOAP response";
-            throw new MessageRoutingException(this.msg, e);
+        if (results.getPayload() != null && (results.getPayload() instanceof String)) {
+            bodyXml = results.getPayload().toString();
         }
+        else {
+            try {
+                JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+                bodyXml = jaxbUtil.marshalMessage(results.getPayload());
+            } catch (Exception e) {
+                this.msg = "Error occurred trying to marshall the payload of the SOAP response";
+                throw new MessageRoutingException(this.msg, e);
+            }
+        }
+        String rc = RMT2XmlUtility.getElementValue("return_code", bodyXml);
+        results.setReturnCode(Integer.valueOf(rc));
 
         // Build SOAP response instance.
         try {
-            if (results.getReturnCode() == SoapConstants.RETURNCODE_SUCCESS) {
+            if (results.getReturnCode() >= SoapConstants.RETURNCODE_SUCCESS) {
                 // The business API hanlder processed the request successfully.
-                String soapXml = helper.createResponse(results.getMessageId(), bodyXml);
+                // String soapXml =
+                // helper.createResponse(results.getMessageId(), bodyXml);
+                String soapXml = helper.createResponse(bodyXml);
                 
                 // Add attachments if available
                 if (results.getAttachments() != null && results.getAttachments().size() > 0) {
