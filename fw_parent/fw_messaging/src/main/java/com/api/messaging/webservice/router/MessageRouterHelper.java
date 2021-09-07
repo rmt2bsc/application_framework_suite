@@ -393,8 +393,6 @@ public class MessageRouterHelper extends RMT2Base {
         try {
             if (results.getReturnCode() >= SoapConstants.RETURNCODE_SUCCESS) {
                 // The business API hanlder processed the request successfully.
-                // String soapXml =
-                // helper.createResponse(results.getMessageId(), bodyXml);
                 String soapXml = helper.createResponse(bodyXml);
                 
                 // Add attachments if available
