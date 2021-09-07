@@ -189,7 +189,8 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
             TextMessage msg = jms.createTextMessage(srvc.getDestination());
             msg.setText(message.getPayload().toString());
             Destination replyToDest = null;
-            if (!RMT2String2.isEmpty(srvc.getDeliveryMode()) && srvc.getDeliveryMode().equalsIgnoreCase("SYNC")) {
+            // By default, delivery mode is "SYNC"
+            if (RMT2String2.isEmpty(srvc.getDeliveryMode()) || srvc.getDeliveryMode().equalsIgnoreCase("SYNC")) {
                 replyToDest = jms.createReplyToDestination(srvc.getDestination(), msg);
             }
 
@@ -206,7 +207,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         } catch (Exception e) {
             throw new RMT2RuntimeException(e);
         } finally {
-            jms.stop(srvc.getDestination());
+            // jms.stop(srvc.getDestination());
         }
     }
 
