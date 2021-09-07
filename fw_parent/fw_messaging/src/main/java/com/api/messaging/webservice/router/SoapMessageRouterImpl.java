@@ -3,11 +3,13 @@ package com.api.messaging.webservice.router;
 import java.util.List;
 
 import javax.activation.DataHandler;
+import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
 import com.api.messaging.handler.MessageHandlerInput;
 import com.api.messaging.handler.MessageHandlerResults;
+import com.api.messaging.webservice.soap.SoapMessageHelper;
 
 /**
  * A SOAP implementation of {@link MessagingRouter} providing common router
@@ -62,7 +64,10 @@ class SoapMessageRouterImpl extends AbstractMessageRouterImpl {
         // Get payload...required to be serializable
         String bodyXml = null;
         if (inMessage instanceof String) {
-            bodyXml = (String) inMessage;
+            SoapMessageHelper util = new SoapMessageHelper();
+            SOAPMessage soapObj = util.getSoapInstance((String) inMessage);
+            bodyXml = util.getBody(soapObj);
+            // bodyXml = (String) inMessage;
         }
         else {
             this.msg = "Unable to create messaging handler data object.  Incoming generic message data type must resolve to SOAPMessage";
