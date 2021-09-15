@@ -187,12 +187,6 @@ public class MessageRouterHelper extends RMT2Base {
             MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(routeInfo, modifiedPayload, attachments);
             // Convert results to SOAP Message
             SOAPMessage soapResponse = this.createSoapResponse(results);
-            SoapMessageHelper helper = new SoapMessageHelper();
-
-            // Output response to logger
-            String resultsSoapStr = helper.toString(soapResponse);
-            logger.info("Received SOAP Response: ");
-            logger.info(resultsSoapStr);
             return soapResponse;
         } catch (SoapBuilderException e) {
             this.msg = "An error occurred translating SOAP instance to String";
@@ -367,56 +361,74 @@ public class MessageRouterHelper extends RMT2Base {
      * @throws InvalidDataException
      * @throws MessageRoutingException
      */
-    private SOAPMessage createSoapResponse(MessageHandlerResults results)
-            throws InvalidDataException, MessageRoutingException {
+    private SOAPMessage createSoapResponse(MessageHandlerResults results) throws InvalidDataException, MessageRoutingException {
         SOAPMessage sm = null;
         SoapMessageHelper helper = new SoapMessageHelper();
 
         // Marshall payload
         String bodyXml = null;
-        if (results.getPayload() != null && (results.getPayload() instanceof String)) {
-            bodyXml = results.getPayload().toString();
-        }
-        else {
-            try {
-                JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
-                bodyXml = jaxbUtil.marshalMessage(results.getPayload());
-            } catch (Exception e) {
-                this.msg = "Error occurred trying to marshall the payload of the SOAP response";
-                throw new MessageRoutingException(this.msg, e);
-            }
-        }
-        String rc = RMT2XmlUtility.getElementValue("return_code", bodyXml);
-        results.setReturnCode(Integer.valueOf(rc));
-
-        // Build SOAP response instance.
-        try {
-            if (results.getReturnCode() >= SoapConstants.RETURNCODE_SUCCESS) {
-                // The business API hanlder processed the request successfully.
-                String soapXml = helper.createResponse(bodyXml);
-                
-                // Add attachments if available
-                if (results.getAttachments() != null && results.getAttachments().size() > 0) {
-                    // Attachments were found...build SOAP message with
-                    // attachments.
-                    sm = helper.getSoapInstance(soapXml, results.getAttachments());
-                }
-                else {
-                    // Build SOAP message without attachments.
-                    sm = helper.getSoapInstance(soapXml);
-                }
-            }
-            else if (results.getReturnCode() == SoapConstants.RETURNCODE_FAILURE) {
-                // Create SOAP fault message since the business API handler
-                // returned an error.
-                sm = helper.createSoapFault(String.valueOf(SoapConstants.RETURNCODE_FAILURE), results.getErrorMsg(),
-                        null, null);
+        String rc = null;
+        // IS-70: Chagned logic to build the response SOAP body only when a
+        // reply was returned from the SOAP request
+        if (results != null) {
+            if (results.getPayload() != null && (results.getPayload() instanceof String)) {
+                bodyXml = results.getPayload().toString();
             }
             else {
-                // The required return code was not set by the business API
-                // handler.
-                this.msg = "Unable to process the SOAP response.  The business service API handler must return an instance of MessageHandlerResults with the return code property set to 1 or -1.";
-                throw new InvalidDataException(this.msg);
+                try {
+                    JaxbUtil jaxbUtil = SystemConfigurator.getJaxb(ConfigConstants.JAXB_CONTEXNAME_DEFAULT);
+                    bodyXml = jaxbUtil.marshalMessage(results.getPayload());
+                } catch (Exception e) {
+                    this.msg = "Error occurred trying to marshall the payload of the SOAP response";
+                    throw new MessageRoutingException(this.msg, e);
+                }
+            }
+            rc = RMT2XmlUtility.getElementValue("return_code", bodyXml);
+            results.setReturnCode(Integer.valueOf(rc));
+        }
+        else {
+            bodyXml = "SOAP response was not returned correctly";
+            rc = "-100";
+        }
+
+        // Build SOAP response instance.
+        // IS-70: Chagned logic to produce SOAP fault only when a reply was not
+        // returned from the SOAP request
+        try {
+            if (results == null) {
+                // Create SOAP fault message since the business API handler
+                // did not return the expected response
+                sm = helper.createSoapFault(SoapConstants.SOAP_FAULT_KEY_SERVER, bodyXml, null, null);
+            }
+            else {
+                if (results.getReturnCode() >= SoapConstants.RETURNCODE_SUCCESS) {
+                    // The business API hanlder processed the request
+                    // successfully.
+                    String soapXml = helper.createResponse(bodyXml);
+
+                    // Add attachments if available
+                    if (results.getAttachments() != null && results.getAttachments().size() > 0) {
+                        // Attachments were found...build SOAP message with
+                        // attachments.
+                        sm = helper.getSoapInstance(soapXml, results.getAttachments());
+                    }
+                    else {
+                        // Build SOAP message without attachments.
+                        sm = helper.getSoapInstance(soapXml);
+                    }
+                }
+                else if (results.getReturnCode() == SoapConstants.RETURNCODE_FAILURE) {
+                    // Create SOAP fault message since the business API handler
+                    // returned an error.
+                    sm = helper.createSoapFault(SoapConstants.SOAP_FAULT_KEY_SERVER, results.getErrorMsg(),
+                            null, null);
+                }
+                else {
+                    // The required return code was not set by the business API
+                    // handler.
+                    this.msg = "Unable to process the SOAP response.  The business service API handler must return an instance of MessageHandlerResults with the return code property set to 1 or -1.";
+                    throw new InvalidDataException(this.msg);
+                }
             }
             return sm;
         } catch (SoapResponseException e) {

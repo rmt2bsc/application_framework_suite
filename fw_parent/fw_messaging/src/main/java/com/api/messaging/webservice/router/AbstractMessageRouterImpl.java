@@ -196,9 +196,11 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
 
             jms.send(srvc.getDestination(), msg);
             if (msg.getJMSReplyTo() != null) {
-                response = jms.listen(replyToDest, 10000);
-                MessageHandlerResults reply = new MessageHandlerResults();
-                if (response instanceof TextMessage) {
+                // IS-70: Changed logic to instantiate MessageHandlerResults
+                // object only when a response is available
+                response = jms.listen(replyToDest, 3000);
+                if (response != null && response instanceof TextMessage) {
+                    MessageHandlerResults reply = new MessageHandlerResults();
                     reply.setPayload(((TextMessage) response).getText());
                     return reply;
                 }
@@ -207,7 +209,7 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
         } catch (Exception e) {
             throw new RMT2RuntimeException(e);
         } finally {
-            // jms.stop(srvc.getDestination());
+            jms.stop(srvc.getDestination());
         }
     }
 

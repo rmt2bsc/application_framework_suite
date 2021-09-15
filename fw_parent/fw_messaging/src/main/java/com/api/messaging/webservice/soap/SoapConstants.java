@@ -1,5 +1,6 @@
 package com.api.messaging.webservice.soap;
 
+
 /**
  * Constants to be used for SOAP message API.
  * 
@@ -28,6 +29,12 @@ public class SoapConstants {
      * The return code representing a failed SOAP message invocation.
      */
     public static final int RETURNCODE_FAILURE = -1;
+
+    // IS-70: Created SOAP fault key constant values.
+    public static final String SOAP_FAULT_KEY_VERMISMATCH = "VersionMisMatch";
+    public static final String SOAP_FAULT_KEY_MUSTUNDERSTAND = "MustUnderstand";
+    public static final String SOAP_FAULT_KEY_CLIENT = "Client";
+    public static final String SOAP_FAULT_KEY_SERVER = "Server";
 
     /**
      * Create SoapConstants object

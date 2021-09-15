@@ -59,6 +59,7 @@ import com.SystemException;
 import com.api.DaoApi;
 import com.api.Product;
 import com.api.ProductBuilderException;
+import com.api.messaging.webservice.soap.SoapConstants;
 import com.api.persistence.DatabaseException;
 import com.api.xml.RMT2XmlUtility;
 import com.api.xml.XmlApiFactory;
@@ -238,11 +239,13 @@ class SoapProductBuilderImpl extends RMT2Base implements SoapProductBuilder {
         this.buildFaultUsingParms = false;
 
         // Setup Fault Codes map
+        // IS-70: Chanted logic to utilize SoapConstancts instead of literals
+        // for the Map keys.
         this.fautlCodes = new HashMap<String, String>();
-        this.fautlCodes.put("VersionMisMatch", "SOAP-ENV:VersionMisMatch");
-        this.fautlCodes.put("MustUnderstand", "SOAP-ENV:MustUnderstand");
-        this.fautlCodes.put("Client", "SOAP-ENV:Client");
-        this.fautlCodes.put("Server", "SOAP-ENV:Server");
+        this.fautlCodes.put(SoapConstants.SOAP_FAULT_KEY_VERMISMATCH, "SOAP-ENV:VersionMisMatch");
+        this.fautlCodes.put(SoapConstants.SOAP_FAULT_KEY_MUSTUNDERSTAND, "SOAP-ENV:MustUnderstand");
+        this.fautlCodes.put(SoapConstants.SOAP_FAULT_KEY_CLIENT, "SOAP-ENV:Client");
+        this.fautlCodes.put(SoapConstants.SOAP_FAULT_KEY_SERVER, "SOAP-ENV:Server");
     }
 
     /*
