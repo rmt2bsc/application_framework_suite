@@ -105,9 +105,11 @@ public abstract class AbstractMessageDrivenBean {
                 this.jms.send(message.getJMSReplyTo(), replyMsg);
             }
         } catch (JMSException e) {
-            throw new MessageHandlerException("Error occurred evaluating the JMS Reply To destination", e);
+            throw new MessageHandlerException("Error occurred evaluating the JMS Reply To destination",
+                    e);
         } catch (Exception e) {
-            String errMsg = "Error occurred sending the response message to its JMS ReplyTo destinationevaluating the JMS Reply To destination";
+            String errMsg =
+                    "Error occurred sending the response message to its JMS ReplyTo destinationevaluating the JMS Reply To destination";
             throw new MessageHandlerException(errMsg, e);
         }
     }

@@ -30,6 +30,16 @@ public class SoapConstants {
      */
     public static final int RETURNCODE_FAILURE = -1;
 
+    /**
+     * 
+     */
+    public static final String RETURN_STATUS_SUCCESS = "200";
+
+    /**
+     * 
+     */
+    public static final String RETURN_STATUS_BAD_REQUEST = "400";
+
     // IS-70: Created SOAP fault key constant values.
     public static final String SOAP_FAULT_KEY_VERMISMATCH = "VersionMisMatch";
     public static final String SOAP_FAULT_KEY_MUSTUNDERSTAND = "MustUnderstand";

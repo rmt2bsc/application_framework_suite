@@ -105,7 +105,9 @@ public abstract class AbstractMessageRouterImpl extends RMT2Base implements Mess
                 // request message id with the String, "_RESPONSE", appended to
                 // it.
                 if (srvc.getReplyMessageId() == null) {
-                    results.setMessageId(srvc.getMessageId() + "_RESPONSE");
+                    // IS-70: Removed logic that would append "_RESPONSE" to the
+                    // return message text.
+                    results.setMessageId(srvc.getMessageId());
                 }
                 else {
                     results.setMessageId(srvc.getReplyMessageId());

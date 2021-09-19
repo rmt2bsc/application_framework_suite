@@ -13,6 +13,9 @@ public class MessageHandlerResults extends MessageHandlerCommonData {
 
     private int returnCode;
 
+    // IS-70: Added HTTP status code properter and its accessor methods.
+    private String returnStatusCode;
+
     private String errorMsg;
 
     /**
@@ -55,5 +58,20 @@ public class MessageHandlerResults extends MessageHandlerCommonData {
      */
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    /**
+     * @return the returnStatusCode
+     */
+    public String getReturnStatusCode() {
+        return returnStatusCode;
+    }
+
+    /**
+     * @param returnStatusCode
+     *            the returnStatusCode to set
+     */
+    public void setReturnStatusCode(String returnStatusCode) {
+        this.returnStatusCode = returnStatusCode;
     }
 }

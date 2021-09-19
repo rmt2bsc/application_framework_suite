@@ -126,7 +126,12 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             
             String respXml = this.buildResponse(null,rs);
             results = new MessageHandlerResults();
+            // IS-70: Added logic to capture message details for building SOAP
+            // Fault
+            results.setMessageId(command);
             results.setPayload(respXml);
+            results.setReturnCode(HttpServletResponse.SC_BAD_REQUEST);
+            results.setErrorMsg(e.getMessage());
 
             if (logger.isDebugEnabled()) {
                 try {

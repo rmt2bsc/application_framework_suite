@@ -384,7 +384,22 @@ public class MessageRouterHelper extends RMT2Base {
                 }
             }
             rc = RMT2XmlUtility.getElementValue("return_code", bodyXml);
+            // IS-70: Added logic to capture addition details from the response
+            // message...mainly with the anticipation to build a SOAP Fault when
+            // needed.
+            String retStatus = RMT2XmlUtility.getElementValue("return_status", bodyXml);
+            String message = RMT2XmlUtility.getElementValue("message", bodyXml);
+            String transactionId = null;
+            try {
+                transactionId = RMT2XmlUtility.getElementValue("transaction", bodyXml);
+            } catch (Exception e) {
+                // transaction id was not available for this message...skip
+            }
+
             results.setReturnCode(Integer.valueOf(rc));
+            results.setErrorMsg((transactionId != null ? "[Transaction ID: " + transactionId + "] - " + message : message));
+            results.setReturnStatusCode(retStatus);
+            
         }
         else {
             bodyXml = "SOAP response was not returned correctly";
@@ -401,7 +416,9 @@ public class MessageRouterHelper extends RMT2Base {
                 sm = helper.createSoapFault(SoapConstants.SOAP_FAULT_KEY_SERVER, bodyXml, null, null);
             }
             else {
-                if (results.getReturnCode() >= SoapConstants.RETURNCODE_SUCCESS) {
+                // IS-70: Used HTTP status code to determine build success
+                // response message
+                if (results.getReturnStatusCode().equalsIgnoreCase(SoapConstants.RETURN_STATUS_SUCCESS)) {
                     // The business API hanlder processed the request
                     // successfully.
                     String soapXml = helper.createResponse(bodyXml);
@@ -417,7 +434,9 @@ public class MessageRouterHelper extends RMT2Base {
                         sm = helper.getSoapInstance(soapXml);
                     }
                 }
-                else if (results.getReturnCode() == SoapConstants.RETURNCODE_FAILURE) {
+                // IS-70: Used HTTP status code to determine build SOAP Fault
+                // when an error occurs due to a bad request
+                else if (results.getReturnStatusCode().equalsIgnoreCase(SoapConstants.RETURN_STATUS_BAD_REQUEST)) {
                     // Create SOAP fault message since the business API handler
                     // returned an error.
                     sm = helper.createSoapFault(SoapConstants.SOAP_FAULT_KEY_SERVER, results.getErrorMsg(),
