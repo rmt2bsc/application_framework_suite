@@ -30,6 +30,7 @@ public class SoapConstants {
      */
     public static final int RETURNCODE_FAILURE = -1;
 
+    // IS-70: Added HTTP status codes.
     /**
      * 
      */
