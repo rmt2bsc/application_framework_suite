@@ -188,6 +188,7 @@ public class SystemConfigurator extends RMT2Base {
                 props.addSystemProperty("MailPassword", emailProps.getPassword());
                 props.addSystemProperty("Resourcetype", emailProps.getResourcetype());
                 props.addSystemProperty("TemplatePath", emailProps.getTemplatePath());
+                props.addSystemProperty("GenerateEmailConfirmation", String.valueOf(emailProps.isGenerateEmailConfirmation()));
             }
             props.addSystemProperty(sysProps.getConsumerMsgHandlerMappingsKey(),
                     sysProps.getConsumerMsgHandlerMappingsLocation());

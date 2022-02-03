@@ -20,6 +20,7 @@
 	<WebAppMapping>AppCommandMappings</WebAppMapping>
 	<WebAppsDir>/Program Files/Apache Software Foundation/Tomcat 6.0/webapps</WebAppsDir>
 	<WebAppsDrive>c\:</WebAppsDrive>
+	<dbmsVendor>ASA</dbmsVendor>
 
   <!-- ******************************* -->
 	<!-- Company Properties              -->
@@ -46,16 +47,17 @@
 	   <EmailConfig>
 	       <Authentication>true</Authentication>
 	       <Defaultcontent>text/html</Defaultcontent>
-	       <HostPop3>incoming.verizon.net</HostPop3>
-	       <HostSmtp>outgoing.verizon.net</HostSmtp> 
+	       <HostPop3>pop.gmail.com</HostPop3>
+	       <HostSmtp>smtp.gmail.com</HostSmtp> 
 	       <InternalSmtpDomain>verizon.net</InternalSmtpDomain>
-	       <UserId>rmt2it</UserId> 
-	       <Password>drum7777</Password>
+	       <UserId>rmt2bsc@gmail.com</UserId> 
+	       <Password>610hoover</Password>
 	       <Resourcetype>file</Resourcetype>
 	       <TemplatePath>\\source\\dotcom5\\aviall\\resources\\templates\\</TemplatePath> 
+	       <GenerateEmailConfirmation>false</GenerateEmailConfirmation>
 	   </EmailConfig>
 	   <ConsumerMsgHandlerMappingsKey>msg_handler_reg_pkg</ConsumerMsgHandlerMappingsKey>
-	   <ConsumerMsgHandlerMappingsLocation>org.rmt2.config.transactions</ConsumerMsgHandlerMappingsLocation>
+	   <ConsumerMsgHandlerMappingsLocation>config.transactions</ConsumerMsgHandlerMappingsLocation>
 	   <XsltTransformer>net.sf.saxon.TransformerFactoryImpl</XsltTransformer>
 	</SystemProperties>
 	
@@ -91,69 +93,1754 @@
 		    <MaxConnectAttemps>30</MaxConnectAttemps>
 		    <ConnectAttemptInterval>30000</ConnectAttemptInterval>
 		</System>
-		<System>
-		    <Name>For Example Only.  Delete before use</Name>
-		    <UseJndi>true</UseJndi>
-		    <UseAuthentication>false</UseAuthentication>
-		    <InitialContextFactory>org.apache.activemq.jndi.ActiveMQInitialContextFactory</InitialContextFactory>
-		    <ConnectionFactory>org.apache.activemq.ActiveMQConnectionFactory;</ConnectionFactory>
-		    <ProviderUrl>tcp://localhost:61616</ProviderUrl>
-		    <UserId>admin</UserId>
-		    <Password>admin</Password>
-		    <MaxConnectAttemps>30</MaxConnectAttemps>
-		    <ConnectAttemptInterval>30000</ConnectAttemptInterval>
-		</System>
 	</MessagingSystemsInfo>
 	<DestinationMappings>
 		<Destination>
-			<Rmt2Name>JMS_DEST_CONTACT_QUEUE</Rmt2Name>
-			<JndiName>Contacts</JndiName>
+			<Rmt2Name>JMS_ADDRESSBOOK_QUEUE</Rmt2Name>
+			<JndiName>rmt2.queue.addressbook</JndiName>
 			<ContainSuffix>false</ContainSuffix>
 		</Destination>
 		<Destination>
-			<Rmt2Name>JMS_DEST_ACCOUNTING_QUEUE</Rmt2Name>
-			<JndiName>Accounting</JndiName>
+			<Rmt2Name>JMS_ACCOUNTING_QUEUE</Rmt2Name>
+			<JndiName>rmt2.queue.accounting</JndiName>
 			<ContainSuffix>false</ContainSuffix>
 		</Destination>
 		<Destination>
-			<Rmt2Name>JMS_DEST_PROJECTTRACKER_QUEUE</Rmt2Name>
-			<JndiName>ProjectTracker</JndiName>
+			<Rmt2Name>JMS_PROJECTTRACKER_QUEUE</Rmt2Name>
+			<JndiName>rmt2.queue.projecttracker</JndiName>
+			<ContainSuffix>false</ContainSuffix>
+		</Destination>
+		<Destination>
+			<Rmt2Name>JMS_MEDIA_QUEUE</Rmt2Name>
+			<JndiName>rmt2.queue.media</JndiName>
+			<ContainSuffix>false</ContainSuffix>
+		</Destination>
+		<Destination>
+			<Rmt2Name>JMS_MEDIA_TOPIC</Rmt2Name>
+			<JndiName>rmt2.topic.media</JndiName>
+			<ContainSuffix>false</ContainSuffix>
+		</Destination>
+		<Destination>
+			<Rmt2Name>JMS_SECRITY_QUEUE</Rmt2Name>
+			<JndiName>rmt2.queue.authentication</JndiName>
+			<ContainSuffix>false</ContainSuffix>
+		</Destination>
+		<Destination>
+			<Rmt2Name>HTTP_CONTACT</Rmt2Name>
+			<JndiName>contacts/unsecureRequestProcessor/Services</JndiName>
 			<ContainSuffix>false</ContainSuffix>
 		</Destination>
  </DestinationMappings>
  <ServiceRegistry>
-		<Service>
-			<Name>User Login</Name>
+      <Service>
+				<Name>Attach media content to application</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>attach</module>
+				<transaction>LINK_CONTENT_TO_APPLICATION</transaction>
+				<destination>JMS_MEDIA_TOPIC</destination>
+				<description>Operaton for linking or attaching media content to the home application</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+      <Service>
+				<Name>Query genre</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>lookup</module>
+				<transaction>GET_GENRE</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching genres</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Query media type</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>lookup</module>
+				<transaction>GET_MEDIA_TYPE</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching media types</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Load audio metadata</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>batch</module>
+				<transaction>BATCH_AUDIO_METADATA_IMPORT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for loading audio metadata into the system in batch mode</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Load video metadata</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>batch</module>
+				<transaction>BATCH_VIDEO_METADATA_IMPORT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for loading video metadata into the system in batch mode</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Query artists</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>GET_ARTIST</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching artist</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Update artists</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>UPDATE_ARTIST</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for updating artist</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Delete artists</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>DELETE_ARTIST</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for deleting artist</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Query artist projects</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>GET_ARTIST_PROJECT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching artist's project</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>update artist projects</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>UPDATE_ARTIST_PROJECT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for updating artist's project</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Query tracks</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>GET_TRACK</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching tracks</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Updating tracks</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>UPDATE_TRACK</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for updating tracks</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Consolidated media search</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>SEARCH_MEDIA</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fecthing media of all types</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Manual media upload</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>MANUAL_UPLOAD_CONTENT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for manually uploading media into system and attaching to home application</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Fetch media content</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>GET_CONTENT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for fetching media content</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Delete media content</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>maint</module>
+				<transaction>DELETE_CONTENT</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for deleting media content</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Start media file listener</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>listener</module>
+				<transaction>START_MEDIA_FILE_LISTENER</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for starting the medi file listener</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Stop media file listener</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>listener</module>
+				<transaction>STOP_MEDIA_FILE_LISTENER</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for stopping the medi file listener</description>
+				<secure>false</secure>
+				<host/>
+			</Service>
+			<Service>
+				<Name>Media file listener Health</Name>
+				<ServiceType>JMS</ServiceType>
+				<application>media</application>
+				<module>listener</module>
+				<transaction>HEALTH_CHECK_MEDIA_FILE_LISTENER</transaction>
+				<destination>JMS_MEDIA_QUEUE</destination>
+				<description>Operaton for checking the health of the medi file listener</description>
+				<secure>false</secure>
+				<host/>
+		 </Service>
+     <Service>
+        <Name>Query timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>GET_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching timesheet.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>UPDATE_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for updating timesheet profile information. To create an timesheet
+            profile, the timesheet_id must not exist in the request or it must be set to zero. To
+            update a timesheet profile, the timesheet_id must be included in the request and its
+            value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>DELETE_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for deleting timesheets.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Submit timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>SUBMIT_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for submitting timesheet.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Approve timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>APPROVE_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for approving timesheet.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Decline timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>DECLINE_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for declining timesheet.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Invoice timesheet</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>INVOICE_TIMESHEET</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for invoicing timesheets.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Print timesheet details</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>PRINT_TIMESHEET_WORKLOG</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for printing timesheet details.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Print timesheet summary</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>timesheet</module>
+        <transaction>PRINT_TIMESHEET_SUMMARY</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for printing timesheet summary.</description>
+        <secure>false</secure>
+        <host/>
+     </Service>
+     <Service>
+        <Name>Create or modify employee profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>UPDATE_EMPLOYEE</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for updating employee profile information. To create an employee
+            profile, the employee_id must not exist in the request or it must be set to zero. To
+            update a employee profile, the employee_id must be included in the request and its value
+            must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query employee profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>GET_EMPLOYEE</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching employee profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query employee type profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>GET_EMPLOYEE_TYPE</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching employee type profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query employee title profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>GET_EMPLOYEE_TITLE</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching employee title profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query employee project</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>GET_EMPLOYEE_PROJECT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching employee project information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify employee project profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>employee</module>
+        <transaction>UPDATE_EMPLOYEE_PROJECT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for updating employee project profile information. To create an
+            employee project profile, the employee_project_id must not exist in the request or it
+            must be set to zero. To update a employee project profile, the employee_project_id must
+            be included in the request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+     </Service>
+     <Service>
+        <Name>Query project client data</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>GET_CLIENT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching project client information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query project profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>GET_PROJECT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching project profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify project profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>UPDATE_PROJECT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for creating new or modfiying existing project profile information. To create an project
+            profile, the project_id must not exist in the request or it must be set to zero. To
+            update a project profile, the project_id must be included in the request and its value
+            must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete project profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>DELETE_PROJECT</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for deleting project profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query task profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>GET_TASK</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for fetching task profile information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify task profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>UPDATE_TASK</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for creating a new or modifying an existing task profile. </description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete task profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>projecttracker</application>
+        <module>admin</module>
+        <transaction>DELETE_TASK</transaction>
+        <destination>JMS_PROJECTTRACKER_QUEUE</destination>
+        <description>Operaton for deleting task profile information. To create an task profile, the
+            task_id must not exist in the request or it must be set to zero. To update a task
+            profile, the task_id must be included in the request and its value must be greater than
+            zero.</description>
+        <secure>false</secure>
+        <host/>
+     </Service>
+     <Service>
+        <Name>Query zip code</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>postal</module>
+        <transaction>GET_ZIPCODE</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching zip code information. The extent of the output can be
+            controlled via teh result_format criteria element. If set to "FULL", then detailed
+            output is created. If set to "SHORT", then summary output is created.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query time zone</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>postal</module>
+        <transaction>GET_TIMEZONE</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching time zone information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query state/province</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>postal</module>
+        <transaction>GET_REGION</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching state/province information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query Country information</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>postal</module>
+        <transaction>GET_COUNTRY</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching country information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query IP Address information</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>postal</module>
+        <transaction>GET_IP_INFO</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching IP address information.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+     <Service>
+        <Name>Create or modify contact lookup groups</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>UPDATE_LOOKUP_GROUP</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for creating new or modifying existing contact lookup groups.  To create
+            an lookup group, the group_id must not exist in the request or it must be set to zero.
+            To update a lookup group, the group_id must be included in the request and its value
+            must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query contact lookup group</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>GET_LOOKUP_GROUP</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching contact lookup groups.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete contact lookup group</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>DELETE_LOOKUP_GROUP</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for deleting contact lookup group.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify contact lookup codes</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>UPDATE_LOOKUP_CODE</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for creating new or modifying existing contact lookup codes.  To create
+            an lookup code, the code_id must not exist in the request or it must be set to zero.
+            To update a lookup code, the code_id must be included in the request and its value
+            must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query contact lookup code</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>GET_LOOKUP_CODE</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching contact lookup codes.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete contact lookup code</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>lookup</module>
+        <transaction>DELETE_LOOKUP_CODE</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for deleting contact lookup code.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query common, personal, or business contacts</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>profile</module>
+        <transaction>GET_CONTACT</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for fetching contacts based on the type of criteria used: business
+            criteria, personal criteria, or common criteria.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify common, personal, or business contacts</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>profile</module>
+        <transaction>UPDATE_CONTACT</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for creating new or modifying existing contact profiles based on the
+            type of profile used: business profile, personal profile, or common
+            profile.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete common, personal, or business contacts</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>addressbook</application>
+        <module>profile</module>
+        <transaction>DELETE_CONTACT</transaction>
+        <destination>JMS_ADDRESSBOOK_QUEUE</destination>
+        <description>Operaton for deleting contact profiles based on the type of criteria used:
+            business criteria, personal criteria, or common criteria.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query GL Accounts</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>generalledger</module>
+        <transaction>GET_GL_ACCOUNT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching one or more GL Accounts.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+			<Name>Update GL Accounts</Name>
 			<ServiceType>JMS</ServiceType>
-			<application>authentication</application>
-			<module>users</module>
-			<transaction>login</transaction>
-			<destination>queue.Authentication</destination>
-			<description>Functions to log user into system</description>
+			<application>accounting</application>
+			<module>generalledger</module>
+			<transaction>UPDATE_GL_ACCOUNT</transaction>
+			<destination>JMS_ACCOUNTING_QUEUE</destination>
+			<description>Operaton for creating a new or modifying an existing more GL Account.
+			</description>
 			<secure>false</secure>
-			<host></host>
+			<host />
 		</Service>
 		<Service>
-			<Name>Get Business Records</Name>
-			<ServiceType>HTTP</ServiceType>
-			<application>addressbook</application>
-			<module>businesscontacts</module>
-			<transaction>getBusiness</transaction>
-			<destination>contacts/unsecureRequestProcessor/Services</destination>
-			<description>Retrieves Business Contact data by long name, tax id, and/or main phone number</description>
-			<secure>true</secure>
-			<host></host>
-		</Service>
-		<Service>
-			<Name>Get Business Records</Name>
-			<ServiceType>SOAP</ServiceType>
-			<application>multimedia</application>
-			<module>content</module>
-			<transaction>RQ_content_search</transaction>
-			<destination>multimedia/unsecureRequestProcessor/Services</destination>
-			<description>Fetches images of documents from the MIME database</description>
+			<Name>Delete GL Accounts</Name>
+			<ServiceType>JMS</ServiceType>
+			<application>accounting</application>
+			<module>generalledger</module>
+			<transaction>DELETE_GL_ACCOUNT</transaction>
+			<destination>JMS_ACCOUNTING_QUEUE</destination>
+			<description>Operaton for deleting GL Account.</description>
 			<secure>false</secure>
-			<host>RMTDALDB01:8080</host>
+			<host />
 		</Service>
-	</ServiceRegistry>	
+    <Service>
+        <Name>Query GL Account Types</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>generalledger</module>
+        <transaction>GET_GL_ACCOUNT_TYPE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching one or more GL Account types.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query GL Account Category</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>generalledger</module>
+        <transaction>GET_GL_ACCOUNT_CATG</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching one or more GL Account categories.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update GL Account Category</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>generalledger</module>
+        <transaction>UPDATE_GL_ACCOUNT_CATG</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for creating a new or modifying an exisint GL Account category.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+	   <Name>Delete GL Account Category</Name>
+	   <ServiceType>JMS</ServiceType>
+	   <application>accounting</application>
+	   <module>generalledger</module>
+	   <transaction>DELETE_GL_ACCOUNT_CATG</transaction>
+	   <destination>JMS_ACCOUNTING_QUEUE</destination>
+	   <description>Operaton for deleting an exisint GL Account category.</description>
+	   <secure>false</secure>
+	   <host/>
+     </Service>
+    <Service>
+        <Name>Query inventory items</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_ITEM_MASTER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching one or more inventory items.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify inventory item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>UPDATE_ITEM_MASTER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for creating a new or modifying an existing inventory item. To create
+            an inventory item, the item_id must not exist in the request or it must be set to zero.
+            To update an inventory item, the item_id must be included in the request and its value
+            must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete an inventory item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>DELETE_ITEM_MASTER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for deleting an inventory item in the item_master table.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Activate inventory item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>ACTIVATE_ITEM_MASTER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for activating an inventory item in the item_master
+            table.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Deactivate inventory item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>DEACTIVATE_ITEM_MASTER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for deactivating an inventory item in the item_master
+            table.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Add item retail override</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>ADD_ITEM_RETAIL_OVERRIDE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for adding retail override flag to an inventory item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Remove item retail override</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>REMOVE_ITEM_RETAIL_OVERRIDE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for removing retail override flag from an inventory
+            item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query inventory item statuses</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_ITEM_STATUS</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching one or more inventory item statuses.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query inventory item current status</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_CURRENT_ITEM_STATUS_HIST</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching the current status of an inventory item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query inventory item status history</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_ITEM_STATUS_HIST</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching the status history of an inventory item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query inventory item type</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_ITEM_TYPE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching inventory item tyope data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query Vendor Item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_VENDOR_ITEM</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching a vendor's item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Assign Vendor Item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>ASSIGN_VENDOR_ITEM</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for associating a vendor's item to a RMT2 inventory
+            item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Remove Vendor Item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>REMOVE_VENDOR_ITEM</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for removing the association of a vendor's item to a RMT2 inventory
+            item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update Vendor Item</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>UPDATE_VENDOR_ITEM</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for modifying the association of a vendor's item to a RMT2 inventory
+            item.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query vendor assigned items</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_VENDOR_ASSIGNED_ITEMS</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching vendor assigned items.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query vendor unassigned items</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>inventory</module>
+        <transaction>GET_VENDOR_UNASSIGNED_ITEMS</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operaton for fetching vendor unassigned items.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query creditor profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>GET_CREDITOR</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching creditor data</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query creditor transactions history</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>GET_CREDITOR_TRAN_HIST</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching creditor transaction history</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify a creditor profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>UPDATE_CREDITOR</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a new or updating an existing creditor profile. To
+            create a cutomer profile, the creditor_id must not exist in the request or it must be
+            set to zero. To update a creditor profile, the creditor_id must be included in the
+            request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete creditor profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>DELETE_CREDITOR</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for deleting a creditor profile</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query creditor type data</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>GET_CREDITOR_TYPE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching creditor type data. Currently, there ar two types:
+            Creditor and Vendor.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query Customer profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>GET_CUSTOMER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching customer data</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query Customer transactions history</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>GET_CUSTOMER_TRAN_HIST</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching customer transaction history</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or modify a Customer profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>UPDATE_CUSTOMER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a new or updating an existing customer profile. To
+            create a cutomer profile, the customer_id must not exist in the request or it must be
+            set to zero. To update a customer profile, the customer_id must be included in the
+            request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Customer profile</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>subsidiary</module>
+        <transaction>DELETE_CUSTOMER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for deleting a customer profile</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query transaction lookup groups</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_TRANS_GROUP</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching information pertaining to transaction group lookup
+            data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query transaction lookup codes</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_TRANS_CODE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching information pertaining to transaction code lookup
+            data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query common transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_TRANSACTION</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching common transaction information. The information fetched
+            can be in full detail form or summary form. To fetch full details, set target_level
+            criteria item to FULL. Otherwise, set to HEADER.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create a common transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_TRANSACTION</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a common transaction</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Reverse a common transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>REVERSE_TRANSACTION</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for reverseing an existing common transaction</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete a common transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>DELETE_TRANSACTION</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for deleting an existing common transaction and its respective line items</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query consolidated common transactions</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_GENERIC_TRANSACTION</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for querying common transactions of differing types such as common,
+            cash disbursements, cash receipts, creditor purchases, sales order invoices
+            etc</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query cash disbursement transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_CASH_DISBURSEMENT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching cash disbursement transactions. The information fetched
+            can be in full detail form or summary form. To fetch full details, set target_level
+            criteria item to FULL. Otherwise, set to HEADER.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or reverse a cash disbursement transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_CASH_DISBURSEMENT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a new or reversing an existing cash disbursement
+            transaction. To create a cash disbursement, the xact_id must not exist in the request or
+            it must be set to zero. To reverse a cash disbursement, the xact_id must be included in
+            the request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create or reverse a creditor cash disbursement transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_CASH_DISBURSEMENT_CREDITOR</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a new or reversing an existing creditor cash disbursement
+            transaction. To create a cash disbursement, the xact_id must not exist in the request or
+            it must be set to zero. To reverse a cash disbursement, the xact_id must be included in
+            the request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+    	    <Name>Reverse a creditor cash disbursement transaction</Name>
+    	    <ServiceType>JMS</ServiceType>
+    	    <application>accounting</application>
+    	    <module>transaction</module>
+    	    <transaction>REVERSE_CASH_DISBURSEMENT_CREDITOR</transaction>
+    	    <destination>JMS_ACCOUNTING_QUEUE</destination>
+    	    <description>Operation for reversing a an existing creditor cash disbursement
+    		transaction. To create a cash disbursement, the xact_id must not exist in the request or
+    		it must be set to zero. To reverse a cash disbursement, the xact_id must be included in
+    		the request and its value must be greater than zero.</description>
+    	    <secure>false</secure>
+    	    <host/>
+    </Service>
+    <Service>
+        <Name>Query Cash Receipt</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_CASH_RECEIPT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching a cash receipt transaction</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+		<Name>Create a Cash Receipt</Name>
+		<ServiceType>JMS</ServiceType>
+		<application>accounting</application>
+		<module>transaction</module>
+		<transaction>CREATE_CASH_RECEIPT</transaction>
+		<destination>JMS_ACCOUNTING_QUEUE</destination>
+		<description>Operation for creating a Cash Receipt transaction. To create a cash receipt, 
+		    the xact_id must not exist in the request or it must be set to zero.</description>
+		<secure>false</secure>
+		<host/>
+    </Service>
+    <Service>
+        <Name>Reverse a Cash Receipt</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>REVERSE_CASH_RECEIPT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for reversing a cash receipt transaction.  To reverse a cash receipt, the 
+            xact_id must be included in the request and its value must be greater than zero.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query creditor purchase transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_CREDITOR_PURCHASES</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for fetching a credit expense transaction.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create a new purchase transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_CREDITOR_PURCHASES</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for creating a new creditor expense purchase transaction. To create a
+            creditor expense, the xact_id must not exist in the request or it must be set to zero.
+         </description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Reverse an existing purchase transaction</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>REVERSE_CREDITOR_PURCHASES</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation for reversing a creditor expense purchase transaction. 
+            To reverse an existing creditor expense purchase transaction, the xact_id must be
+            included in the request and its value must be greater than zero</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation queries sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Query extended sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>GET_CUSTOMER_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation queries sales order containing detailed data including service
+            provider, customer, sales order, sales invoice, and sales order item data. Minimum input
+            requirements are sales order id, customer id, and xact id.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation creates a sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create and invoice sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_SALES_ORDER_AND_INVOICE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation creates and invoices a sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Create, invoice, and apply payment to sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CREATE_SALES_ORDER_AND_INVOICE_AND_CASHRECEIPT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation creates, invoices, and applies a payment to a sales
+            order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Modify a sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>UPDATE_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation applies updates to an existing sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Modify and invoice a sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>UPDATE_SALES_ORDER_AND_INVOICE</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation applies updates to an existing sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Modify, invoice, and apply payment to a sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>UPDATE_SALES_ORDER_AND_INVOICE_AND_CASHRECEIPT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation applies updates to an existing sales order</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete a sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>DELETE_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation deletes an existing sales order from the system</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Refund sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>REFUND_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation that refunds a sales order that has payments applied.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Cancel sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CANCEL_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Operation that cancels a sales order.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Close sales order and payment</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>CLOSE_SALES_ORDER_WITH_PAYMENT</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Closes a sales order along with applying a final payment.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Print sales order</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>accounting</application>
+        <module>transaction</module>
+        <transaction>PRINT_SALES_ORDER</transaction>
+        <destination>JMS_ACCOUNTING_QUEUE</destination>
+        <description>Produces a sales order in PDF format which is suiteable for
+            printing.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Updates Application</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_APPLICATION</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Apply changes to the Application configuration.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch Application</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_APPLICATION</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve application configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Application</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_APPLICATION</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Remove application configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update role configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve role configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve role configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update Resource Type</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_RESOURCE_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update resource type configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch Resource Type</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_RESOURCE_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve resource type configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Resource Type</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_RESOURCE_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve resource type configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update Resource SubType</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_RESOURCE_SUB_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update resource subtype configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch Resource SubType</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_RESOURCE_SUB_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve resource subtype configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Resource SubType</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_RESOURCE_SUB_TYPE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve resource subtype configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update Resource</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_RESOURCE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update resource configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch Resource</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_RESOURCE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve resource configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete Resource</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_RESOURCE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve resource configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update User Group</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_USER_GROUP</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update user group configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch User Group</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_USER_GROUP</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve user group configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete User Group</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_USER_GROUP</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve user group configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update App Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_APP_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update application role configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch App Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_APP_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve application role configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete App Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_APP_ROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve application role configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Update User</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>UPDATE_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Update user configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch User</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieve user configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete User</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Reomve user configuration data from the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Maintatin User Application Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>MAINTAIN_USER_APPROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Maintains user application role configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Delete User Application Role</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>DELETE_USER_APPROLE</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Deletes a single user application role.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Fetch User Permissions</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>GET_USER_PERMISSIONS</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Retrieves user permissions configuration data.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>Change Password</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>admin</module>
+        <transaction>CHANGE_PASSWORD</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Change the user's password.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>User Login</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>auth</module>
+        <transaction>LOGIN_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Authenticates a user.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>User Logout</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>auth</module>
+        <transaction>LOGOUT_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Logs a user out of the system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+    <Service>
+        <Name>SSO User Login</Name>
+        <ServiceType>JMS</ServiceType>
+        <application>authentication</application>
+        <module>auth</module>
+        <transaction>SSO_LOGIN_USER</transaction>
+        <destination>JMS_SECRITY_QUEUE</destination>
+        <description>Uses Single Sign On (SSO) method to log user into system.</description>
+        <secure>false</secure>
+        <host/>
+    </Service>
+</ServiceRegistry>
 </AppServerConfig>

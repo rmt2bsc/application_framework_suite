@@ -72,6 +72,7 @@
                     <xs:element type="xs:string" name="Password"/>
                     <xs:element type="xs:string" name="Resourcetype"/>
                     <xs:element type="xs:string" name="TemplatePath"/>
+                    <xs:element type="xs:boolean" name="GenerateEmailConfirmation" default="true"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
