@@ -6,14 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -341,7 +339,8 @@ public class RMT2ZipFileManager {
                 throw new ZipFileException("Unable to rename " + file + " to "
                         + holdFile);
 
-            if (!tmpFile.renameTo(file))
+            File holdFile2 = new File(file.getCanonicalFile() + ".old");
+            if (!holdFile.renameTo(holdFile2))
                 throw new ZipFileException("Unable to rename " + tmpFile
                         + " to " + file);
             ;
