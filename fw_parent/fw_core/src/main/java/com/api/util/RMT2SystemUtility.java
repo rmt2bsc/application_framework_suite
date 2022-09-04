@@ -131,7 +131,7 @@ public class RMT2SystemUtility {
      */
     public static boolean isMac() {
         String os = System.getProperty("os.name");
-        return os != null && os.toLowerCase().startsWith("Mac OS X");
+        return os != null && os.toLowerCase().startsWith("mac os x");
     }
 
 
