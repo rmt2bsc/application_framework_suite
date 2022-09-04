@@ -157,6 +157,10 @@ public class ConfigConstants {
 
     public static String PROPNAME_SOAP_NAMESPACE_AWARE = "soapNameSpaceAware";
 
+    // IS-70: Created as a reference to the system property key name that points
+    // to the AppServer configuration context path
+    public static String PROPNAME_APPSERVER_CONFIG_CONTEXTPATH = "AppServerConfigContextPath";
+
     /** Company text description */
     public static String OWNER_TEXT = "owner.companyTxt";
     public static String OWNER_NAME = "owner.Name";

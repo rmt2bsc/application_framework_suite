@@ -102,7 +102,7 @@ public class RMT2SystemUtility {
      * 
      * @return
      */
-    public static boolean checkForLinux() {
+    public static boolean isLinux() {
         String os = System.getProperty("os.name");
         return os != null && os.toLowerCase().startsWith("linux");
     }
@@ -111,7 +111,7 @@ public class RMT2SystemUtility {
      * 
      * @return
      */
-    public static boolean checkForSolaris() {
+    public static boolean isSolaris() {
         String os = System.getProperty("os.name");
         return os != null && os.toLowerCase().startsWith("sun");
     }
@@ -120,9 +120,59 @@ public class RMT2SystemUtility {
      * 
      * @return
      */
-    public static boolean checkForWindows() {
+    public static boolean isWindows() {
         String os = System.getProperty("os.name");
         return os != null && os.toLowerCase().startsWith("win");
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public static boolean isMac() {
+        String os = System.getProperty("os.name");
+        return os != null && os.toLowerCase().startsWith("Mac OS X");
+    }
+
+
+    /**
+     * 
+     * @return
+     */
+    public static String getOSVersion() {
+        return System.getProperty("os.version");
+    }
+
+    /**
+     * Determines if Mac OS is Catalina version or later which is equipped with
+     * dual partitions better known as Macintosh HD and Macintosh HD - Data.
+     * 
+     * @return true when Mac OS is Catelina or later. Otherwise, returns false
+     *         when OS is not a Mac or the version is less than Catalina.
+     *         returned.
+     */
+    public static boolean isMacOSNewGenerationArchitecture() {
+        if (!RMT2SystemUtility.isMac()) {
+            return false;
+        }
+        String ver = RMT2SystemUtility.getOSVersion();
+        String parsedVer[] = ver.split("\\.");
+        int minVer = 0;
+        int majVer = RMT2Money.stringToNumber(parsedVer[0], "##").intValue();
+        if (majVer > 10) {
+            // Mac OS is Catalina or later...
+            return true;
+        }
+        else if (majVer == 10) {
+            if (parsedVer.length > 1) {
+                minVer = RMT2Money.stringToNumber(parsedVer[1], "##").intValue();
+                if (minVer >= 15) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

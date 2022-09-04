@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.api.ApiInitException;
+import com.api.config.ConfigConstants;
 import com.api.persistence.DaoClient;
 import com.api.persistence.DatabaseException;
 import com.api.util.RMT2File;
@@ -43,6 +44,8 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
      */
     protected String apiUser;
 
+    private String appServerContextPath;
+
     private DaoClient sharedDao;
 
     /**
@@ -55,6 +58,10 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
     protected AbstractTransactionApiImpl() {
         super();
         this.initLogger();
+
+        // IS-70: Added logic to fetch the context path of the AppServer's
+        // configuration file.
+        this.appServerContextPath = System.getProperty(ConfigConstants.PROPNAME_APPSERVER_CONFIG_CONTEXTPATH);
     }
 
     /**
@@ -234,6 +241,17 @@ public abstract class AbstractTransactionApiImpl extends RMT2Base implements Tra
 
     public Properties getConfig() {
         return config;
+    }
+
+    // IS-70: Added getter method to fetch the context path of the AppServer's
+    // configuration file.
+    /**
+     * Return context path of the AppServer's configuration file
+     * 
+     * @return String
+     */
+    public String getAppServerContextPath() {
+        return appServerContextPath;
     }
  
 } // End class

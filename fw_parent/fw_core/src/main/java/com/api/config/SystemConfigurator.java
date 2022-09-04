@@ -21,6 +21,8 @@ import com.api.pool.DatabaseConnectionPool;
 import com.api.util.RMT2BeanUtility;
 import com.api.util.RMT2File;
 import com.api.util.RMT2String2;
+import com.api.util.assistants.Verifier;
+import com.api.util.assistants.VerifyException;
 import com.api.xml.jaxb.JaxbUtil;
 import com.api.xml.jaxb.JaxbUtilException;
 
@@ -58,6 +60,8 @@ public class SystemConfigurator extends RMT2Base {
     private static Map<String, JaxbUtil> jaxb;
 
     private static Map<String, String> jaxbPackageName;
+
+    private static final String ERR_MSG_APPSERVER_CONTEXTPATH_MISSING = "The AppServer configuration's context path is required.  Please verifiy the property, AppConfigContextPath, is set appropriately in the applicaltion server configuration file, AppServer/config/RMT2AppServerConfig.xml, on your system.";
 
     public SystemConfigurator() {
         super();
@@ -211,6 +215,17 @@ public class SystemConfigurator extends RMT2Base {
     private void loadLocalProperties(AppServerConfig config) {
         AppPropertyPool props = AppPropertyPool.getInstance();
         props.addProperty("LoggerConfigPath", config.getLoggerConfigPath());
+        // IS-70: Capture the AppServer configuration's context path as a System
+        // variable. If context path is not available, exit server startup
+        // process
+        try {
+            Verifier.verifyNotNull(config.getAppConfigContextPath());
+        } catch (VerifyException e) {
+            logger.fatal(ERR_MSG_APPSERVER_CONTEXTPATH_MISSING);
+            logger.fatal("Application server startup process is aborted!   Please advise.");
+            System.exit(-1);
+        }
+        props.addSystemProperty(ConfigConstants.PROPNAME_APPSERVER_CONFIG_CONTEXTPATH, config.getAppConfigContextPath());
         props.addSystemProperty("ContainerManagedPool", config.getContainerManagedPool());
         props.addSystemProperty("PageLinkMax", String.valueOf(config.getPageLinkMax()));
         props.addSystemProperty("PaginationPageSize", String.valueOf(config.getPaginationPageSize()));

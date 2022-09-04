@@ -5,6 +5,7 @@
 	<!-- Application Properties          -->
 	<!-- ******************************* -->
 	<LoggerConfigPath>/AppServer/config/log4j.properties</LoggerConfigPath>
+	<AppConfigContextPath>/System/Volumes/Data/</AppConfigContextPath>
 	<ContainerManagedPool>true</ContainerManagedPool>
         <PageLinkMax>10</PageLinkMax>
 	<PaginationPageSize>20</PaginationPageSize>

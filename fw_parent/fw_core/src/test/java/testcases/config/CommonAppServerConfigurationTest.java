@@ -112,6 +112,9 @@ public class CommonAppServerConfigurationTest {
     
     
     private void setupAppConfigData(AppServerConfig a) {
+        // Set AppServer context path to represent the new generation of MacOS
+        // systems
+        a.setAppConfigContextPath("/System/Volumes/Data/");
         a.setLoggerConfigPath("/AppServer/config/log4j.properties");
         a.setContainerManagedPool("true");
         a.setPageLinkMax((byte) 10);
