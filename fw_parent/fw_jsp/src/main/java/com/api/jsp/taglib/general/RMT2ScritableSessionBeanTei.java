@@ -20,7 +20,7 @@ public class RMT2ScritableSessionBeanTei extends RMT2ScritableVariableTei {
      *            {@link TagData}
      */
     protected void addMoreVariables(TagData data) {
-        this.className = "com.api.security.authentication.web.RMT2SessionBean";
+        this.className = "com.api.web.security.RMT2SessionBean";
         return;
     }
 }
