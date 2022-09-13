@@ -61,7 +61,7 @@ public abstract class AbstractRolesTag extends RMT2CheckUserLoggedInTag {
             return IterationTag.SKIP_BODY;
         }
 
-        // Verify that user possesses at least one of the rerquire permissions.
+        // Verify that user possesses at least one of the required permissions.
         this.userAuthorized = this.getUserAuthorization();
         if (!this.userAuthorized) {
             return IterationTag.SKIP_BODY;
@@ -83,8 +83,7 @@ public abstract class AbstractRolesTag extends RMT2CheckUserLoggedInTag {
         }
         try {
             UserAuthenticationHelper helper = new UserAuthenticationHelper();
-            return helper.isAuthorized(this.getSessionBean().getLoginId(),
-                    this.roles, this.request);
+            return helper.isAuthorized(this.getSessionBean().getLoginId(), this.roles, this.request);
             // return helper.isAuthorized(this.getUserName(), this.roles,
             // this.request);
             // return this.authenticator. isAuthorized(this.roles);

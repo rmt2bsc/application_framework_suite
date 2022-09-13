@@ -20,9 +20,9 @@ public class RMT2RoleExistCheckTag extends AbstractRolesTag {
      * body contents of the tag.
      * 
      * @return IterationTag.EVAL_BODY_AGAIN if the user is possesses one or more
-     *         roles that mathch any of the required roles.
-     *         IterationTag.SKIP_BODY if the user is not logged onto system, or
-     *         the session bean is null or zero roles are matched.
+     *         roles that match any of the required roles.
+     *         IterationTag.SKIP_BODY if the user is not logged into the system,
+     *         or the session bean is null or zero roles are matched.
      * @throws JspException
      */
     public int doStartTag() throws JspException {

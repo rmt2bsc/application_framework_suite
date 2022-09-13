@@ -39,8 +39,8 @@ import com.api.web.util.RMT2WebUtility;
 /**
  * This class represents the bulk of a generic framework for handling arbitrary
  * requests based on navigation rules in a typical web application. Its
- * implemented by using the Command, Template and factory patterns. In esence it
- * works as follows:
+ * implemented by using the Command, Template and factory patterns. In essence,
+ * it works as follows:
  * <ol>
  * <li>
  * The browser makes a request for a particular action called commands in the
@@ -55,7 +55,7 @@ import com.api.web.util.RMT2WebUtility;
  * <li>
  * In general, a command has a success URL and an error URL. It's assumed that
  * any exception thrown by the command's processes method signals an error. To
- * standarized error processing, the servlet instantiates a properties object
+ * standardized error processing, the servlet instantiates a properties object
  * that the command can use to store a message with the appropriate error, this
  * way the caller can display an error message to the user.</li>
  * </ol>
@@ -68,22 +68,22 @@ import com.api.web.util.RMT2WebUtility;
  * MESSAGE object as the attribute, "messages".
  * 
  * This class is declared abstract so that the actual web app can extend it, the
- * only required method to define is getMappingFileName() wich returns the name
+ * only required method to define is getMappingFileName() which returns the name
  * of the properties file, which contains the navigation rules, describing the
  * command and the success and error URI.
  * 
  * The format of this file is: commandName.command=foo.bar.MyClass ( fully
  * qualified name of the implementation class) commandName.sucess=mypage.jsp
- * (URI to use when forwarding a successfull request, this can be a JSP page or
+ * (URI to use when forwarding a successful request, this can be a JSP page or
  * another command. commandName.error=error.jsp (URI to use when forwarding an
- * unsuccessfull request, this can be a JSP page or another command.
+ * unsuccessful request, this can be a JSP page or another command.
  * <p>
  * <b><u>Navigation Rules</u></b><br>
  * 
  * <pre>
  * A Navigation rule provides information to the command-related servlet of a request-response paradigm
- * on how to process a request regarding forms, reporst,and remote services.   Four things can be
- *  identified by a command that instructs how the appliation should navigate based on certain conditions:
+ * on how to process a request regarding forms, reports,and remote services.   Four things can be
+ *  identified by a command that instructs how the application should navigate based on certain conditions:
  * <ol>
  *   <li>the action handler that is to be executed.</li>
  *   <li>the URI that is to be executed upon success of the action handler.</li>
@@ -101,7 +101,7 @@ import com.api.web.util.RMT2WebUtility;
  *     <i>[Properties file name].[Entity Name or Functionality Name].[Action Name].[Command Type]</i>
  *  </quoteblock>
  *  Where <i>Properties file name</i> is the name of the properties file (minus the 
- *  file extenion) that is the source of the rules.
+ *  file extension) that is the source of the rules.
  * 
  *  An example of invoking a edit navigation rule from a form on the User Search JSP in 
  *  which the rule exist in UserSearch.properties:
@@ -177,8 +177,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      *            HttpServletResponse
      * @throws StatelessControllerProcessingException
      */
-    protected void processRequest(HttpServletRequest request,
-            HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws StatelessControllerProcessingException {
         super.processRequest(request, response);
         Properties messages = new Properties();
@@ -326,16 +325,13 @@ public abstract class AbstractCommandController extends AbstractServlet {
             rc = AbstractCommandController.SESSION_INVALID;
         }
         else {
-            RMT2SessionBean sessionBean = (RMT2SessionBean) session
-                    .getAttribute(RMT2ServletConst.SESSION_BEAN);
+            RMT2SessionBean sessionBean = (RMT2SessionBean) session.getAttribute(RMT2ServletConst.SESSION_BEAN);
             if (sessionBean == null || sessionBean.getLoginId() == null) {
                 rc = AbstractCommandController.SESSION_NOT_LOGGED_IN;
             }
             else {
-                request.setAttribute(AuthenticationConst.AUTH_PROP_USERID,
-                        sessionBean.getLoginId());
-                request.setAttribute(AuthenticationConst.AUTH_PROP_MAINAPP,
-                        sessionBean.getOrigAppId());
+                request.setAttribute(AuthenticationConst.AUTH_PROP_USERID, sessionBean.getLoginId());
+                request.setAttribute(AuthenticationConst.AUTH_PROP_MAINAPP, sessionBean.getOrigAppId());
             }
         }
         return rc;
@@ -343,7 +339,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
 
     /**
      * Tries to obtain a temporary session for HTTP requests that point to
-     * invalid session handles despite the fact that the requestor is designed
+     * invalid session handles despite the fact that the requester is designed
      * to be internal to the current web application context. These requests
      * generally exist within the current web application context and are not
      * web service calls. The nomenclature of a web service call exists in the
@@ -359,7 +355,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * This is a special situation where the usage of multiple browsers
      * targeting the same application on a single machine or multiple tabs of a
      * single browser targeting the same application may not manage sessions in
-     * a peculiar way depnending on the browser type. This is especially true in
+     * a peculiar way depending on the browser type. This is especially true in
      * testing environments which the client is invoked outside of the current
      * web application context and the containing browser does not manage
      * sessions appropriately.
@@ -378,8 +374,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @return int 1 for user is logged into the application, -1 for user is not
      *         logged into application, or -100 for invalid or null session.
      */
-    protected int doSessionCheckForExternalRequest(HttpServletRequest request,
-            String command, int currentSessionStateCode) {
+    protected int doSessionCheckForExternalRequest(HttpServletRequest request, String command, int currentSessionStateCode) {
         String tempLoginId = "TempUser";
         if (currentSessionStateCode != AbstractCommandController.SESSION_INVALID) {
             return currentSessionStateCode;
@@ -426,8 +421,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @param appCode
      * @return
      */
-    private RMT2SessionBean createTempSession(HttpServletRequest request,
-            HttpSession session, String userId, String appCode) {
+    private RMT2SessionBean createTempSession(HttpServletRequest request, HttpSession session, String userId, String appCode) {
         if (request != null && session != null) {
             // Continue on...
         }
@@ -453,14 +447,14 @@ public abstract class AbstractCommandController extends AbstractServlet {
 
     /**
      * Perform the mapping and execution of the targeted command found in the
-     * user's request. The steps to execute a command invlove: <blockquote>
+     * user's request. The steps to execute a command involves: <blockquote>
      * <ol>
      * <li>Identify the command's action handler.</li>
      * <li>Instantiate the action handler.</li>
      * <li>Process the command at the level of the action handler by invoking
      * the action handler's method, processRequest(HttpServletRequest,
      * HttpServletResponse, String).</li>
-     * <li>Depending on wheter the process was successfull or not, forward the
+     * <li>Depending on whether the process was successful or not, forward the
      * response to the client.</li>
      * </ol>
      * </blockquote>
@@ -472,10 +466,9 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @throws ActionHandlerException
      * @throws SystemException
      */
-    private void executeCommand(String requestedCommand,
-            HttpServletRequest request, HttpServletResponse response,
-            ResourceBundle mappings) throws ActionCommandException,
-            SystemException {
+    private void executeCommand(String requestedCommand, HttpServletRequest request, HttpServletResponse response,
+            ResourceBundle mappings)
+            throws ActionCommandException, SystemException {
         String commandClassName;
         ICommand command;
 
@@ -483,31 +476,25 @@ public abstract class AbstractCommandController extends AbstractServlet {
         commandClassName = this.getHandlerClassName(mappings, requestedCommand);
 
         logger.log(Level.DEBUG, "Requested Command Name=" + requestedCommand);
-        logger.log(Level.DEBUG, "Requested Command Class Name="
-                + commandClassName);
+        logger.log(Level.DEBUG, "Requested Command Class Name=" + commandClassName);
 
         // instantiates the command handler class, all command handler classes
         // must implement the Command interface.
         command = this.instantiateCommandHandler(commandClassName);
 
         logger.log(Level.INFO, "Executing client command: " + requestedCommand);
-        Request genericRequest = HttpVariableScopeFactory
-                .createHttpRequest(request);
-        Response genericResponse = HttpVariableScopeFactory
-                .createHttpResponse(response);
+        Request genericRequest = HttpVariableScopeFactory.createHttpRequest(request);
+        Response genericResponse = HttpVariableScopeFactory.createHttpResponse(response);
         try {
-            command.processRequest(genericRequest, genericResponse,
-                    requestedCommand);
+            command.processRequest(genericRequest, genericResponse, requestedCommand);
         } catch (Exception e) {
             String msg = "Client command, " + requestedCommand + ", failed";
             logger.error(msg);
             throw new ActionCommandException(msg, e);
         } finally {
-            logger.log(Level.INFO, "Client command, " + requestedCommand
-                    + ", executed");
+            logger.log(Level.INFO, "Client command, " + requestedCommand + ", executed");
             command.close();
-            logger.log(Level.INFO, "Client command, " + requestedCommand
-                    + ", disposed");
+            logger.log(Level.INFO, "Client command, " + requestedCommand + ", disposed");
         }
     }
 
@@ -521,8 +508,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @throws ServletException
      *             If the client action was not supplied in the request.
      */
-    private String buildCommand(HttpServletRequest request)
-            throws ServletException {
+    private String buildCommand(HttpServletRequest request) throws ServletException {
         String requestedCommand;
         String requestedResource;
         String clientAction = this.getAction(request);
@@ -566,8 +552,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @return {@link MessageHandlerCommand}
      * @throws SystemException
      */
-    protected ICommand instantiateCommandHandler(String _handlerClass)
-            throws SystemException {
+    protected ICommand instantiateCommandHandler(String _handlerClass) throws SystemException {
         ICommand command;
 
         command = (ICommand) RMT2Utility.getClassInstance(_handlerClass);
@@ -584,15 +569,13 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @return the specific command class name
      * @throws ActionHandlerException
      */
-    protected String getHandlerClassName(ResourceBundle mappings, String mapping)
-            throws ActionCommandException {
+    protected String getHandlerClassName(ResourceBundle mappings, String mapping) throws ActionCommandException {
         String value = null;
         String newCommand = null;
 
         List<String> commandParts = RMT2String.getTokens(mapping, ".");
         try {
-            newCommand = (String) commandParts.get(1) + "."
-                    + (String) commandParts.get(2);
+            newCommand = (String) commandParts.get(1) + "." + (String) commandParts.get(2);
             value = (String) mappings.getString(newCommand + ".handler");
             return value;
         } catch (Exception e) {
@@ -625,8 +608,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
 
         List<String> commandParts = RMT2String.getTokens(mapping, ".");
         try {
-            newCommand = (String) commandParts.get(1) + "."
-                    + (String) commandParts.get(2);
+            newCommand = (String) commandParts.get(1) + "." + (String) commandParts.get(2);
             value = (String) mappings.getString(newCommand + ".success");
             return value;
         } catch (Exception e) {
@@ -657,8 +639,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
 
         List<String> commandParts = RMT2String.getTokens(mapping, ".");
         try {
-            newCommand = (String) commandParts.get(1) + "."
-                    + (String) commandParts.get(2);
+            newCommand = (String) commandParts.get(1) + "." + (String) commandParts.get(2);
             value = (String) mappings.getString(newCommand + ".error");
             return value;
         } catch (Exception e) {
@@ -676,8 +657,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
     /**
      * Gets the login page URI for a particular command name
      * 
-     * @param ResoourceBundle
-     *            pf mappings
+     * @param mappings
      * @param mapping
      * @return
      */
@@ -699,9 +679,9 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * 
      * <pre>
      * An example of case #1 would be a HTML form's 
-     * action set as a call to a servelt:
+     * action set as a call to a servlet:
      *   <i>&lt;form name="form1" method="POST" action="UserSearch.Search?clientAction=edit"&gt;</i>
-     *   where UserSearch will be interpretted as the name of the properies file to load
+     *   where UserSearch will be interpreted as the name of the properties file to load
      *   the mappings associated with the request.
      * </pre>
      * 
@@ -712,8 +692,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @throws SystemException
      *             When application mappings cannot be loaded.
      */
-    protected ResourceBundle loadMappings(String command)
-            throws SystemException {
+    protected ResourceBundle loadMappings(String command) throws SystemException {
         String bundleName1 = null;
         String bundleName2 = null;
         ResourceBundle mappings = null;
@@ -723,8 +702,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         // command as a reference to the properties file on the classpath.
         if (commandParts.size() > 0) {
             bundleName1 = (String) commandParts.get(0);
-            String bundlePath = AppPropertyPool
-                    .getProperty(ConfigConstants.PROPNAME_APP_MAPPING_PATH);
+            String bundlePath = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_MAPPING_PATH);
             bundlePath += "." + bundleName1;
             try {
                 mappings = RMT2File.loadAppConfigProperties(bundlePath);
@@ -742,8 +720,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         // file.
         if (mappings == null) {
             try {
-                bundleName2 = AppPropertyPool
-                        .getProperty(ConfigConstants.PROPNAME_APP_MAPPING);
+                bundleName2 = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_MAPPING);
                 mappings = RMT2File.loadAppConfigProperties(bundleName2);
             } catch (Exception e) {
                 mappings = null;
@@ -773,10 +750,8 @@ public abstract class AbstractCommandController extends AbstractServlet {
      *            boolean indicating whether or not an error occurred.
      * @throws ServletException
      */
-    protected abstract void sendResponse(HttpServletRequest request,
-            HttpServletResponse response, String nextURL,
-            String requestedCommand, ResourceBundle mappings, boolean error)
-            throws ServletException;
+    protected abstract void sendResponse(HttpServletRequest request, HttpServletResponse response, String nextURL,
+            String requestedCommand, ResourceBundle mappings, boolean error) throws ServletException;
 
     /**
      * 
@@ -785,8 +760,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @param url
      * @throws ServletException
      */
-    private void sendResponse(HttpServletRequest request,
-            HttpServletResponse response, String url) throws ServletException {
+    private void sendResponse(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException {
         String msg = null;
         // Redirect resource outside of context.
         try {
@@ -796,9 +770,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
             response.sendRedirect(url);
         } catch (IOException e) {
             msg = "An IOException occured when trying to redirect response to  "
-                    + url
-                    + (e.getMessage() != null ? ".  " + "  Other messages: "
-                            + e.getMessage() : "");
+                    + url + (e.getMessage() != null ? ".  " + "  Other messages: " + e.getMessage() : "");
             logger.log(Level.ERROR, msg);
             e.printStackTrace();
             throw new ServletException(msg, e);
@@ -806,8 +778,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
             msg = "An IllegalStateException occured when trying to redirect response to  "
                     + url
                     + ".   Probable cause is response was already committed or a partial URL is given and cannot be converted into a valid URL.  "
-                    + (e.getMessage() != null ? "  Other messages: "
-                            + e.getMessage() : "");
+                    + (e.getMessage() != null ? "  Other messages: " + e.getMessage() : "");
             logger.log(Level.ERROR, msg);
             e.printStackTrace();
             throw new ServletException(msg, e);
@@ -827,6 +798,5 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @param data
      *            An arbitrary object to hold extra data for processing.
      */
-    protected abstract void doPreSendResponse(HttpServletRequest request,
-            HttpServletResponse response, String url, Object data);
+    protected abstract void doPreSendResponse(HttpServletRequest request, HttpServletResponse response, String url, Object data);
 }

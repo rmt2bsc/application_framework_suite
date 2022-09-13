@@ -110,8 +110,7 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
      *            The user's session.
      * @throws SystemException
      */
-    protected RMT2SessionBean(Request request, Session session)
-            throws SystemException {
+    protected RMT2SessionBean(Request request, Session session) throws SystemException {
         this();
         Logger logger = Logger.getLogger("RMT2SessionBean");
 

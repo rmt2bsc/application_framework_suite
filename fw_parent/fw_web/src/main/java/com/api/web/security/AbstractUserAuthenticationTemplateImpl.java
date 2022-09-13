@@ -74,9 +74,8 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
      * @throws AuthenticationException
      * @throws AuthorizationException
      */
-    protected Object process(String loginId, String password, String appCode,
-            String sessionId) throws AuthenticationException,
-            AuthorizationException {
+    protected Object process(String loginId, String password, String appCode, String sessionId)
+            throws AuthenticationException, AuthorizationException {
         // Setup credentials Hash
         this.credentials.setUserId(loginId);
         this.credentials.setPassword(password);
@@ -87,12 +86,10 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
         try {
             this.verifyCredentials();
         } catch (MissingLoginCredentialsException e) {
-            throw new AuthenticationException(
-                    "Unable to authenticate user due to invalid input credentials",
-                    e);
+            throw new AuthenticationException("Unable to authenticate user due to invalid input credentials", e);
         }
 
-        // Perform implementation specific intialization
+        // Perform implementation specific initialization
         this.initialize();
         // Perform actual user authentication
         Object results = null;
@@ -120,7 +117,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
 
     /**
      * The implementor of this method is required to provide functionality that
-     * will verify the user's creditials against some form of a data source.
+     * will verify the user's credentials against some form of a data source.
      * 
      * @param loginId
      * @param password
@@ -130,8 +127,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
      * @throws AuthenticationException
      * @throws AuthorizationException
      */
-    protected abstract RMT2SecurityToken verifyUser(String loginId,
-            String password, String appCode, String sessionId)
+    protected abstract RMT2SecurityToken verifyUser(String loginId, String password, String appCode, String sessionId)
             throws AuthenticationException, AuthorizationException;
 
     /**
@@ -168,9 +164,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
      */
     private void verifyCredentials() throws MissingLoginCredentialsException {
         if (this.credentials == null) {
-            throw new MissingLoginCredentialsException(
-                    "Login credential collection has not been initialized",
-                    -150);
+            throw new MissingLoginCredentialsException("Login credential collection has not been initialized", -150);
         }
 
         String temp = null;
@@ -184,8 +178,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
         }
         temp = this.credentials.getAppCode();
         if (temp == null || temp.equals("")) {
-            throw new TargetAppException("Target application name is required",
-                    -153);
+            throw new TargetAppException("Target application name is required", -153);
         }
     }
 
@@ -207,10 +200,10 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
      * Fetches the security session token which is usually utilized by the
      * client.
      * <p>
-     * The descendent class is responsible for accurately determining the data
+     * The descendant class is responsible for accurately determining the data
      * type of the value returned.
      * 
-     * @return an abitrary object representing the session token.
+     * @return an arbitrary object representing the session token.
      */
     public Object getSessionToken() {
         return this.sessionToken;
@@ -230,7 +223,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
     /**
      * Determines if the user is being authenticated locally or remotely.
      * <p>
-     * The <i>target applicatin code</i> is used to distinguish between local
+     * The <i>target application code</i> is used to distinguish between local
      * and remote authentication for a user. Local authentication occurs when
      * the incoming application code is equal to
      * {@link com.constants.GeneralConst#SECURITY_APP_CODE SECURITY_APP_CODE}.
@@ -242,8 +235,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
         if (this.credentials == null || this.credentials.getAppCode() == null) {
             return true;
         }
-        return this.credentials.getAppCode().equalsIgnoreCase(
-                GeneralConst.SECURITY_APP_CODE);
+        return this.credentials.getAppCode().equalsIgnoreCase(GeneralConst.SECURITY_APP_CODE);
     }
 
     /**
@@ -287,8 +279,7 @@ public abstract class AbstractUserAuthenticationTemplateImpl extends
      * @throws AuthenticationException
      *             When token contains a null session bean
      */
-    public void authorize(String loginId, List roles, Object token)
-            throws AuthorizationException, AuthenticationException {
+    public void authorize(String loginId, List roles, Object token) throws AuthorizationException, AuthenticationException {
         if (token == null) {
             this.msg = "Security Token cannot be null when authorizing a user for system resource access";
             logger.error(this.msg);

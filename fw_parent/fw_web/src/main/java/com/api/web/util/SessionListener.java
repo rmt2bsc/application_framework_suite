@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
  * which function to receive notification events when the session becomes active
  * and inactive. This class is configured in the web.xml deployment descriptor
  * of the web application.
- * <p>
- * <b>NOTE: Refactor this class by moving it to the com.api.security package</b>
  * 
  * @author appdev
  * 
@@ -41,9 +39,9 @@ public class SessionListener implements HttpSessionListener {
 
     /**
      * Cleans up the user's session by removing the user's session work area and
-     * logging the user out of all assoicated applications. Messages are sent to
+     * logging the user out of all associated applications. Messages are sent to
      * the console revealing the user that has been logged off the system, the
-     * id of the session and the start and end timestamp of the session.
+     * id of the session and the start and end time stamp of the session.
      */
     public void sessionDestroyed(HttpSessionEvent event) {
         HttpSession session = null;

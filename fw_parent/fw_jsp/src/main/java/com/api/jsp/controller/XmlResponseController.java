@@ -1,11 +1,5 @@
 package com.api.jsp.controller;
 
-import org.apache.log4j.Logger;
-
-import com.api.constants.RMT2ServletConst;
-
-import org.apache.log4j.Level;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ResourceBundle;
@@ -15,10 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.api.constants.RMT2ServletConst;
+
 /**
- * Command Servlet implementation that sends the server's response as a typical
- * XML data stream to a non JSP client. The response is expected to be received
- * from the client action handler via the request object as the attribute,
+ * Command Servlet implementation that processes a client's HTTP request and
+ * sends the server's response as a typical XML data stream to a non JSP client.
+ * The response is expected to be received from the client action handler via
+ * the request object as the attribute,
  * {@link com.constants.RMT2ServletConst.RESPONSE_NONJSP_DATA
  * RESPONSE_NONJSP_DATA}.
  * <p>
@@ -43,12 +43,10 @@ public class XmlResponseController extends AbstractCommandController {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         this.logger = Logger.getLogger("XmlResponseController");
-        this.logger
-                .log(Level.INFO, "XmlResponseController Servlet initialized");
+        this.logger.log(Level.INFO, "XmlResponseController Servlet initialized");
     }
 
-    protected void doPreSendResponse(HttpServletRequest request,
-            HttpServletResponse response, String url, Object data) {
+    protected void doPreSendResponse(HttpServletRequest request, HttpServletResponse response, String url, Object data) {
         return;
     }
 
@@ -61,10 +59,8 @@ public class XmlResponseController extends AbstractCommandController {
      * java.lang.String, java.lang.String, java.util.ResourceBundle, boolean)
      */
     @Override
-    protected void sendResponse(HttpServletRequest request,
-            HttpServletResponse response, String nextURL,
-            String requestedCommand, ResourceBundle mappings, boolean error)
-            throws ServletException {
+    protected void sendResponse(HttpServletRequest request, HttpServletResponse response, String nextURL,
+            String requestedCommand, ResourceBundle mappings, boolean error) throws ServletException {
         try {
             this.sendXmlStream(request, response);
         } catch (IOException e) {
@@ -81,10 +77,8 @@ public class XmlResponseController extends AbstractCommandController {
      * @throws ServletException
      * @throws IOException
      */
-    private void sendXmlStream(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        String data = (String) request
-                .getAttribute(RMT2ServletConst.RESPONSE_NONJSP_DATA);
+    private void sendXmlStream(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String data = (String) request.getAttribute(RMT2ServletConst.RESPONSE_NONJSP_DATA);
         // Send XML results to client
         PrintWriter out = response.getWriter();
         response.setContentType("text/xml");

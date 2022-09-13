@@ -2,11 +2,11 @@ package com.api.jsp.taglib.security;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.IterationTag;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.IterationTag;
 
 import com.api.constants.RMT2ServletConst;
 //import com.api.security.UserSecurity;
@@ -66,17 +66,13 @@ public abstract class AbstractSecurityTag extends RMT2BodyTagSupportBase {
         this.currentSession = null;
         this.currentSession = pageContext.getSession();
         if (currentSession == null) {
-            throw new JspException(
-                    "Problem obtaining the current session for user");
+            throw new JspException("Problem obtaining the current session for user");
         }
-        this.sessionBean = (RMT2SessionBean) currentSession
-                .getAttribute(RMT2ServletConst.SESSION_BEAN);
+        this.sessionBean = (RMT2SessionBean) currentSession.getAttribute(RMT2ServletConst.SESSION_BEAN);
 
         // Setup Request and Response instances from Page Context
-        HttpServletRequest httpReq = (HttpServletRequest) this.pageContext
-                .getRequest();
-        HttpServletResponse httpResp = (HttpServletResponse) this.pageContext
-                .getResponse();
+        HttpServletRequest httpReq = (HttpServletRequest) this.pageContext.getRequest();
+        HttpServletResponse httpResp = (HttpServletResponse) this.pageContext.getResponse();
         this.request = HttpVariableScopeFactory.createHttpRequest(httpReq);
         this.response = HttpVariableScopeFactory.createHttpResponse(httpResp);
 
@@ -84,8 +80,7 @@ public abstract class AbstractSecurityTag extends RMT2BodyTagSupportBase {
         try {
             // this.authenticator = AuthenticationFactory.getAuthenticator(null,
             // this.request, this.response);
-            this.authenticator = UserAuthenticationFactory
-                    .getAuthenticator(null);
+            this.authenticator = UserAuthenticationFactory.getAuthenticator(null);
             this.authenticator.setRequest(this.request);
         } catch (LoginException e) {
             throw new JspException(e);

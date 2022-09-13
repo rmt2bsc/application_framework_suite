@@ -12,7 +12,7 @@ import com.api.web.security.RMT2SessionBean;
 
 /**
  * Custom body tag that determines if the user is logged on to the system. The
- * current session is interogated for an instance of an RMT2SessionBean, which
+ * current session is interrogated for an instance of an RMT2SessionBean, which
  * indicates that the use is signed on.
  * 
  * @author roy.terrell
@@ -25,16 +25,16 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
     /**
      * Determines whether or not the user is logged into the system. This is
      * performed by comparing the current session context to an existing session
-     * bean, if available, or by qeurying the Authentication system to see if
+     * bean, if available, or by querying the Authentication system to see if
      * the user is signed onto some other application.
      * <p>
      * The purpose of all this is to decide if the body contents of the custom
-     * tag are to be evaulated or skipped by testing the validity of the
+     * tag are to be evaluated or skipped by testing the validity of the
      * session. The body contents are evaluated only if the user is found to be
-     * assoicated with the current session.
+     * associated with the current session.
      * 
      * @return int IterationTag.EVAL_BODY_AGAIN if the user is found to be
-     *         assoicated with the current session. Otherwise,
+     *         associated with the current session. Otherwise,
      *         IterationTag.SKIP_BODY is returned.
      * @throws JspException
      *             When the current session is unobtainable.
@@ -52,15 +52,13 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
         }
         // If the current session id differs from that of the session bean, the
         // user must be forced to login and body evaluation must be skipped.
-        if (this.loggedInLocally
-                && this.getSessionBean().getSessionId()
-                        .equalsIgnoreCase(this.currentSession.getId())) {
+        if (this.loggedInLocally && this.getSessionBean().getSessionId().equalsIgnoreCase(this.currentSession.getId())) {
             this.loggedIn = true;
             return IterationTag.EVAL_BODY_AGAIN;
         }
 
         // Perform service call to check if user has logged in from another
-        // applicaton.
+        // application.
         Object obj = null;
         try {
             String userName = this.getUserName();
@@ -73,10 +71,7 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
                 logger.warn("User is not logged in system locally");
                 return IterationTag.SKIP_BODY;
             }
-            // obj = this.authenticator.getAuthentication(userName, appName,
-            // sessionId);
-            obj = this.authenticator.checkAuthenticationStatus(userName,
-                    appName, sessionId);
+            obj = this.authenticator.checkAuthenticationStatus(userName, appName, sessionId);
         } catch (Exception e) {
             e.printStackTrace();
             throw new JspException(e);
@@ -114,7 +109,6 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
             this.loggedIn = true;
         }
 
-        return (this.loggedIn ? IterationTag.EVAL_BODY_AGAIN
-                : IterationTag.SKIP_BODY);
+        return (this.loggedIn ? IterationTag.EVAL_BODY_AGAIN : IterationTag.SKIP_BODY);
     }
 }

@@ -1,15 +1,13 @@
 package com.api.jsp.taglib.security;
 
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-
 import javax.servlet.jsp.JspException;
-
 import javax.servlet.jsp.tagext.IterationTag;
+
+import org.apache.log4j.Logger;
 
 /**
  * Custom body tag that is designed to route the user to a specific web resource
@@ -67,7 +65,7 @@ public class RMT2AppPageRouterTag extends RMT2RoleExistCheckTag {
      * Routes the user to a specified resource based on the login state of the
      * user. The user is redirected to the "success" URL when found to be logged
      * in either locally or remotely. Otherwise, the user is directed to the URL
-     * assoicated with failure attribute.
+     * associated with failure attribute.
      * 
      * @return Always return IterationTag.SKIP_BODY.
      * @throws JspException
@@ -96,19 +94,16 @@ public class RMT2AppPageRouterTag extends RMT2RoleExistCheckTag {
         // Forward user to the selected URL.
         try {
             RequestDispatcher rd = this.request.getRequestDispatcher(pagePath);
-            rd.forward(this.pageContext.getRequest(),
-                    this.pageContext.getResponse());
+            rd.forward(this.pageContext.getRequest(), this.pageContext.getResponse());
         } catch (IOException e) {
             msg = e.getMessage();
             msg = (msg == null ? "Unknown" : msg);
-            msg = "An general IO Exception occurred when attempting to forward user to URL, "
-                    + pagePath + ".  Message: " + msg;
+            msg = "An general IO Exception occurred when attempting to forward user to URL, " + pagePath + ".  Message: " + msg;
             throw new JspException(msg);
         } catch (ServletException e) {
             msg = e.getMessage();
             msg = (msg == null ? "Unknown" : msg);
-            msg = "An Servlet Exception occurred when attempting to forward user to URL, "
-                    + pagePath + ".  Message: " + msg;
+            msg = "An Servlet Exception occurred when attempting to forward user to URL, " + pagePath + ".  Message: " + msg;
             throw new JspException(msg);
         }
         return IterationTag.SKIP_BODY;

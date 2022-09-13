@@ -81,12 +81,10 @@ public class UserAuthenticationFactory extends RMT2Base {
     public static RMT2SessionBean getSessionBeanInstance(Request request,
             Session session) throws AuthenticationException {
         if (request == null) {
-            throw new AuthenticationException(
-                    "Session Bean token failure...User\'s request object is invalid");
+            throw new AuthenticationException("Session Bean token failure...User\'s request object is invalid");
         }
         if (session == null) {
-            throw new AuthenticationException(
-                    "Session Bean token failure...User\'s web server session object is invalid");
+            throw new AuthenticationException("Session Bean token failure...User\'s web server session object is invalid");
         }
         RMT2SessionBean bean = null;
         try {
@@ -113,11 +111,9 @@ public class UserAuthenticationFactory extends RMT2Base {
      * @return {@link RMT2SessionBean} or null if instance could not be created.
      * @throws AuthenticationException
      */
-    public static RMT2SessionBean getSessionBeanInstance(String loginId,
-            String appCode, Request request, Session session)
+    public static RMT2SessionBean getSessionBeanInstance(String loginId, String appCode, Request request, Session session)
             throws AuthenticationException {
-        RMT2SessionBean bean = UserAuthenticationFactory
-                .getSessionBeanInstance(request, session);
+        RMT2SessionBean bean = UserAuthenticationFactory.getSessionBeanInstance(request, session);
         bean.setLoginId(loginId);
         bean.setOrigAppId(appCode);
         return bean;
@@ -146,21 +142,18 @@ public class UserAuthenticationFactory extends RMT2Base {
      *             If <i>implClassName</i> renders a null class instance, or the
      *             instance does not implement the UserSecurity interface.
      */
-    public static UserAuthenticator getAuthenticator(String implClassName)
-            throws LoginException {
+    public static UserAuthenticator getAuthenticator(String implClassName) throws LoginException {
         // Obtain the class name from either the input parameter or the
         // application's property pool.
-        String className;
+        String className = null;
         if (implClassName == null || implClassName.length() <= 0) {
-            className = AppPropertyPool
-                    .getProperty(ConfigConstants.PROPNAME_AUTHENTICATOR);
+            className = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_AUTHENTICATOR);
         }
         else {
             className = implClassName;
         }
         if (className == null) {
-            throw new LoginException(
-                    "User Authenticator object class name is invalid or unknown");
+            throw new LoginException("User Authenticator object class name is invalid or unknown");
         }
 
         try {
@@ -172,8 +165,7 @@ public class UserAuthenticationFactory extends RMT2Base {
                 // Do nothing...object implements UserSecurity interface.
             }
             else {
-                throw new LoginException(
-                        "User Authenticator object is of the wrong type.  Must implement the interface, "
+                throw new LoginException("User Authenticator object is of the wrong type.  Must implement the interface, "
                                 + UserAuthenticator.class.getName());
             }
             return (UserAuthenticator) obj;

@@ -12,9 +12,9 @@ import com.api.util.RMT2BeanUtility;
 import com.api.util.RMT2Utility;
 
 /**
- * Abstract class that provides basic functionality for manipulatig the
+ * Abstract class that provides basic functionality for manipulating the
  * {@link com.controller.Request Request}. This functionality can be extended by
- * descendent implmenations.
+ * descendant implementations.
  * 
  * @author roy.terrell
  * 
