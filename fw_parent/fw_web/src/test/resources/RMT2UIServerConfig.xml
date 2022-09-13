@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppServerConfig>
+
+        <!-- ******************************* -->
+	<!-- Application Properties          -->
+	<!-- ******************************* -->
+	<LoggerConfigPath>/AppServer/config/log4j.properties</LoggerConfigPath>
+	<AppConfigContextPath>/</AppConfigContextPath>
+	<ContainerManagedPool>true</ContainerManagedPool>
+        <PageLinkMax>10</PageLinkMax>
+	<PaginationPageSize>20</PaginationPageSize>
+	<PollingPage>/polling_wait_page.jsp</PollingPage>
+	<ProtocolInformation>http</ProtocolInformation>
+	<RemoteSrvcApp>ServiceDispatch</RemoteSrvcApp>
+	<RptFileExt>.xsl</RptFileExt>
+	<RptXsltPath>reports</RptXsltPath>
+	<SerialDrive>c:</SerialDrive>
+	<SerialExt>.txt</SerialExt>
+	<SerialPath>/temp/</SerialPath>
+	<TimeoutInterval>1800</TimeoutInterval>
+	<WebAppMapping>AppCommandMappings</WebAppMapping>
+	<WebAppsDir>/Program Files/Apache Software Foundation/Tomcat 6.0/webapps</WebAppsDir>
+	<WebAppsDrive>c\:</WebAppsDrive>
+	<dbmsVendor>ASA</dbmsVendor>
+
+  <!-- ******************************* -->
+	<!-- Company Properties              -->
+	<!-- ******************************* -->
+	<CompanyProperties>
+	      <ContactId>1343</ContactId>
+	      <CompanyName>RMT2 Business Systems Corp.</CompanyName>
+	      <ContactFirstname>Roy</ContactFirstname>
+	      <ContactLastname>Terrell</ContactLastname>
+	      <ContactPhone>(214) 498-3935</ContactPhone>
+	      <ContactEmail>rmt2bsc@gmail.com</ContactEmail>
+	      <TaxId>752722282</TaxId>
+	      <Website>rmt2.net</Website>
+	</CompanyProperties>
+	
+	
+	<!-- ******************************* -->
+	<!-- JVM System Properties           -->
+	<!-- ******************************* -->
+	<SystemProperties>
+	   <environment></environment>
+	   <soaphost>http://localhost:8080/ServiceDispatch/soapEngine</soaphost>
+	   <SaxDriver>org.apache.xerces.parsers.SAXParser</SaxDriver>
+	   <authenticator>com.api.jsp.security.SoapUserAuthenticator</authenticator>
+	   <EmailConfig>
+	       <Authentication>true</Authentication>
+	       <Defaultcontent>text/html</Defaultcontent>
+	       <HostPop3>pop.gmail.com</HostPop3>
+	       <HostSmtp>smtp.gmail.com</HostSmtp> 
+	       <InternalSmtpDomain>verizon.net</InternalSmtpDomain>
+	       <UserId>rmt2bsc@gmail.com</UserId> 
+	       <Password>610hoover</Password>
+	       <Resourcetype>file</Resourcetype>
+	       <TemplatePath>\\source\\dotcom5\\aviall\\resources\\templates\\</TemplatePath> 
+	   </EmailConfig>
+	   <ConsumerMsgHandlerMappingsKey>msg_handler_reg_pkg</ConsumerMsgHandlerMappingsKey>
+	   <ConsumerMsgHandlerMappingsLocation>config.transactions</ConsumerMsgHandlerMappingsLocation>
+	   <XsltTransformer>net.sf.saxon.TransformerFactoryImpl</XsltTransformer>
+	</SystemProperties>
+	
+        <!-- ******************************* -->
+	<!-- Messaging related configuration -->
+	<!-- ******************************* -->
+	<JaxbContexts>
+ 		<JaxbContext name="RMT2">org.rmt2.jaxb</JaxbContext>
+		<JaxbContext name="CONFIG">com.api.config.jaxb</JaxbContext>
+	</JaxbContexts>
+
+</AppServerConfig>

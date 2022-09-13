@@ -136,7 +136,7 @@ public class SystemConfigurator extends RMT2Base {
         this.setupDatabaseApi(appConfig);
         logger.info("Database initialization complete.");
 
-        // Build destinaion mappings hash
+        // Build destination mappings hash
         logger.info("Begin building destination mappings hash...");
         this.setupDestinationMappings(appConfig);
         logger.info("Building of destinaion mappings hash complete.");
@@ -197,8 +197,7 @@ public class SystemConfigurator extends RMT2Base {
                 props.addSystemProperty("TemplatePath", emailProps.getTemplatePath());
                 props.addSystemProperty("GenerateEmailConfirmation", String.valueOf(emailProps.isGenerateEmailConfirmation()));
             }
-            props.addSystemProperty(sysProps.getConsumerMsgHandlerMappingsKey(),
-                    sysProps.getConsumerMsgHandlerMappingsLocation());
+            props.addSystemProperty(sysProps.getConsumerMsgHandlerMappingsKey(), sysProps.getConsumerMsgHandlerMappingsLocation());
         }
         return;
     }
@@ -281,6 +280,13 @@ public class SystemConfigurator extends RMT2Base {
      * @param config
      */
     private void setupApiCollection(AppServerConfig config) {
+        // UI-4: Added condition to get ApiConfigurator mappings provided the
+        // respective mapping configuration exists
+        if (config.getApiConfigurators() == null) {
+            logger.warn("AppConfigurator configuration is not available in the application configuration file");
+            return;
+        }
+
         List<ApiConfigurator> list = config.getApiConfigurators().getApiConfigurator();
         for (ApiConfigurator apiConfig : list) {
             RMT2BeanUtility util = new RMT2BeanUtility();
@@ -310,6 +316,12 @@ public class SystemConfigurator extends RMT2Base {
      * @param config
      */
     private void setupDestinationMappings(AppServerConfig config) {
+        // UI-4: Added condition to get destination mappings provided the
+        // respective mapping configuration exists
+        if (config.getDestinationMappings() == null) {
+            logger.warn("DestinationMappings configuration is not available in the application configuration file");
+            return;
+        }
         List<AppServerConfig.DestinationMappings.Destination> list = config.getDestinationMappings().getDestination();
         destinationXref = new HashMap<String, AppServerConfig.DestinationMappings.Destination>();
         for (AppServerConfig.DestinationMappings.Destination item : list) {
@@ -358,10 +370,10 @@ public class SystemConfigurator extends RMT2Base {
     }
 
     /**
-     * Get JNDI destinaion name that is mapped to <i>rmt2DestName</i>.
+     * Get JNDI destination name that is mapped to <i>rmt2DestName</i>.
      * 
      * @param rmt2DestName
-     *            the internal destinaion name.
+     *            the internal destination name.
      * @return the JNDI name or null if it does not exist in the Map
      * @throws SystemException
      *             when the destination mappings cross reference map is not
