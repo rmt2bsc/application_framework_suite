@@ -58,18 +58,18 @@ public abstract class AbstractActionHandler extends RMT2Base implements
     /** Constant that represents when an index code is invalid. */
     protected static final int INDEX_CODE_INVALID = -2;
 
-    /** required prefix value for all selection criteiria UI input fields */
+    /** required prefix value for all selection criteria UI input fields */
     protected static final String QRY_PREFIX = "qry_";
 
     /**
-     * required prefix value for all selection criteiria UI input fields that
+     * required prefix value for all selection criteria UI input fields that
      * represent relational operators
      */
     protected static final String QRY_PREFIX_RELOP = "qryRelOp_";
 
     /**
-     * required suffix value for all selection criteiria UI input fields that
-     * use the advance search options widget.
+     * required suffix value for all selection criteria UI input fields that use
+     * the advance search options widget.
      */
     public static final String FIELD_NAME_SUFFIX = "_ADVSRCHOPTS";
 
@@ -170,8 +170,8 @@ public abstract class AbstractActionHandler extends RMT2Base implements
 
     /**
      * Initializes this object using _conext and _request. This is needed in the
-     * event this object is inistantiated using the default constructor which
-     * the invocation of this method should be from within the descendent.
+     * event this object is instantiated using the default constructor which the
+     * invocation of this method should be from within the descendant.
      * 
      * @param _context
      *            the servet context
@@ -179,8 +179,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements
      *            the http servlet request
      * @throws SystemException
      */
-    protected void init(Context _context, Request _request)
-            throws SystemException {
+    protected void init(Context _context, Request _request) throws SystemException {
         this.context = _context;
         this.request = _request;
 
@@ -189,18 +188,14 @@ public abstract class AbstractActionHandler extends RMT2Base implements
             return;
         }
 
-        // Check if login id exists
-        // this.loginId = this.getLoginId();
-
         // Get selected row, if available.
         try {
-            this.selectedRow = this
-                    .getSelectedRow(GeneralConst.CLIENTROW_PROPERTY);
+            this.selectedRow = this.getSelectedRow(GeneralConst.CLIENTROW_PROPERTY);
         } catch (SystemException e) {
             this.selectedRow = -1; // no row selected.
         }
 
-        // Get servlet context in the event it is not initizialized.
+        // Get servlet context in the event it is not initialized.
         if (this.context == null) {
             this.context = this.request.getSession().getContext();
         }
@@ -210,20 +205,19 @@ public abstract class AbstractActionHandler extends RMT2Base implements
 
         // Get session query object
         if (this.session != null) {
-            this.query = (RMT2TagQueryBean) this.session
-                    .getAttribute(RMT2ServletConst.QUERY_BEAN);
+            this.query = (RMT2TagQueryBean) this.session.getAttribute(RMT2ServletConst.QUERY_BEAN);
         }
         logger = Logger.getLogger(AbstractActionHandler.class);
     }
 
     /**
      * Assigns the request, context, and command member variables the values set
-     * by the descendent implementation. Also, invokes
+     * by the descendant implementation. Also, invokes
      * {@link bean.RMT2Base#init() init()} method for additional object
-     * intialization.
+     * initialization.
      * 
      * @param request
-     *            The user's reqest
+     *            The user's request
      * @param response
      *            The user's response
      * @param command
@@ -231,8 +225,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements
      * @throws ActionHandlerException
      *             When any of the init methods fail.
      */
-    public void processRequest(Request request, Response response,
-            String command) throws ActionCommandException {
+    public void processRequest(Request request, Response response, String command) throws ActionCommandException {
         if (this.request == null) {
             this.request = request;
         }

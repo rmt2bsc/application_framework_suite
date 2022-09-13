@@ -52,8 +52,7 @@ public interface UserAuthenticator {
      * @throws AuthenticationException
      *             For any case where the user's login attempt fails.
      */
-    Object authenticate(String loginId, String password)
-            throws AuthenticationException;
+    Object authenticate(String loginId, String password) throws AuthenticationException;
 
     /**
      * Authenticate user using <i>loginId</i>, <i>password</i>, <i>appCode</i>,
@@ -62,7 +61,7 @@ public interface UserAuthenticator {
      * The implementation of this method is expected to fulfill single sign on
      * functionality in cases where the user is required to login to each
      * application invoked in a multi-application environment. The single sign
-     * on principal should only appply towards the usage of two or more
+     * on principal should only apply towards the usage of two or more
      * applications bound to the same session.
      * 
      * @param loginId
@@ -77,9 +76,8 @@ public interface UserAuthenticator {
      * @throws AuthenticationException
      * @throws AuthorizationException
      */
-    Object authenticate(String loginId, String password, String appCode,
-            String sessionId) throws AuthenticationException,
-            AuthorizationException;
+    Object authenticate(String loginId, String password, String appCode, String sessionId)
+            throws AuthenticationException, AuthorizationException;
 
     /**
      * Determines if a user is currently signed on to one or more applications
@@ -102,9 +100,8 @@ public interface UserAuthenticator {
      * @throws AuthenticationException
      * @throws AuthorizationException
      */
-    RMT2SecurityToken checkAuthenticationStatus(String loginId, String appCode,
-            String sessionId) throws AuthenticationException,
-            AuthorizationException;
+    RMT2SecurityToken checkAuthenticationStatus(String loginId, String appCode, String sessionId)
+            throws AuthenticationException, AuthorizationException;
 
     /**
      * Logs the specified user, belonging to the session identified as
@@ -137,8 +134,7 @@ public interface UserAuthenticator {
      * @throws AuthorizationException
      * @throws AuthenticationException
      */
-    void authorize(String loginId, List roles, Object token)
-            throws AuthorizationException, AuthenticationException;
+    void authorize(String loginId, List roles, Object token) throws AuthorizationException, AuthenticationException;
 
     /**
      * Assigns a valid instance of Request which is used to track the session
@@ -153,7 +149,7 @@ public interface UserAuthenticator {
      * Fetches the security session token which is usually utilized by the
      * client.
      * 
-     * @return an abitrary object representing the session token.
+     * @return an arbitrary object representing the session token.
      */
     Object getSessionToken();
 

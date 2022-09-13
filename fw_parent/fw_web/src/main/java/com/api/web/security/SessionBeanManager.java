@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.RMT2Base;
 import com.SystemException;
@@ -91,8 +91,7 @@ public class SessionBeanManager extends RMT2Base {
         // Store the Session Bean on user's session
         session.setAttribute(RMT2ServletConst.SESSION_BEAN, bean);
         // Store a RMT2TagQueryBean on user's session
-        session.setAttribute(RMT2ServletConst.QUERY_BEAN,
-                new RMT2TagQueryBean());
+        session.setAttribute(RMT2ServletConst.QUERY_BEAN, new RMT2TagQueryBean());
 
         HttpServletRequest nativeReq = null;
         if (request.getNativeInstance() != null) {
@@ -119,8 +118,7 @@ public class SessionBeanManager extends RMT2Base {
      *             When the session bean is invalid or does not contain a valid
      *             login id and source application identifier.
      */
-    protected void validateSessionBean(RMT2SessionBean bean)
-            throws SystemException {
+    protected void validateSessionBean(RMT2SessionBean bean) throws SystemException {
         if (bean == null) {
             msg = "The user session bean object is invalid";
             Logger.getLogger("SessionBeanManager").log(Level.ERROR, msg);
@@ -147,11 +145,9 @@ public class SessionBeanManager extends RMT2Base {
      * @throws SystemException
      *             If the timeout value is not obtainable.
      */
-    protected void configureSessionTimeOut(RMT2SessionBean bean)
-            throws SystemException {
+    protected void configureSessionTimeOut(RMT2SessionBean bean) throws SystemException {
         int timeoutInterval = 0;
-        String temp = AppPropertyPool
-                .getProperty(ConfigConstants.PROPNAME_SESSION_TIMEOUT);
+        String temp = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_SESSION_TIMEOUT);
         try {
             timeoutInterval = new Integer(temp).intValue();
             if (timeoutInterval < AuthenticationConst.MIN_TIMEOUT) {
@@ -175,24 +171,19 @@ public class SessionBeanManager extends RMT2Base {
      * @return {@link com.api.security.authentication.web.RMT2SessionBean
      *         RMT2SessionBean}
      */
-    public RMT2SessionBean buildSessionBean(String xml, String rootQuery,
-            String roleQuery) {
+    public RMT2SessionBean buildSessionBean(String xml, String rootQuery, String roleQuery) {
         RMT2SessionBean session;
         try {
             if (this.request != null) {
-                session = UserAuthenticationFactory.getSessionBeanInstance(
-                        this.request, this.request.getSession(false));
+                session = UserAuthenticationFactory.getSessionBeanInstance(this.request, this.request.getSession(false));
             }
             else {
                 // this is normally used in environments outside a web context.
                 // For example, JUnit Testing.
-                session = UserAuthenticationFactory.getSessionBeanInstance(
-                        "dummy", "dummy");
+                session = UserAuthenticationFactory.getSessionBeanInstance("dummy", "dummy");
             }
         } catch (AuthenticationException e) {
-            throw new SystemException(
-                    "Unable to create Session Bean instance for authenticated user",
-                    e);
+            throw new SystemException("Unable to create Session Bean instance for authenticated user", e);
         }
 
         XmlDao dao = XmlApiFactory.createXmlDao(xml);

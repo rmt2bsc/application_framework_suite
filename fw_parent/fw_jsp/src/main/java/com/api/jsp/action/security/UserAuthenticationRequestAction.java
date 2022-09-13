@@ -74,8 +74,7 @@ import com.api.web.security.UserAuthenticator;
  * @author RTerrell
  * 
  */
-public class UserAuthenticationRequestAction extends AbstractActionHandler
-        implements ICommand {
+public class UserAuthenticationRequestAction extends AbstractActionHandler implements ICommand {
 
     private static final String COMMAND_LOGIN = "Security.Authentication.login";
 
@@ -85,7 +84,7 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
 
     private static final String COMMAND_CHECK_USER_AUTH_STATUS = "Security.Authentication.verifyauthentication";
 
-    private static Logger logger = Logger.getLogger("AuthenticationAction");
+    private static Logger logger = Logger.getLogger(UserAuthenticationRequestAction.class);
 
     private UserAuthenticator api;
 
@@ -111,15 +110,13 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
      * AppParms.properties, file within the configuration area.
      * 
      * @param context
-     *            the servet context
+     *            the servlet context
      * @param request
      *            the http servlet request
      * @throws SystemException
      */
-    protected void init(Context context, Request request)
-            throws SystemException {
-        this.userId = request
-                .getParameter(AuthenticationConst.AUTH_PROP_USERID);
+    protected void init(Context context, Request request) throws SystemException {
+        this.userId = request.getParameter(AuthenticationConst.AUTH_PROP_USERID);
         try {
             this.api = UserAuthenticationFactory.getAuthenticator(null);
         } catch (LoginException e) {
@@ -138,11 +135,10 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
      * @param response
      *            The HttpResponse object
      * @param command
-     *            Comand issued by the client.
+     *            Command issued by the client.
      * @Throws SystemException when an error needs to be reported.
      */
-    public void processRequest(Request request, Response response,
-            String command) throws ActionCommandException {
+    public void processRequest(Request request, Response response, String command) throws ActionCommandException {
         super.processRequest(request, response, command);
         logger.log(Level.INFO, "Processing authentication command, " + command);
 
@@ -162,26 +158,20 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
         // Begin to handle the user's authentication request
         RMT2SecurityToken token = null;
         try {
-            if (command
-                    .equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGIN)) {
-                token = (RMT2SecurityToken) this.api.authenticate(
-                        creds.getUserId(), creds.getPassword(),
-                        creds.getAppCode(), creds.getCurrentSessionId());
+            if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGIN)) {
+                token = (RMT2SecurityToken) this.api.authenticate(creds.getUserId(), creds.getPassword(), creds.getAppCode(),
+                        creds.getCurrentSessionId());
                 sessionBean = token.getSession();
                 this.assignSessionBean(sessionBean);
             }
-            else if (command
-                    .equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGOUT)) {
+            else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGOUT)) {
                 this.api.logout(creds.getUserId(), creds.getCurrentSessionId());
             }
-            else if (command
-                    .equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_AUTHORIZE)) {
+            else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_AUTHORIZE)) {
                 return;
             }
-            else if (command
-                    .equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_CHECK_USER_AUTH_STATUS)) {
-                token = (RMT2SecurityToken) this.api.checkAuthenticationStatus(
-                        creds.getUserId(), creds.getAppCode(),
+            else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_CHECK_USER_AUTH_STATUS)) {
+                token = (RMT2SecurityToken) this.api.checkAuthenticationStatus(creds.getUserId(), creds.getAppCode(),
                         creds.getCurrentSessionId());
                 if (token != null && token.getSession() != null) {
                     this.assignSessionBean(token.getSession());
@@ -196,14 +186,12 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
             // success or failure
             this.sendClientData();
             this.api = null;
-            this.request.setAttribute(AuthenticationConst.AUTH_PROP_USERID,
-                    this.userId);
-
+            this.request.setAttribute(AuthenticationConst.AUTH_PROP_USERID, this.userId);
         }
     }
 
     /**
-     * Assins a RMT2SessionBean instance to the user's application session. If
+     * Assigns a RMT2SessionBean instance to the user's application session. If
      * the session bean is found to be invalid then an exception is produced.
      * 
      * @param sessionBean
@@ -211,15 +199,12 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler
      * @throws SystemException
      *             If <i>sessionBean</i> is invalid.
      */
-    private void assignSessionBean(RMT2SessionBean sessionBean)
-            throws SystemException {
-        String appId = AppPropertyPool
-                .getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
+    private void assignSessionBean(RMT2SessionBean sessionBean) throws SystemException {
+        String appId = AppPropertyPool.getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
         sessionBean.setOrigAppId(appId);
         SessionBeanManager sbm = SessionBeanManager.getInstance(this.request);
         sbm.addSessionBean(sessionBean);
-        logger.log(Level.INFO, "Session ID from Target App, " + appId + ": "
-                + sessionBean.getSessionId());
+        logger.log(Level.INFO, "Session ID from Target App, " + appId + ": " + sessionBean.getSessionId());
         return;
     }
 

@@ -134,28 +134,28 @@ public class RMT2SecurityToken extends RMT2Base {
     }
 
     /**
-     * @return the firstname
+     * @return the first name
      */
     public String getFirstname() {
         return firstname;
     }
 
     /**
-     * @return the midname
+     * @return the mid name
      */
     public String getMidname() {
         return midname;
     }
 
     /**
-     * @return the lastname
+     * @return the last name
      */
     public String getLastname() {
         return lastname;
     }
 
     /**
-     * @return the maidenname
+     * @return the maiden name
      */
     public String getMaidenname() {
         return maidenname;
@@ -169,7 +169,7 @@ public class RMT2SecurityToken extends RMT2Base {
     }
 
     /**
-     * @return the shortname
+     * @return the short name
      */
     public String getShortname() {
         return shortname;

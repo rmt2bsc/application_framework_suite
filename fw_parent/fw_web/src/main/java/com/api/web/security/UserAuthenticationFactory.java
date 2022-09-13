@@ -37,13 +37,13 @@ public class UserAuthenticationFactory extends RMT2Base {
     }
 
     /**
-     * Creates an instance of RMT2SessionBean which belongs to a user
-     * identiified as, <i>loginId</i>, of application, <i>appId</i>.
+     * Creates an instance of RMT2SessionBean which belongs to a user identified
+     * as, <i>loginId</i>, of application, <i>appId</i>.
      * 
      * @param loginId
      *            The user's login id.
      * @param appId
-     *            The id of the applicaion which the user is assoicated with at
+     *            The id of the application which the user is associated with at
      *            login time.
      * @return {@link RMT2SessionBean} or null if instance could not be created.
      * @throws AuthenticationException
@@ -78,8 +78,7 @@ public class UserAuthenticationFactory extends RMT2Base {
      * @throws AuthenticationException
      *             <i>request</i> and/or <i>session</i> is null.
      */
-    public static RMT2SessionBean getSessionBeanInstance(Request request,
-            Session session) throws AuthenticationException {
+    public static RMT2SessionBean getSessionBeanInstance(Request request, Session session) throws AuthenticationException {
         if (request == null) {
             throw new AuthenticationException("Session Bean token failure...User\'s request object is invalid");
         }
@@ -198,7 +197,7 @@ public class UserAuthenticationFactory extends RMT2Base {
     }
 
     /**
-     * Creates the user authenticator and initilizes it with the user's Request
+     * Creates the user authenticator and initializes it with the user's Request
      * and Response.
      * 
      * @param implClassName
