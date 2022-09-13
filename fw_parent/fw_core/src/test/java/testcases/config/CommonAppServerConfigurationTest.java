@@ -149,6 +149,7 @@ public class CommonAppServerConfigurationTest {
         sp.setEnvironment("DEV");
         sp.setSoaphost("http://localhost:8080/ServiceDispatch/soapEngine");
         sp.setSaxDriver("org.apache.xerces.parsers.SAXParser");
+        sp.setAuthenticator("com.api.jsp.security.SoapUserAuthenticator");
         sp.setConsumerMsgHandlerMappingsKey("msg_handler_reg_pkg");
         sp.setConsumerMsgHandlerMappingsLocation("config.transactions");
         sp.setXsltTransformer("net.sf.saxon.TransformerFactoryImpl");

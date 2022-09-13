@@ -66,6 +66,7 @@
               <xs:element type="xs:string" name="environment"/>
               <xs:element type="xs:anyURI" name="soaphost"/>
               <xs:element type="xs:string" name="SaxDriver"/>
+              <xs:element type="xs:string" name="authenticator"/>
               <xs:element name="EmailConfig">
                 <xs:complexType>
                   <xs:sequence>

@@ -45,6 +45,7 @@
 	   <environment></environment>
 	   <soaphost>http://localhost:8080/ServiceDispatch/soapEngine</soaphost>
 	   <SaxDriver>org.apache.xerces.parsers.SAXParser</SaxDriver>
+	   <authenticator>com.api.jsp.security.SoapUserAuthenticator</authenticator>
 	   <EmailConfig>
 	       <Authentication>true</Authentication>
 	       <Defaultcontent>text/html</Defaultcontent>
