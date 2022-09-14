@@ -106,13 +106,21 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
         return;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Verifies the user's authenticity using the user's credentials.
      * 
-     * @see
-     * com.api.security.authentication.web.AbstractUserAuthenticationTemplateImpl
-     * #verifyUser(java.lang.String, java.lang.String, java.lang.String,
-     * java.lang.String)
+     * @param loginId
+     *            login id
+     * @param password
+     *            password
+     * @param appCode
+     *            the application code
+     * @param sessionId
+     *            the user's session id
+     * @return {@link RMT2SecurityToken}
+     * @throws AuthenticationException
+     *             User failed authentication
+     * @throws AuthorizationException
      */
     @Override
     protected RMT2SecurityToken verifyUser(String loginId, String password, String appCode, String sessionId)
