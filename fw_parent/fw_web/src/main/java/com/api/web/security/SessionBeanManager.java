@@ -56,7 +56,7 @@ public class SessionBeanManager extends RMT2Base {
      * file system for the user to store and manage state data pertaining to the
      * application.
      * 
-     * @return RMT2SessionBean A valid user sessio bean.
+     * @return RMT2SessionBean A valid user session bean.
      * @throws SystemException
      *             When the session bean is invalid or does not contain a valid
      *             login id and source application identifier.

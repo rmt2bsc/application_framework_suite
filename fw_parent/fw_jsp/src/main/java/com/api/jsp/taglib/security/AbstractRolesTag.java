@@ -46,10 +46,9 @@ public abstract class AbstractRolesTag extends RMT2CheckUserLoggedInTag {
      * the body contents of the tag.
      * 
      * @return IterationTag.EVAL_BODY_AGAIN if the user is possesses one or more
-     *         roles that mathch any of the required roles.
+     *         roles that match any of the required roles.
      *         IterationTag.SKIP_BODY if the user is not logged onto system, or
-     *         the user does not have authorization to process the body
-     *         contentes
+     *         the user does not have authorization to process the body contents
      * @throws JspException
      */
     public int doStartTag() throws JspException {

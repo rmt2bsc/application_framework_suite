@@ -200,12 +200,11 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
      * checkAuthenticationStatus (java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public RMT2SecurityToken checkAuthenticationStatus(String loginId,
-            String appCode, String sessionId) throws AuthenticationException {
+    public RMT2SecurityToken checkAuthenticationStatus(String loginId, String appCode, String sessionId)
+            throws AuthenticationException {
         // Replace XML place holders with input parameters
         String xml = this.loadXmlMessage("xml/user_auth_check.xml");
-        String delivDate = RMT2Date.formatDate(new Date(),
-                "MM/dd/yyyy hh:mm:ss");
+        String delivDate = RMT2Date.formatDate(new Date(), "MM/dd/yyyy hh:mm:ss");
         String deltaXml = RMT2String.replace(xml, delivDate, "$delivery_date$");
         deltaXml = RMT2String.replace(deltaXml, loginId, "$user_id$");
         deltaXml = RMT2String.replace(deltaXml, loginId, "$uid$");

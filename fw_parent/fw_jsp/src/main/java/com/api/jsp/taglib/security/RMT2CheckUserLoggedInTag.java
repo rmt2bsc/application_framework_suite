@@ -11,9 +11,11 @@ import com.api.web.security.RMT2SecurityToken;
 import com.api.web.security.RMT2SessionBean;
 
 /**
- * Custom body tag that determines if the user is logged on to the system. The
- * current session is interrogated for an instance of an RMT2SessionBean, which
- * indicates that the use is signed on.
+ * Custom body tag that verifies the authentication status of a user attempting
+ * to obtain a session, which the session can be a brand new or existing. When
+ * an existing session is used, the user is considered to be already
+ * authenticated via single sign on (SSO) means. Otherwise, a new session is
+ * associated with user, and the user is required to authenticated manually.
  * 
  * @author roy.terrell
  * 
@@ -23,10 +25,13 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
     private static final long serialVersionUID = -6415603640826495077L;
 
     /**
-     * Determines whether or not the user is logged into the system. This is
-     * performed by comparing the current session context to an existing session
-     * bean, if available, or by querying the Authentication system to see if
-     * the user is signed onto some other application.
+     * Determines whether or not the user is logged into the system.
+     * <p>
+     * This is performed by comparing the session id of the current HttpSession
+     * context to the session id property of the RMT2SessionBean instance that
+     * is stored as an existing attribute to the HttpSession, if available, or
+     * by querying the Authentication system to see if the user is signed onto
+     * some other application.
      * <p>
      * The purpose of all this is to decide if the body contents of the custom
      * tag are to be evaluated or skipped by testing the validity of the
@@ -50,8 +55,9 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
         if (this.getSessionBean() != null) {
             this.loggedInLocally = true;
         }
-        // If the current session id differs from that of the session bean, the
-        // user must be forced to login and body evaluation must be skipped.
+        // If the current session id differs from session id that is tied to the
+        // RMT2SessionBean stored as an HttpSession attribute, the user must
+        // be forced to login and the body evaluation must be skipped.
         if (this.loggedInLocally && this.getSessionBean().getSessionId().equalsIgnoreCase(this.currentSession.getId())) {
             this.loggedIn = true;
             return IterationTag.EVAL_BODY_AGAIN;

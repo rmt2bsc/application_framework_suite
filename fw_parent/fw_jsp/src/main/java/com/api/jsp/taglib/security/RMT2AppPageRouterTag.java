@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
  * USER_LOGGEDIN} or {@link GeneralConst.USER_LOGGEDIN USER_LOGGEDOUT} which is
  * an indicator to determine whether the user is logged in or logged out,
  * respectively. {@link GeneralConst.USER_LOGGEDIN USER_LOGGEDIN} is the default
- * value when staet is blank.</li>
- * <li><b>roles</b> - a list of roles that requires the user to staisfy before
+ * value when state is blank.</li>
+ * <li><b>roles</b> - a list of roles that requires the user to satisfy before
  * accessing resource. Not required.</li>
  * <li><b>success</b> - The URL to invoke when the user satisfies security
  * requirements. Required.</li>
