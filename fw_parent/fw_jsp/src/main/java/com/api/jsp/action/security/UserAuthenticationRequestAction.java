@@ -4,7 +4,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.SystemException;
-import com.api.config.AppPropertyPool;
 import com.api.constants.RMT2ServletConst;
 import com.api.jsp.action.AbstractActionHandler;
 import com.api.persistence.DatabaseException;
@@ -200,11 +199,15 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
      *             If <i>sessionBean</i> is invalid.
      */
     private void assignSessionBean(RMT2SessionBean sessionBean) throws SystemException {
-        String appId = AppPropertyPool.getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
-        sessionBean.setOrigAppId(appId);
+        // TODO: delete commented code once this method has been tested.
+        // UI-4: commented due to added logic in RMT2CheckUserLoggedInTag to
+        // capture application code.
+        // String appId =
+        // AppPropertyPool.getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
+        // sessionBean.setOrigAppId(appId);
         SessionBeanManager sbm = SessionBeanManager.getInstance(this.request);
         sbm.addSessionBean(sessionBean);
-        logger.log(Level.INFO, "Session ID from Target App, " + appId + ": " + sessionBean.getSessionId());
+        logger.log(Level.INFO, "Session ID from Target App, " + sessionBean.getOrigAppId() + ": " + sessionBean.getSessionId());
         return;
     }
 

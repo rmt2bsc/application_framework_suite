@@ -49,6 +49,9 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
         String msg = null;
         super.doStartTag();
 
+        String appCode = this.pageContext.getRequest().getServletContext().getServletContextName();
+        logger.info("Web Application name obtained from servlet context ======> " + appCode);
+
         // If session bean could not be obtained from the current session
         // context, the user is considered not to be logged into the system.
         // The session bean must exist in order to evaluate body.
@@ -60,6 +63,10 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
         // be forced to login and the body evaluation must be skipped.
         if (this.loggedInLocally && this.getSessionBean().getSessionId().equalsIgnoreCase(this.currentSession.getId())) {
             this.loggedIn = true;
+
+            // UI-4: Ensure that we capture the application code in
+            // RMT2SessionBean instance
+            this.getSessionBean().setOrigAppId(appCode);
             return IterationTag.EVAL_BODY_AGAIN;
         }
 
@@ -111,6 +118,9 @@ public class RMT2CheckUserLoggedInTag extends AbstractSecurityTag {
             bean = token.getSession();
         }
         if (bean != null) {
+            // UI-4: Ensure that we capture the application code in
+            // RMT2SessionBean instance
+            bean.setOrigAppId(appCode);
             currentSession.setAttribute(RMT2ServletConst.SESSION_BEAN, bean);
             this.loggedIn = true;
         }
