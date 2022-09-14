@@ -56,12 +56,10 @@ public class UserAuthenticationHelper extends RMT2Base {
         String loginId;
         String pw;
         String appName;
-        RMT2SessionBean sessionBean = (RMT2SessionBean) request.getSession()
-                .getAttribute(RMT2ServletConst.SESSION_BEAN);
+        RMT2SessionBean sessionBean = (RMT2SessionBean) request.getSession().getAttribute(RMT2ServletConst.SESSION_BEAN);
         // Set the client action which actually is the service id.\
         String servId = request.getParameter("clientAction");
-        String loginServId = AppPropertyPool
-                .getProperty(ConfigConstants.PROPNAME_LOGINSRC);
+        String loginServId = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_LOGINSRC);
 
         // Nullify sessionBean when logging into an application
         if (servId != null && servId.equalsIgnoreCase(loginServId)) {
@@ -71,26 +69,20 @@ public class UserAuthenticationHelper extends RMT2Base {
         // Look for the login id and application id from the request
         // as either a parameter or an attribute in the stated order.
         if (sessionBean == null) {
-            loginId = request
-                    .getParameter(AuthenticationConst.AUTH_PROP_USERID);
+            loginId = request.getParameter(AuthenticationConst.AUTH_PROP_USERID);
             if (loginId == null || loginId.equals("")) {
-                loginId = (String) request
-                        .getAttribute(AuthenticationConst.AUTH_PROP_USERID);
+                loginId = (String) request.getAttribute(AuthenticationConst.AUTH_PROP_USERID);
             }
             pw = request.getParameter(AuthenticationConst.AUTH_PROP_PASSWORD);
             if (pw == null || pw.equals("")) {
-                pw = (String) request
-                        .getAttribute(AuthenticationConst.AUTH_PROP_PASSWORD);
+                pw = (String) request.getAttribute(AuthenticationConst.AUTH_PROP_PASSWORD);
             }
-            appName = request
-                    .getParameter(AuthenticationConst.AUTH_PROP_MAINAPP);
+            appName = request.getParameter(AuthenticationConst.AUTH_PROP_MAINAPP);
             if (appName == null || appName.equals("")) {
-                appName = (String) request
-                        .getAttribute(AuthenticationConst.AUTH_PROP_MAINAPP);
+                appName = (String) request.getAttribute(AuthenticationConst.AUTH_PROP_MAINAPP);
                 if (appName == null) {
                     try {
-                        appName = AppPropertyPool
-                                .getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
+                        appName = AppPropertyPool.getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
                     } catch (Exception e) {
                         appName = null;
                     }
@@ -102,8 +94,7 @@ public class UserAuthenticationHelper extends RMT2Base {
             appName = sessionBean.getOrigAppId();
             pw = request.getParameter(AuthenticationConst.AUTH_PROP_PASSWORD);
             if (pw == null || pw.equals("")) {
-                pw = (String) request
-                        .getAttribute(AuthenticationConst.AUTH_PROP_PASSWORD);
+                pw = (String) request.getAttribute(AuthenticationConst.AUTH_PROP_PASSWORD);
             }
         }
 
