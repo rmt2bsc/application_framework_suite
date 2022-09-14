@@ -68,12 +68,23 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
         return null;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Authenticate user.
+     * <p>
+     * Typically, this method is invoked when the user is not eligible or setup
+     * to use single sign on (SSO) method.
      * 
-     * @see
-     * com.api.security.authentication.web.UserAuthenticator#authenticate(java
-     * .lang .String, java.lang.String, java.lang.String, java.lang.String)
+     * @param loginId
+     *            The user's unique system identifier
+     * @param password
+     *            The user's password.
+     * @param appCode
+     *            The code name for the application
+     * @param sessionId
+     *            The id of the session the user is currently bound.
+     * @return An arbitrary object that represents the authentication results.
+     * @throws AuthenticationException
+     * @throws AuthorizationException
      */
     public RMT2SecurityToken authenticate(String loginId, String password, String appCode, String sessionId)
             throws AuthenticationException, AuthorizationException {
