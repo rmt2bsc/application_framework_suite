@@ -78,8 +78,6 @@ public abstract class AbstractSecurityTag extends RMT2BodyTagSupportBase {
 
         // Create application specific Authentication Api
         try {
-            // this.authenticator = AuthenticationFactory.getAuthenticator(null,
-            // this.request, this.response);
             this.authenticator = UserAuthenticationFactory.getAuthenticator(null);
             this.authenticator.setRequest(this.request);
         } catch (LoginException e) {
