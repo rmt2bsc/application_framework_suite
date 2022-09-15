@@ -32,7 +32,8 @@ public interface UserAuthenticator {
 
     /**
      * Authenticates a user via anonymous means. The user's credentials are
-     * obtained through some stat source that is intrinsic to the impelentation.
+     * obtained through some data source that is intrinsic to the
+     * implementation.
      * 
      * @return An arbitrary object that represents the authentication results.
      * @throws AuthenticationException
