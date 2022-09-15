@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.RMT2BaseBean;
+import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
 import com.api.config.ConfigConstants;
@@ -26,8 +26,7 @@ import com.api.web.Session;
  * @author roy.terrell
  * 
  */
-public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
-        HttpSessionBindingListener {
+public class RMT2SessionBean extends RMT2Base implements Serializable, HttpSessionBindingListener {
     private static final long serialVersionUID = -2656457027971715300L;
 
     private String loginId;
@@ -168,7 +167,7 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
      * during user login. The path of the directory is determined fro the
      * SystemParms properties file via the user_out_path hasah value. The name
      * of the sub-directory representing the user's profile is base on the user
-     * web session id. The process of createing the user profile output
+     * web session id. The process of creating the user profile output
      * sub-directory verifies the existence of the profile. If found to exist
      * then directory creation is bypassed. Otherwise, the directory is created
      * which its name is derived from the user web session id.
@@ -187,18 +186,15 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
         outPath += "/" + this.sessionId;
         userProfileDir = new File(outPath);
         if (userProfileDir.exists()) {
-            logger.log(Level.INFO, "Profile area for user, " + this.loginId
-                    + ": " + outPath
+            logger.log(Level.INFO, "Profile area for user, " + this.loginId + ": " + outPath
                     + " was not created since it already exist.");
             return this.sessionId;
         }
         if (userProfileDir.mkdir()) {
-            logger.log(Level.INFO, "Profile area create for user, "
-                    + this.loginId + ": " + outPath);
+            logger.log(Level.INFO, "Profile area create for user, " + this.loginId + ": " + outPath);
         }
         else {
-            logger.log(Level.ERROR, "Profile area for user, " + this.loginId
-                    + ", was not created at login: " + outPath);
+            logger.log(Level.ERROR, "Profile area for user, " + this.loginId + ", was not created at login: " + outPath);
         }
         return outPath;
     }
@@ -220,18 +216,13 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
         outPath += "/" + this.sessionId;
         userProfileDir = new File(outPath);
         if (!userProfileDir.exists()) {
-            logger.log(Level.INFO,
-                    "Unable to delete session work area for user, "
-                            + this.loginId + ": " + outPath
+            logger.log(Level.INFO, "Unable to delete session work area for user, " + this.loginId + ": " + outPath
                             + " was not does not exist.");
             return this.sessionId;
         }
 
         int deleteCount = RMT2File.deleteFile(userProfileDir);
-        logger.log(
-                Level.INFO,
-                deleteCount
-                        + " files and directories were removed from the session profile area for user, "
+        logger.log(Level.INFO, deleteCount + " files and directories were removed from the session profile area for user, "
                         + this.loginId);
         return this.sessionId;
     }
@@ -271,8 +262,7 @@ public class RMT2SessionBean extends RMT2BaseBean implements Serializable,
     public String getAuthUrlParms() {
         StringBuffer parms = new StringBuffer(20);
         String login = (this.loginId == null ? "!@#$%^&(*)" : this.loginId);
-        String app = AppPropertyPool
-                .getProperty(ConfigConstants.PROPNAME_APP_NAME);
+        String app = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_NAME);
 
         parms.append(AuthenticationConst.AUTH_PROP_USERID);
         parms.append("=");
