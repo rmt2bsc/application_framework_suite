@@ -473,7 +473,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         } catch (Exception e) {
             String msg = "Client command, " + requestedCommand + ", failed";
             logger.error(msg);
-            throw new ActionCommandException(msg, e);
+            throw new ActionCommandException(e);
         } finally {
             logger.log(Level.INFO, "Client command, " + requestedCommand + ", executed");
             command.close();
