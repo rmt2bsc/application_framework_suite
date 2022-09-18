@@ -613,8 +613,9 @@ public class SoapMessageHelper extends RMT2Base {
             Document doc = body.extractContentAsDocument();
             Source source = new DOMSource(doc);
             strBody = xmlUtil.transform(source);
+
             return strBody;
-        } catch (SOAPException e) {
+        } catch (Exception e) {
             msg = "SOAPException while parsing soap body to string: "
                     + e.getMessage();
             logger.error(msg);

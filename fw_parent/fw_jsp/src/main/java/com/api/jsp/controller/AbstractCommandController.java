@@ -139,8 +139,8 @@ import com.api.web.util.RMT2WebUtility;
  *    2) or the report is streamed to the client via the HttpServletResponse object.
  * 
  *  A remote service command exist in the format of: [Properties file name].[Service Id].[Command Type].
- *  The service category exist as the portion of the servie URL that followss the servlet name.  
- *  The Service Id can be thouht of as the name used by an application to identify the service that 
+ *  The service category exist as the portion of the service URL that follows the servlet name.  
+ *  The Service Id can be thought of as the name used by an application to identify the service that 
  *  is to be invoked. Command Type represents the portion of the command that can be identified as 
  *  handler, success or error.
  * </pre>
@@ -148,8 +148,7 @@ import com.api.web.util.RMT2WebUtility;
 public abstract class AbstractCommandController extends AbstractServlet {
     private static final long serialVersionUID = 2249635693626658698L;
 
-    private static Logger logger = Logger
-            .getLogger("AbstractCommandController");
+    private static Logger logger = Logger.getLogger(AbstractCommandController.class);
 
     protected static final int SESSION_LOGGED_IN = 1;
 
@@ -205,8 +204,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
             } catch (SystemException e) {
                 msg = "Unable to obtain command/mapping for request";
                 logger.error(msg);
-                throw new ServletException(
-                        "Unable to obtain command/mapping for request", e);
+                throw new ServletException("Unable to obtain command/mapping for request", e);
             }
 
             // Pre Execute Command routine, if available.
@@ -217,11 +215,9 @@ public abstract class AbstractCommandController extends AbstractServlet {
             // the browser's session management functionality behaves a bit
             // peculiar rendering the session to be
             // invalid or the user's login is not evident...
-            if (sessionState != AbstractCommandController.SESSION_LOGGED_IN
-                    && !clientAction.equalsIgnoreCase("login")
+            if (sessionState != AbstractCommandController.SESSION_LOGGED_IN && !clientAction.equalsIgnoreCase("login")
                     && !clientAction.equalsIgnoreCase("verifyauthentication")) {
-                sessionState = this.doSessionCheckForExternalRequest(request,
-                        requestedCommand, sessionState);
+                sessionState = this.doSessionCheckForExternalRequest(request, requestedCommand, sessionState);
             }
 
             // Determine if request should be continued based on the state of
@@ -237,13 +233,11 @@ public abstract class AbstractCommandController extends AbstractServlet {
                     break;
 
                 case AbstractCommandController.SESSION_INVALID:
-                    List<String> commandParts = RMT2String.getTokens(
-                            requestedCommand, ".");
+                    List<String> commandParts = RMT2String.getTokens(requestedCommand, ".");
                     if (commandParts != null) {
                         String firstPart = (String) commandParts.get(0);
                         // Display index page if not a Remote Service request
-                        if (!firstPart.equalsIgnoreCase("Services")
-                                && !firstPart.equalsIgnoreCase("Security")) {
+                        if (!firstPart.equalsIgnoreCase("Services") && !firstPart.equalsIgnoreCase("Security")) {
                             msg = "Unable to service HTTP request due to user's session is invalid";
                             logger.error(msg);
                             this.sendResponse(request, response, "/index.jsp");
@@ -261,8 +255,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
 
             // Check if command sent any messages for the client from its
             // execution.
-            msg = (String) request
-                    .getAttribute(RMT2ServletConst.REQUEST_MSG_INFO);
+            msg = (String) request.getAttribute(RMT2ServletConst.REQUEST_MSG_INFO);
             if (msg != null) {
                 messages.setProperty(RMT2ServletConst.PROPERTY_MSG_INFO, msg);
                 request.removeAttribute(RMT2ServletConst.REQUEST_MSG_INFO);
@@ -288,18 +281,15 @@ public abstract class AbstractCommandController extends AbstractServlet {
             logger.error(e);
         } finally {
             // If messages exist from the command transaction (whether error or
-            // not),
-            // store the message object in the request.
+            // not), store the message object in the request.
             if (messages.size() > 0) {
-                request.setAttribute(RMT2ServletConst.REQUEST_MSG_MESSAGES,
-                        messages);
+                request.setAttribute(RMT2ServletConst.REQUEST_MSG_MESSAGES, messages);
             }
         }
 
         // Redirect request.
         try {
-            this.sendResponse(request, response, nextURL, requestedCommand,
-                    mappings, error);
+            this.sendResponse(request, response, nextURL, requestedCommand, mappings, error);
         } catch (ServletException e) {
             msg = "Error occurred processing servlet response";
             throw new StatelessControllerProcessingException(msg, e);
@@ -317,8 +307,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      *         logged into application, or -100 for invalid or null session.
      * @throws SystemException
      */
-    protected int doSessionCheck(HttpServletRequest request)
-            throws SystemException {
+    protected int doSessionCheck(HttpServletRequest request) throws SystemException {
         int rc = AbstractCommandController.SESSION_LOGGED_IN;
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -382,8 +371,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         int rc = currentSessionStateCode;
 
         String env = System.getProperty(ConfigConstants.PROPNAME_ENVIRONMENT);
-        String appCode = AppPropertyPool
-                .getProperty(ConfigConstants.PROPNAME_APP_NAME);
+        String appCode = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_NAME);
         boolean webServiceCall = command.contains("Services.RQ_");
         boolean devMode = env.equals(ConfigConstants.ENVTYPE_DEV);
 
@@ -392,8 +380,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         if (devMode && !webServiceCall) {
             RMT2SessionBean bean = null;
             HttpSession session = request.getSession();
-            bean = this.createTempSession(request, session, tempLoginId,
-                    appCode);
+            bean = this.createTempSession(request, session, tempLoginId, appCode);
             if (session == null) {
                 rc = AbstractCommandController.SESSION_INVALID;
             }
@@ -401,10 +388,8 @@ public abstract class AbstractCommandController extends AbstractServlet {
                 rc = AbstractCommandController.SESSION_NOT_LOGGED_IN;
             }
             else {
-                request.setAttribute(AuthenticationConst.AUTH_PROP_USERID,
-                        bean.getLoginId());
-                request.setAttribute(AuthenticationConst.AUTH_PROP_MAINAPP,
-                        bean.getOrigAppId());
+                request.setAttribute(AuthenticationConst.AUTH_PROP_USERID, bean.getLoginId());
+                request.setAttribute(AuthenticationConst.AUTH_PROP_MAINAPP, bean.getOrigAppId());
                 rc = AbstractCommandController.SESSION_LOGGED_IN;
             }
         }
@@ -432,8 +417,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
         Request r = HttpVariableScopeFactory.createHttpRequest(request);
         RMT2SessionBean sessionBean;
         try {
-            sessionBean = UserAuthenticationFactory
-                    .getSessionBeanInstance(r, s);
+            sessionBean = UserAuthenticationFactory.getSessionBeanInstance(r, s);
         } catch (AuthenticationException e) {
             throw new SystemException(e);
         }
@@ -467,8 +451,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
      * @throws SystemException
      */
     private void executeCommand(String requestedCommand, HttpServletRequest request, HttpServletResponse response,
-            ResourceBundle mappings)
-            throws ActionCommandException, SystemException {
+            ResourceBundle mappings) throws ActionCommandException, SystemException {
         String commandClassName;
         ICommand command;
 

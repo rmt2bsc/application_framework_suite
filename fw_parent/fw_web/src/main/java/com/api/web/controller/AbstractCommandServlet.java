@@ -712,8 +712,7 @@ public abstract class AbstractCommandServlet extends AbstractServlet {
      * @throws SystemException
      *             When application mappings cannot be loaded.
      */
-    protected ResourceBundle loadMappings(String command)
-            throws SystemException {
+    protected ResourceBundle loadMappings(String command) throws SystemException {
         String bundleName1 = null;
         String bundleName2 = null;
         ResourceBundle mappings = null;
@@ -723,8 +722,7 @@ public abstract class AbstractCommandServlet extends AbstractServlet {
         // command as a reference to the properties file on the classpath.
         if (commandParts.size() > 0) {
             bundleName1 = (String) commandParts.get(0);
-            String bundlePath = AppPropertyPool
-                    .getProperty(ConfigConstants.PROPNAME_APP_MAPPING_PATH);
+            String bundlePath = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_MAPPING_PATH);
             bundlePath += "." + bundleName1;
             try {
                 mappings = RMT2File.loadAppConfigProperties(bundlePath);
@@ -742,8 +740,7 @@ public abstract class AbstractCommandServlet extends AbstractServlet {
         // file.
         if (mappings == null) {
             try {
-                bundleName2 = AppPropertyPool
-                        .getProperty(ConfigConstants.PROPNAME_APP_MAPPING);
+                bundleName2 = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_MAPPING);
                 mappings = RMT2File.loadAppConfigProperties(bundleName2);
             } catch (Exception e) {
                 mappings = null;
@@ -785,8 +782,7 @@ public abstract class AbstractCommandServlet extends AbstractServlet {
      * @param url
      * @throws ServletException
      */
-    private void sendResponse(HttpServletRequest request,
-            HttpServletResponse response, String url) throws ServletException {
+    private void sendResponse(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException {
         String msg = null;
         // Redirect resource outside of context.
         try {
@@ -827,6 +823,5 @@ public abstract class AbstractCommandServlet extends AbstractServlet {
      * @param data
      *            An arbitrary object to hold extra data for processing.
      */
-    protected abstract void doPreSendResponse(HttpServletRequest request,
-            HttpServletResponse response, String url, Object data);
+    protected abstract void doPreSendResponse(HttpServletRequest request, HttpServletResponse response, String url, Object data);
 }

@@ -90,6 +90,22 @@
           </xs:complexType>
         </xs:element>
 
+        <xs:element name="ClientUserAuthenticators">
+          <xs:annotation>
+            <xs:documentation>***************  Client User Authenticators provides a means for the web framework to dynamically identify and invoke user authentication functionality for a specific client, such as a JSP web application.  Each specific client is required to implement the ClientUserAuthenticator interface.   ******************</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Authenticator" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                      <xs:attribute type="xs:string" name="application" use="required"/>
+                      <xs:attribute type="xs:string" name="className" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        
         <xs:element name="ApiConfigurators">
           <xs:annotation>
             <xs:documentation>********************************************************************  Configurators used to initialize individual Api environments.         Each class must derive ApiConfigurator interface.                     ********************************************************************</xs:documentation>

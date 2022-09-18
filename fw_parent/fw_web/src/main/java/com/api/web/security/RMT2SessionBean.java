@@ -31,6 +31,8 @@ public class RMT2SessionBean extends RMT2Base implements Serializable, HttpSessi
 
     private String loginId;
 
+    private boolean loggedIn;
+
     private String firstName;
 
     private String lastName;
@@ -892,6 +894,21 @@ public class RMT2SessionBean extends RMT2Base implements Serializable, HttpSessi
      */
     public void setRemotePort(int remotePort) {
         this.remotePort = remotePort;
+    }
+
+    /**
+     * @return the loggedIn
+     */
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    /**
+     * @param loggedIn
+     *            the loggedIn to set
+     */
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
     }
 
 }

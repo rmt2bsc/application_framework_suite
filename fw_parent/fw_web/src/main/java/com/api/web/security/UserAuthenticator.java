@@ -110,13 +110,16 @@ public interface UserAuthenticator {
      * 
      * @param loginId
      *            The user's unique system identifier
+     * @param appCode
+     *            The name of the application user is trying to access. This is
+     *            optional and can be null.
      * @param sessionId
      *            The id of the session the user is currently bound.
      * @return The number of times the user was logged out of the system based
      *         on the session id.
      * @throws LogoutException
      */
-    int logout(String loginId, String sessionId) throws LogoutException;
+    int logout(String loginId, String appCode, String sessionId) throws LogoutException;
 
     /**
      * Determines if the user possesses one or more of the required roles. The

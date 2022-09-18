@@ -26,8 +26,7 @@ import com.api.security.authentication.web.LogoutException;
  * @author rterrell
  * 
  */
-public class BasicLdapUserAuthenticationImpl extends
-        AbstractUserAuthenticationTemplateImpl implements UserAuthenticator {
+public class BasicLdapUserAuthenticationImpl extends AbstractUserAuthenticationTemplateImpl implements UserAuthenticator {
 
     private static Logger logger = Logger
             .getLogger(BasicLdapUserAuthenticationImpl.class);
@@ -111,7 +110,7 @@ public class BasicLdapUserAuthenticationImpl extends
                 session = this.createSessionBean(user);
                 token = new RMT2SecurityToken();
                 token.setSession(session);
-                token.setToken(user);
+                token.setResponseData(user);
             }
             return token;
         } catch (Exception e) {
@@ -226,7 +225,7 @@ public class BasicLdapUserAuthenticationImpl extends
         session.setSessionId(sessionId);
 
         // Prepare to update the user's record in LDAP as a successful login
-        LdapUser user = (LdapUser) token.getToken();
+        LdapUser user = (LdapUser) token.getResponseData();
         int loginCount = (user.getLc() == null || user.getLc().equals("") ? 0
                 : Integer.parseInt(user.getLc()));
         loginCount++;
@@ -266,7 +265,7 @@ public class BasicLdapUserAuthenticationImpl extends
      * com.api.security.authentication.web.UserAuthenticator#logout(java.lang
      * .String , java.lang.String)
      */
-    public int logout(String loginId, String sessionId) throws LogoutException {
+    public int logout(String loginId, String appCode, String sessionId) throws LogoutException {
         this.removeSession();
         return 0;
     }

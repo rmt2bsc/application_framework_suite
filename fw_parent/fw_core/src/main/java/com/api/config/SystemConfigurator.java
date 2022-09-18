@@ -13,6 +13,7 @@ import com.SystemException;
 import com.api.ConnectionProvider;
 import com.api.config.jaxb.AppServerConfig;
 import com.api.config.jaxb.AppServerConfig.ApiConfigurators.ApiConfigurator;
+import com.api.config.jaxb.AppServerConfig.ClientUserAuthenticators.Authenticator;
 import com.api.config.jaxb.AppServerConfig.JaxbContexts.JaxbContext;
 import com.api.config.jaxb.AppServerConfig.SystemProperties;
 import com.api.config.jaxb.AppServerConfig.SystemProperties.EmailConfig;
@@ -32,8 +33,8 @@ import com.api.xml.jaxb.JaxbUtilException;
  * <p>
  * Initializes the application by loading system level and application level
  * properties, establishing the JDBC connection pool, and setting the the
- * application's logger, and intializing all API's package within an application
- * space.
+ * application's logger, and initializing all API's package within an
+ * application space.
  * <p>
  * User-defined JVM and application properties are loaded into memory from
  * localized sources
@@ -60,6 +61,8 @@ public class SystemConfigurator extends RMT2Base {
     private static Map<String, JaxbUtil> jaxb;
 
     private static Map<String, String> jaxbPackageName;
+
+    private static Map<String, String> AUTHENTICATORS;
 
     private static final String ERR_MSG_APPSERVER_CONTEXTPATH_MISSING = "The AppServer configuration's context path is required.  Please verifiy the property, AppConfigContextPath, is set appropriately in the applicaltion server configuration file, AppServer/config/RMT2AppServerConfig.xml, on your system.";
 
@@ -130,6 +133,13 @@ public class SystemConfigurator extends RMT2Base {
         logger.info("Loading core system/application properties...");
         this.loadProperties(appConfig);
         logger.info("Loading of core system/application properties complete.");
+
+        // Load UI specific application authenticator class names for the web
+        // app being
+        // initialized.
+        logger.info("Loading UI specific application authenticator class names...");
+        this.setupClientUserAuthenticators(appConfig);
+        logger.info("Loading UI specific application authenticator class names complete.");
 
         // Initialize database connections
         logger.info("Begin database initialization...");
@@ -311,6 +321,24 @@ public class SystemConfigurator extends RMT2Base {
     }
 
     /**
+     * Initializes all client user authenticators.
+     * 
+     * @param config
+     */
+    private void setupClientUserAuthenticators(AppServerConfig config) {
+        if (config.getClientUserAuthenticators() == null) {
+            logger.warn("ClientUserAuthenticator configuration is not available in the application configuration file");
+            return;
+        }
+
+        SystemConfigurator.AUTHENTICATORS = new HashMap<String, String>();
+        List<Authenticator> list = config.getClientUserAuthenticators().getAuthenticator();
+        for (Authenticator item : list) {
+            SystemConfigurator.AUTHENTICATORS.put(item.getApplication(), item.getClassName());
+        }
+    }
+
+    /**
      * Build destination mapping hash
      * 
      * @param config
@@ -389,4 +417,30 @@ public class SystemConfigurator extends RMT2Base {
         }
         return item.getJndiName();
     }
+
+    /**
+     * Get an application specific user authenticator instance.
+     * 
+     * @param application
+     *            the application code
+     * @return instance of {@link Object}
+     * @throws SystemException
+     *             The client user authenticator map is not initialized or
+     *             <i>application</i> is invalid or null
+     */
+    public static Object getClientApplicationUserAuthenticatorClass(String application) {
+        if (SystemConfigurator.AUTHENTICATORS == null) {
+            throw new SystemException("Client User Authenticator Map is not initialized");
+        }
+
+        try {
+            String className = SystemConfigurator.AUTHENTICATORS.get(application);
+            RMT2BeanUtility util = new RMT2BeanUtility();
+            Object authenticator = util.createBean(className);
+            return authenticator;
+        } catch (Exception e) {
+            throw new SystemException("Error occurred obtaining the Client User Authenticator class name", e);
+        }
+    }
+
 }

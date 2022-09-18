@@ -113,8 +113,7 @@ public abstract class AbstractServlet extends HttpServlet {
      *            The response object
      * @throws StatelessControllerProcessingException
      */
-    protected void processRequest(HttpServletRequest request,
-            HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws StatelessControllerProcessingException {
         StringBuffer url = request.getRequestURL();
         logger.log(Level.INFO, "Requesting URL: " + url.toString());
@@ -134,8 +133,7 @@ public abstract class AbstractServlet extends HttpServlet {
      *            An arbitrary object containg user-session data.
      * @throws ServletException
      */
-    protected void createCookies(HttpServletResponse response, Object obj)
-            throws ServletException {
+    protected void createCookies(HttpServletResponse response, Object obj) throws ServletException {
         RMT2SessionBean sessionBean = null;
 
         if (obj == null) {
@@ -203,8 +201,7 @@ public abstract class AbstractServlet extends HttpServlet {
      * @return The request's parameters as a Properties object.
      */
     protected Properties getRequestParms(HttpServletRequest request) {
-        Request genericRequest = HttpVariableScopeFactory
-                .createHttpRequest(request);
+        Request genericRequest = HttpVariableScopeFactory.createHttpRequest(request);
         return RMT2WebUtility.getRequestData(genericRequest);
     }
 
@@ -220,8 +217,8 @@ public abstract class AbstractServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    public void redirect(String url, HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    public void redirect(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
@@ -238,8 +235,8 @@ public abstract class AbstractServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    public void clientRedirect(String url, HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    public void clientRedirect(String url, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.sendRedirect(url);
     }
 
@@ -251,10 +248,8 @@ public abstract class AbstractServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    public void sendAsciiStream(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        String data = (String) request
-                .getAttribute(RMT2ServletConst.RESPONSE_NONJSP_DATA);
+    public void sendAsciiStream(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String data = (String) request.getAttribute(RMT2ServletConst.RESPONSE_NONJSP_DATA);
         // Send results to client
         PrintWriter out = response.getWriter();
         response.setContentType("text/plain");

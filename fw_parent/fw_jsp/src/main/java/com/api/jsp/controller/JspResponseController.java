@@ -67,8 +67,7 @@ public class JspResponseController extends AbstractCommandController {
      * @throws ServletException
      */
     protected void sendResponse(HttpServletRequest request, HttpServletResponse response, String nextURL,
-            String requestedCommand,
-            ResourceBundle mappings, boolean error) throws ServletException {
+            String requestedCommand, ResourceBundle mappings, boolean error) throws ServletException {
         // Get the protocol of the response url
         int protocolType = this.getResponseProtocolType(request);
         logger.log(Level.DEBUG, "next url protocol:  " + protocolType);
@@ -100,7 +99,7 @@ public class JspResponseController extends AbstractCommandController {
         String clientAction = this.getAction(request);
         Object obj = null;
         try {
-            if (clientAction != null && clientAction.equalsIgnoreCase(RMT2ServletConst.LOGIN_ACTION)) {
+            if (clientAction != null && !error && clientAction.equalsIgnoreCase(RMT2ServletConst.LOGIN_ACTION)) {
                 obj = request.getSession(false).getAttribute(RMT2ServletConst.SESSION_BEAN);
                 this.createCookies(response, obj);
             }

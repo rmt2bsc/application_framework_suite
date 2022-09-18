@@ -18,9 +18,8 @@ public class RMT2SecurityToken extends RMT2Base {
     /**
      * Variable used to track the source of the authentication scheme.
      * 
-     * @deprecated N/A
      */
-    private Object token;
+    private Object responseData;
 
     /**
      * This is User instance is assigned via the update method only and is used
@@ -305,18 +304,16 @@ public class RMT2SecurityToken extends RMT2Base {
 
     /**
      * @return the token
-     * @deprecated N/A
      */
-    public Object getToken() {
-        return token;
+    public Object getResponseData() {
+        return responseData;
     }
 
     /**
      * @param token
      *            the token to set
-     * @deprecated N/A
      */
-    public void setToken(Object token) {
-        this.token = token;
+    public void setResponseData(Object token) {
+        this.responseData = token;
     }
 }

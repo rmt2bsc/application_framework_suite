@@ -89,11 +89,6 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
 
     private String userId;
 
-    // private String loginId;
-    //
-    // private String appName;
-    //
-    // private String srcSessionId;
 
     /**
      * Default constructor which sets up the logger.
@@ -117,6 +112,8 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
     protected void init(Context context, Request request) throws SystemException {
         this.userId = request.getParameter(AuthenticationConst.AUTH_PROP_USERID);
         try {
+            // Dynamically get the appropriate Authenticator instance which is
+            // stated in the AppServer configuration file
             this.api = UserAuthenticationFactory.getAuthenticator(null);
         } catch (LoginException e) {
             this.msg = "Initialization of common Authentication action hanlder failed";
@@ -164,7 +161,7 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
                 this.assignSessionBean(sessionBean);
             }
             else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGOUT)) {
-                this.api.logout(creds.getUserId(), creds.getCurrentSessionId());
+                this.api.logout(creds.getUserId(), creds.getAppCode(), creds.getCurrentSessionId());
             }
             else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_AUTHORIZE)) {
                 return;
@@ -179,7 +176,7 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
         } catch (Exception e) {
             this.msg = "Service command failed: " + command;
             logger.error(this.msg);
-            throw new ActionCommandException(this.msg, e);
+            throw new ActionCommandException(e);
         } finally {
             // Send results as XML to non-java based clients regardless of
             // success or failure
@@ -199,12 +196,6 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
      *             If <i>sessionBean</i> is invalid.
      */
     private void assignSessionBean(RMT2SessionBean sessionBean) throws SystemException {
-        // TODO: delete commented code once this method has been tested.
-        // UI-4: commented due to added logic in RMT2CheckUserLoggedInTag to
-        // capture application code.
-        // String appId =
-        // AppPropertyPool.getProperty(AuthenticationConst.AUTH_PROP_MAINAPP);
-        // sessionBean.setOrigAppId(appId);
         SessionBeanManager sbm = SessionBeanManager.getInstance(this.request);
         sbm.addSessionBean(sessionBean);
         logger.log(Level.INFO, "Session ID from Target App, " + sessionBean.getOrigAppId() + ": " + sessionBean.getSessionId());
@@ -231,7 +222,7 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
         Object data = null;
         Object token = this.api.getSessionToken();
         if (token instanceof RMT2SecurityToken) {
-            data = ((RMT2SecurityToken) token).getToken();
+            data = ((RMT2SecurityToken) token).getResponseData();
         }
         this.request.setAttribute(RMT2ServletConst.RESPONSE_NONJSP_DATA, data);
         return;

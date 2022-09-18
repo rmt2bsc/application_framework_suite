@@ -18,7 +18,7 @@
 	<SerialExt>.txt</SerialExt>
 	<SerialPath>\\temp\\</SerialPath>
 	<TimeoutInterval>1800</TimeoutInterval>
-	<WebAppMapping>AppCommandMappings</WebAppMapping>
+	<WebAppMapping>com.api.jsp.action.security.navigation</WebAppMapping>
 	<WebAppsDir>/Program Files/Apache Software Foundation/Tomcat 6.0/webapps</WebAppsDir>
 	<WebAppsDrive>c\:</WebAppsDrive>
 	<dbmsVendor>ASA</dbmsVendor>
@@ -62,7 +62,17 @@
 	   <ConsumerMsgHandlerMappingsLocation>config.transactions</ConsumerMsgHandlerMappingsLocation>
 	   <XsltTransformer>net.sf.saxon.TransformerFactoryImpl</XsltTransformer>
 	</SystemProperties>
-	
+	 
+	<!-- ********************************************************************
+	     Client User Authenticators provides a means for the web framework to 
+	     dynamically identify and invoke user authentication functionality for 
+	     a specific client, such as a JSP web application.  Each specific 
+	     client is required to implement the ClientUserAuthenticator interface.
+	     ******************************************************************** -->
+	<ClientUserAuthenticators>
+        <Authenticator application="authentication" className="com.security.JspClientUserAuthenticatorImpl"/>
+    </ClientUserAuthenticators>
+    
 	<!-- ******************************************************************** -->
 	<!-- Configurators used to initialize individual Api environments.        -->
 	<!-- Each class must derive ApiConfigurator interface.                    -->

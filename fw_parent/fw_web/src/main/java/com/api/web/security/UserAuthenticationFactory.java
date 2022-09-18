@@ -49,18 +49,14 @@ public class UserAuthenticationFactory extends RMT2Base {
      * @throws AuthenticationException
      *             <i>loginId</i> and/or <i>appId</i> is null or not present.
      */
-    public static RMT2SessionBean getSessionBeanInstance(String loginId,
-            String appId) throws AuthenticationException {
+    public static RMT2SessionBean getSessionBeanInstance(String loginId, String appId) throws AuthenticationException {
         if (loginId != null && loginId.length() <= 0) {
-            throw new AuthenticationException(
-                    "Session Bean token failure...User\'s login id must be present");
+            throw new AuthenticationException("Session Bean token failure...User\'s login id must be present");
         }
         if (appId != null && appId.length() <= 0) {
-            throw new AuthenticationException(
-                    "Session Bean token failure...User\'s application id must be present");
+            throw new AuthenticationException("Session Bean token failure...User\'s application id must be present");
         }
-        RMT2SessionBean obj = UserAuthenticationFactory
-                .getSessionBeanInstance();
+        RMT2SessionBean obj = UserAuthenticationFactory.getSessionBeanInstance();
         obj.setLoginId(loginId);
         obj.setOrigAppId(appId);
         return obj;
@@ -188,10 +184,8 @@ public class UserAuthenticationFactory extends RMT2Base {
      *             If <i>implClassName</i> renders a null class instance, or the
      *             instance does not implement the UserSecurity interface.
      */
-    public static UserAuthenticator getAuthenticator(String implClassName,
-            ProviderConfig provider) throws LoginException {
-        UserAuthenticator a = UserAuthenticationFactory
-                .getAuthenticator(implClassName);
+    public static UserAuthenticator getAuthenticator(String implClassName, ProviderConfig provider) throws LoginException {
+        UserAuthenticator a = UserAuthenticationFactory.getAuthenticator(implClassName);
         a.setProvider(provider);
         return a;
     }
@@ -213,10 +207,8 @@ public class UserAuthenticationFactory extends RMT2Base {
      * @see {@link com.api.security.authentication.web.AuthenticationFactory#getAuthenticator(String)
      *      getAuthenticator(String)}
      */
-    public static UserAuthenticator getAuthenticator(String implClassName,
-            Request request) throws LoginException {
-        UserAuthenticator api = UserAuthenticationFactory
-                .getAuthenticator(implClassName);
+    public static UserAuthenticator getAuthenticator(String implClassName, Request request) throws LoginException {
+        UserAuthenticator api = UserAuthenticationFactory.getAuthenticator(implClassName);
         api.setRequest(request);
         return api;
     }

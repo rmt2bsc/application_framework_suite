@@ -90,8 +90,11 @@ public class ConfigConstants {
     public static String PROPNAME_POLL_PAGE = "pollingPage";
     /** Web application mapping configuration variable name */
     public static String PROPNAME_APP_MAPPING = "webAppMapping";
+
     /** Web application mapping configuration path variable name */
-    public static String PROPNAME_APP_MAPPING_PATH = "web_app_mapping_path";
+    // public static String PROPNAME_APP_MAPPING_PATH = "web_app_mapping_path";
+    public static String PROPNAME_APP_MAPPING_PATH = "WebAppMapping";
+
     /** Report XSLT output path variable name */
     public static String PROPNAME_XSLT_PATH = "rpt_xslt_path";
     /** Report output file extension variable name */

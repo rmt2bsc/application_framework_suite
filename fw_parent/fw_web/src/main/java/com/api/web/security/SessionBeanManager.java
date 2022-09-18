@@ -161,17 +161,7 @@ public class SessionBeanManager extends RMT2Base {
         }
     }
 
-    /**
-     * Creates a SessionBean instance using user authentication data formatted
-     * as a XML String.
-     * 
-     * @param xml
-     * @param rootQuery
-     * @param roleQuery
-     * @return {@link com.api.security.authentication.web.RMT2SessionBean
-     *         RMT2SessionBean}
-     */
-    public RMT2SessionBean buildSessionBean(String xml, String rootQuery, String roleQuery) {
+    public RMT2SessionBean buildSessionBean() {
         RMT2SessionBean session;
         try {
             if (this.request != null) {
@@ -185,6 +175,23 @@ public class SessionBeanManager extends RMT2Base {
         } catch (AuthenticationException e) {
             throw new SystemException("Unable to create Session Bean instance for authenticated user", e);
         }
+
+        // Return session instance
+        return session;
+    }
+
+    /**
+     * Creates a SessionBean instance using user authentication data formatted
+     * as a XML String.
+     * 
+     * @param xml
+     * @param rootQuery
+     * @param roleQuery
+     * @return {@link com.api.security.authentication.web.RMT2SessionBean
+     *         RMT2SessionBean}
+     */
+    public RMT2SessionBean buildSessionBean(String xml, String rootQuery, String roleQuery) {
+        RMT2SessionBean session = this.buildSessionBean();
 
         XmlDao dao = XmlApiFactory.createXmlDao(xml);
         Object rs = dao.retrieve(rootQuery);

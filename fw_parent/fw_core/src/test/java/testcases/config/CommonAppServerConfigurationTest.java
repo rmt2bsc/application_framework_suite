@@ -9,6 +9,8 @@ import com.api.config.ConfigConstants;
 import com.api.config.jaxb.AppServerConfig;
 import com.api.config.jaxb.AppServerConfig.ApiConfigurators;
 import com.api.config.jaxb.AppServerConfig.ApiConfigurators.ApiConfigurator;
+import com.api.config.jaxb.AppServerConfig.ClientUserAuthenticators;
+import com.api.config.jaxb.AppServerConfig.ClientUserAuthenticators.Authenticator;
 import com.api.config.jaxb.AppServerConfig.CompanyProperties;
 import com.api.config.jaxb.AppServerConfig.DestinationMappings;
 import com.api.config.jaxb.AppServerConfig.DestinationMappings.Destination;
@@ -169,6 +171,13 @@ public class CommonAppServerConfigurationTest {
         sp.setEmailConfig(ec);
         a.setSystemProperties(sp);
         
+        ClientUserAuthenticators cua = f.createAppServerConfigClientUserAuthenticators();
+        Authenticator auth = f.createAppServerConfigClientUserAuthenticatorsAuthenticator();
+        auth.setApplication("authentication");
+        auth.setClassName("com.security.JspClientUserAuthenticatorImpl");
+        cua.getAuthenticator().add(auth);
+        a.setClientUserAuthenticators(cua);
+
         ApiConfigurators ac = f.createAppServerConfigApiConfigurators();
         ApiConfigurator a1 = f.createAppServerConfigApiConfiguratorsApiConfigurator();
         a1.setClassName("org.modules.AddressBookConfigurator");

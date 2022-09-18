@@ -1,9 +1,7 @@
-package com.nv.security;
+package com.api.security;
 
 import java.util.Date;
 import java.util.List;
-
-import com.api.security.User;
 
 /**
  * @author rterrell

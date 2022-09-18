@@ -1,27 +1,17 @@
 package com.api.jsp.security;
 
 import java.io.InputStream;
-import java.util.Date;
-
-import javax.xml.soap.SOAPMessage;
 
 import org.apache.log4j.Logger;
 
-import com.SystemException;
-import com.api.config.old.ProviderConfig;
-import com.api.messaging.MessageException;
-import com.api.messaging.webservice.soap.client.SoapClientWrapper;
+import com.api.config.SystemConfigurator;
 import com.api.security.authentication.web.AuthenticationException;
 import com.api.security.authentication.web.AuthorizationException;
 import com.api.security.authentication.web.LogoutException;
-import com.api.util.RMT2Date;
 import com.api.util.RMT2File;
-import com.api.util.RMT2String;
 import com.api.web.security.AbstractUserAuthenticationTemplateImpl;
+import com.api.web.security.ClientUserAuthenticator;
 import com.api.web.security.RMT2SecurityToken;
-import com.api.web.security.RMT2SessionBean;
-import com.api.web.security.SessionBeanManager;
-import com.api.web.security.UserAuthenticationFactory;
 import com.api.web.security.UserAuthenticator;
 
 /**
@@ -39,13 +29,13 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
 
     private String loginXmlTemplate;
 
-    private SoapClientWrapper client;
+    // private SoapClientWrapper client;
 
     /**
      * 
      */
     public SoapUserAuthenticator() {
-        this.client = new SoapClientWrapper();
+        // this.client = new SoapClientWrapper();
     }
 
     /*
@@ -125,37 +115,12 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
     @Override
     protected RMT2SecurityToken verifyUser(String loginId, String password, String appCode, String sessionId)
             throws AuthenticationException {
-        // Replace XML place holders with input parameters
-        String delivDate = RMT2Date.formatDate(new Date(), "MM/dd/yyyy hh:mm:ss");
-        String xml = this.loginXmlTemplate;
-        xml = RMT2String.replace(xml, delivDate, "$delivery_date$");
-        xml = RMT2String.replace(xml, loginId, "$user_id$");
-        xml = RMT2String.replace(xml, loginId, "$uid$");
-        xml = RMT2String.replace(xml, password, "$pw$");
-        xml = RMT2String.replace(xml, appCode, "$app_code$");
-        xml = RMT2String.replace(xml, sessionId, "$session_id$");
-
-        try {
-            SOAPMessage resp = this.client.callSoap(xml);
-            if (client.isSoapError(resp)) {
-                String errMsg = this.client.getSoapErrorMessage(resp);
-                logger.error(errMsg);
-                throw new AuthenticationException(errMsg);
-            }
-            String result = this.client.getSoapResponsePayloadString();
-            logger.info(result);
-
-            SessionBeanManager sm = SessionBeanManager.getInstance(this.request);
-            RMT2SecurityToken token = new RMT2SecurityToken();
-            RMT2SessionBean session = sm.buildSessionBean(result, "//RS_authentication_login/session_token",
-                    "//RS_authentication_login/session_token/roles");
-            token.setSession(session);
-            token.setToken(result);
-            return token;
-        } catch (MessageException e) {
-            this.msg = "Accounting Authentication Error regarding server-side messaging";
-            throw new AuthenticationException(this.msg, e);
-        }
+        
+        // Get user profile (contains application role codes), Replace XML place
+        // holders with input parameters
+        ClientUserAuthenticator authenticator = (ClientUserAuthenticator) SystemConfigurator
+                .getClientApplicationUserAuthenticatorClass(appCode);
+        return authenticator.authenticate(this.request, loginId, password, appCode, sessionId);
     }
 
     /*
@@ -167,8 +132,8 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
      */
     @Override
     protected void cleanUp() throws AuthenticationException {
-        this.client.close();
-        this.client = null;
+        // this.client.close();
+        // this.client = null;
 
     }
 
@@ -179,37 +144,45 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
      * com.api.security.authentication.web.UserAuthenticator#logout(java.lang
      * .String , java.lang.String)
      */
-    public int logout(String loginId, String sessionId) throws LogoutException {
-        // Replace XML place holders with input parameters
-        String xml = this.loadXmlMessage("xml/logout.xml");
-        String delivDate = RMT2Date.formatDate(new Date(),
-                "MM/dd/yyyy hh:mm:ss");
-        String deltaXml = RMT2String.replace(xml, delivDate, "$delivery_date$");
-        deltaXml = RMT2String.replace(deltaXml, loginId, "$user_id$");
-        deltaXml = RMT2String.replace(deltaXml, loginId, "$uid$");
-        deltaXml = RMT2String.replace(deltaXml, sessionId, "$session_id$");
+    public int logout(String loginId, String appCode, String sessionId) throws LogoutException {
+        // Call the appropriate authenticator to log the user out of the system.
+        ClientUserAuthenticator authenticator = (ClientUserAuthenticator) SystemConfigurator
+                .getClientApplicationUserAuthenticatorClass(appCode);
+        RMT2SecurityToken token = authenticator.logout(loginId, sessionId);
+        return token.getTotalLogons();
 
-        // Invalidate user's session
-        this.removeSession();
-
-        // Log User out of the system
-        try {
-            SOAPMessage resp = this.client.callSoap(deltaXml);
-            if (client.isSoapError(resp)) {
-                String errMsg = this.client.getSoapErrorMessage(resp);
-                logger.error(errMsg);
-                throw new LogoutException(errMsg);
-            }
-            String result = this.client.getSoapResponsePayloadString();
-            logger.info(result);
-            RMT2SecurityToken token = new RMT2SecurityToken();
-            token.setToken(result);
-            return 1;
-        } catch (MessageException e) {
-            this.msg = "Accounting Authentication Error regarding server-side messaging";
-            logger.error(this.msg);
-            throw new LogoutException(this.msg, e);
-        }
+        // // Replace XML place holders with input parameters
+        // String xml = this.loadXmlMessage("xml/logout.xml");
+        // String delivDate = RMT2Date.formatDate(new Date(),
+        // "MM/dd/yyyy hh:mm:ss");
+        // String deltaXml = RMT2String.replace(xml, delivDate,
+        // "$delivery_date$");
+        // deltaXml = RMT2String.replace(deltaXml, loginId, "$user_id$");
+        // deltaXml = RMT2String.replace(deltaXml, loginId, "$uid$");
+        // deltaXml = RMT2String.replace(deltaXml, sessionId, "$session_id$");
+        //
+        // // Invalidate user's session
+        // this.removeSession();
+        //
+        // // Log User out of the system
+        // try {
+        // SOAPMessage resp = this.client.callSoap(deltaXml);
+        // if (client.isSoapError(resp)) {
+        // String errMsg = this.client.getSoapErrorMessage(resp);
+        // logger.error(errMsg);
+        // throw new LogoutException(errMsg);
+        // }
+        // String result = this.client.getSoapResponsePayloadString();
+        // logger.info(result);
+        // RMT2SecurityToken token = new RMT2SecurityToken();
+        // token.setResponseData(result);
+        // return 1;
+        // } catch (MessageException e) {
+        // this.msg =
+        // "Accounting Authentication Error regarding server-side messaging";
+        // logger.error(this.msg);
+        // throw new LogoutException(this.msg, e);
+        // }
     }
 
     /*
@@ -221,49 +194,66 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
      */
     public RMT2SecurityToken checkAuthenticationStatus(String loginId, String appCode, String sessionId)
             throws AuthenticationException {
-        // Replace XML place holders with input parameters
-        String xml = this.loadXmlMessage("xml/user_auth_check.xml");
-        String delivDate = RMT2Date.formatDate(new Date(), "MM/dd/yyyy hh:mm:ss");
-        String deltaXml = RMT2String.replace(xml, delivDate, "$delivery_date$");
-        deltaXml = RMT2String.replace(deltaXml, loginId, "$user_id$");
-        deltaXml = RMT2String.replace(deltaXml, loginId, "$uid$");
-        deltaXml = RMT2String.replace(deltaXml, appCode, "$app_code$");
-        deltaXml = RMT2String.replace(deltaXml, sessionId, "$session_id$");
+        // TODO: The new implementation will fetch the user's profile via web
+        // service and interrogate the logged_in property to determine whether
+        // or not the user is logged on to one or more systems.
 
-        try {
-            SOAPMessage resp = this.client.callSoap(deltaXml);
-            if (client.isSoapError(resp)) {
-                String errMsg = this.client.getSoapErrorMessage(resp);
-                logger.error(errMsg);
-                return null;
-            }
-            String result = this.client.getSoapResponsePayloadString();
-            logger.info(result);
-            RMT2SecurityToken token = new RMT2SecurityToken();
-            RMT2SessionBean session;
-            try {
-                if (this.request != null) {
-                    session = UserAuthenticationFactory.getSessionBeanInstance(loginId, appCode, this.request,
-                            this.request.getSession(false));
-                }
-                else {
-                    session = UserAuthenticationFactory.getSessionBeanInstance(loginId, appCode);
-                    session.setSessionId(sessionId);
-                }
-                token.setSession(session);
-            } catch (AuthenticationException e) {
-                this.msg = "Accounting Authentication Error obtaining the RMT2SessionBean instance";
-                logger.error(this.msg);
-                throw new SystemException(this.msg, e);
-            }
-            // token.setSession(sessionBean);
-            token.setToken(result);
-            return token;
-        } catch (MessageException e) {
-            this.msg = "Accounting Authentication Error regarding server-side messaging";
-            logger.error(this.msg);
-            throw new AuthenticationException(this.msg, e);
-        }
+        // Call the appropriate authenticator to verify whether or not the user
+        // is logged into the system.
+        ClientUserAuthenticator authenticator = (ClientUserAuthenticator) SystemConfigurator
+                .getClientApplicationUserAuthenticatorClass(appCode);
+        RMT2SecurityToken token = authenticator.checkAuthenticationStatus(this.request, loginId, appCode, sessionId);
+        return token;
+
+        // // Replace XML place holders with input parameters
+        // String xml = this.loadXmlMessage("xml/user_auth_check.xml");
+        // String delivDate = RMT2Date.formatDate(new Date(),
+        // "MM/dd/yyyy hh:mm:ss");
+        // String deltaXml = RMT2String.replace(xml, delivDate,
+        // "$delivery_date$");
+        // deltaXml = RMT2String.replace(deltaXml, loginId, "$user_id$");
+        // deltaXml = RMT2String.replace(deltaXml, loginId, "$uid$");
+        // deltaXml = RMT2String.replace(deltaXml, appCode, "$app_code$");
+        // deltaXml = RMT2String.replace(deltaXml, sessionId, "$session_id$");
+        //
+        // try {
+        // SOAPMessage resp = this.client.callSoap(deltaXml);
+        // if (client.isSoapError(resp)) {
+        // String errMsg = this.client.getSoapErrorMessage(resp);
+        // logger.error(errMsg);
+        // return null;
+        // }
+        // String result = this.client.getSoapResponsePayloadString();
+        // logger.info(result);
+        // RMT2SecurityToken token = new RMT2SecurityToken();
+        // RMT2SessionBean session;
+        // try {
+        // if (this.request != null) {
+        // session = UserAuthenticationFactory.getSessionBeanInstance(loginId,
+        // appCode, this.request,
+        // this.request.getSession(false));
+        // }
+        // else {
+        // session = UserAuthenticationFactory.getSessionBeanInstance(loginId,
+        // appCode);
+        // session.setSessionId(sessionId);
+        // }
+        // token.setSession(session);
+        // } catch (AuthenticationException e) {
+        // this.msg =
+        // "Accounting Authentication Error obtaining the RMT2SessionBean instance";
+        // logger.error(this.msg);
+        // throw new SystemException(this.msg, e);
+        // }
+        // // token.setSession(sessionBean);
+        // token.setResponseData(result);
+        // return token;
+        // } catch (MessageException e) {
+        // this.msg =
+        // "Accounting Authentication Error regarding server-side messaging";
+        // logger.error(this.msg);
+        // throw new AuthenticationException(this.msg, e);
+        // }
     }
 
     protected String loadXmlMessage(String file) {
@@ -275,17 +265,18 @@ public class SoapUserAuthenticator extends AbstractUserAuthenticationTemplateImp
         return data;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.api.security.authentication.web.UserAuthenticator#setProvider(com.api
-     * .messaging.ProviderConfig)
-     */
-    public void setProvider(ProviderConfig provider) {
-        super.setProvider(provider);
-        this.client.setConfig(provider);
-        return;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // com.api.security.authentication.web.UserAuthenticator#setProvider(com.api
+    // * .messaging.ProviderConfig)
+    // */
+    // public void setProvider(ProviderConfig provider) {
+    // super.setProvider(provider);
+    // this.client.setConfig(provider);
+    // return;
+    // }
 
 }
