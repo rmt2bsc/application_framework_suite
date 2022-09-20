@@ -17,8 +17,7 @@ import com.api.util.RMT2Utility;
 public class RMT2Exception extends Exception {
     private static final long serialVersionUID = 4879374016844141550L;
 
-    private static final String ENV = AppPropertyPool
-            .getProperty(ConfigConstants.PROPNAME_ENVIRONMENT);
+    private static final String ENV = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_ENVIRONMENT);
 
     // private DatabaseConnectionBean con;
 

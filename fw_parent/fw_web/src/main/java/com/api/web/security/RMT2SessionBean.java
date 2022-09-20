@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import com.RMT2Base;
 import com.SystemException;
 import com.api.config.AppPropertyPool;
-import com.api.config.ConfigConstants;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.util.RMT2File;
 import com.api.web.Request;
@@ -264,7 +263,9 @@ public class RMT2SessionBean extends RMT2Base implements Serializable, HttpSessi
     public String getAuthUrlParms() {
         StringBuffer parms = new StringBuffer(20);
         String login = (this.loginId == null ? "!@#$%^&(*)" : this.loginId);
-        String app = AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_NAME);
+        String app = this.origAppId;
+        // String app =
+        // AppPropertyPool.getProperty(ConfigConstants.PROPNAME_APP_NAME);
 
         parms.append(AuthenticationConst.AUTH_PROP_USERID);
         parms.append("=");

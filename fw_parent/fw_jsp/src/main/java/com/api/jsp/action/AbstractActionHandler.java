@@ -38,8 +38,7 @@ import com.api.web.security.RMT2SessionBean;
  * @author rterrell
  * 
  */
-public abstract class AbstractActionHandler extends RMT2Base implements
-        ICommonAction {
+public abstract class AbstractActionHandler extends RMT2Base implements ICommonAction {
     /** String column type code */
     protected static final int COLTYPE_STR = 1;
 

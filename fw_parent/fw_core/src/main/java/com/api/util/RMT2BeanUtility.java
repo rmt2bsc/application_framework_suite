@@ -82,8 +82,7 @@ public class RMT2BeanUtility {
             this.md = info.getMethodDescriptors();
         } catch (IntrospectionException e) {
             String msg = (e.getMessage() == null ? "" : e.getMessage());
-            throw new SystemException("Introspection Exception occurred.  "
-                    + msg, e);
+            throw new SystemException("Introspection Exception occurred.  " + msg, e);
         }
     }
 
@@ -194,34 +193,26 @@ public class RMT2BeanUtility {
      * @throws NotFoundException
      * @throws SystemException
      */
-    public Object getPropertyValue(String _property) throws NotFoundException,
-            SystemException {
+    public Object getPropertyValue(String _property) throws NotFoundException, SystemException {
         String nameOfMethod = null;
         Object value = null;
         Object parms[] = new Object[0];
         Method methodObj = null;
 
         if (_property == null || _property.length() <= 0) {
-            this.msg = RMT2SystemExceptionConst.MSG_NULL_METHOD_ARGUMENT + ": "
-                    + _property;
-            throw new SystemException(msg,
-                    RMT2SystemExceptionConst.RC_NULL_METHOD_ARGUMENT);
+            this.msg = RMT2SystemExceptionConst.MSG_NULL_METHOD_ARGUMENT + ": " + _property;
+            throw new SystemException(msg, RMT2SystemExceptionConst.RC_NULL_METHOD_ARGUMENT);
         }
 
         this.currentProperty = _property;
 
         // Build the method name that is to be searched.
         nameOfMethod = "get" + RMT2Utility.getBeanMethodName(_property);
-        // Attempt to locate the method from the hashtable
+        // Attempt to locate the method from the Hashtable
         methodObj = (Method) this.methods.get(nameOfMethod);
 
         // throw an exception if the method does not exist
         if (methodObj == null) {
-            // this.msg = "Method, "
-            // + nameOfMethod
-            // +
-            // ", could not be obtained since it was not mapped to any value in the methods Hashtable";
-            // throw new NotFoundException(this.msg, -1);
             return null;
         }
 
@@ -249,8 +240,7 @@ public class RMT2BeanUtility {
      * @throws NotFoundException
      * @throws SystemException
      */
-    public Object setPropertyValue(String _property, Object _value)
-            throws NotFoundException, SystemException {
+    public Object setPropertyValue(String _property, Object _value) throws NotFoundException, SystemException {
         Object parms[] = new Object[1];
         Object objProper;
         String nameOfMethod = null;
@@ -258,8 +248,7 @@ public class RMT2BeanUtility {
         String msg = null;
 
         if (_property == null || _property.length() <= 0) {
-            throw new SystemException("Property cannot be null",
-                    RMT2SystemExceptionConst.RC_NULL_METHOD_ARGUMENT);
+            throw new SystemException("Property cannot be null", RMT2SystemExceptionConst.RC_NULL_METHOD_ARGUMENT);
         }
 
         this.currentProperty = _property;
@@ -279,8 +268,6 @@ public class RMT2BeanUtility {
         // or property is of a complex datatype. Assign object as-is.
         if (objProper == null) {
             objProper = _value;
-            // System.out.println("RMT2BeanUtility, setPropertyValue(). Caution!
-            // Property was null: " + _property);
         }
 
         // Build method name that is to be searched.
@@ -291,11 +278,6 @@ public class RMT2BeanUtility {
 
         // Throw an exception if the method does not exist
         if (methodObj == null) {
-            // msg = "Method, "
-            // + nameOfMethod
-            // +
-            // ", could not be obtained since it was not mapped to any value in the methods Hashtable";
-            // throw new NotFoundException(msg, -1);
             return null;
         }
 
@@ -336,8 +318,7 @@ public class RMT2BeanUtility {
             try {
                 // Get and convert the property name to proper Bean
                 // specification casing
-                property = RMT2Utility.getBeanMethodName(props.get(ndx)
-                        .toString());
+                property = RMT2Utility.getBeanMethodName(props.get(ndx).toString());
 
                 // Get the data type of the target property.
                 Class propType = this.getPropertyType(property);
@@ -375,8 +356,7 @@ public class RMT2BeanUtility {
 
                 // Throw an exception if the method does not exist
                 if (methodObj == null) {
-                    msg = "Method, "
-                            + nameOfMethod
+                    msg = "Method, " + nameOfMethod
                             + ", could not be obtained since it was not mapped to any value in the methods Hashtable";
                     throw new NotFoundException(msg, -1);
                 }
@@ -408,16 +388,14 @@ public class RMT2BeanUtility {
      *         <i>_value</i> is null.
      * @throws SystemException
      */
-    private Object getPrimitiveType(Class obj, Object _value)
-            throws SystemException {
+    private Object getPrimitiveType(Class obj, Object _value) throws SystemException {
         String _className = obj.getName();
         if (_value == null) {
             return null;
         }
         String badValue = _value.toString();
-        this.msg = "Property: " + this.currentProperty
-                + "  Value is not of the correct number format:  " + badValue == null ? "<value not interpreted"
-                : badValue;
+        this.msg = "Property: " + this.currentProperty + "  Value is not of the correct number format:  "
+                + badValue == null ? "<value not interpreted" : badValue;
 
         try {
             if (_className.equalsIgnoreCase("boolean"))
@@ -455,28 +433,23 @@ public class RMT2BeanUtility {
 
             if (_value != null && _value.toString().trim().length() > 0) {
                 if (_className.equalsIgnoreCase("double")) {
-                    double dValue = RMT2Money.stringToNumber(_value.toString())
-                            .doubleValue();
+                    double dValue = RMT2Money.stringToNumber(_value.toString()).doubleValue();
                     return new Double(dValue);
                 }
                 else if (_className.equalsIgnoreCase("float")) {
-                    float fValue = RMT2Money.stringToNumber(_value.toString())
-                            .floatValue();
+                    float fValue = RMT2Money.stringToNumber(_value.toString()).floatValue();
                     return new Float(fValue);
                 }
                 else if (_className.equalsIgnoreCase("int")) {
-                    int iValue = RMT2Money.stringToNumber(_value.toString())
-                            .intValue();
+                    int iValue = RMT2Money.stringToNumber(_value.toString()).intValue();
                     return new Integer(iValue);
                 }
                 else if (_className.equalsIgnoreCase("long")) {
-                    long lValue = RMT2Money.stringToNumber(_value.toString())
-                            .longValue();
+                    long lValue = RMT2Money.stringToNumber(_value.toString()).longValue();
                     return new Long(lValue);
                 }
                 else if (_className.equalsIgnoreCase("short")) {
-                    short sValue = RMT2Money.stringToNumber(_value.toString())
-                            .shortValue();
+                    short sValue = RMT2Money.stringToNumber(_value.toString()).shortValue();
                     return new Short(sValue);
                 }
             }
@@ -599,18 +572,15 @@ public class RMT2BeanUtility {
      * @return Class instance.
      * @throws SystemException
      */
-    private Object createClassInstance(String _className)
-            throws SystemException {
+    private Object createClassInstance(String _className) throws SystemException {
         String msg = null;
         try {
             return Beans.instantiate(null, _className);
         } catch (ClassNotFoundException e) {
-            msg = "The the class, " + _className
-                    + ", of a serialized object could not be found";
+            msg = "The the class, " + _className + ", of a serialized object could not be found";
             throw new SystemException(msg, e);
         } catch (IOException e) {
-            msg = "an I/O error occured while attempting to create an instance of, "
-                    + _className;
+            msg = "an I/O error occured while attempting to create an instance of, " + _className;
             throw new SystemException(msg, e);
         }
     }
@@ -628,8 +598,7 @@ public class RMT2BeanUtility {
     public final Object createBean(String className) throws SystemException {
         try {
             Object beanObj = null;
-            beanObj = Beans.instantiate(this.getClass().getClassLoader(),
-                    className);
+            beanObj = Beans.instantiate(this.getClass().getClassLoader(), className);
             return beanObj;
         } catch (IOException e) {
             this.msg = "An I/O error occurred while attempting to create a bean from RMT2Utility.    Class in violation: "
@@ -717,10 +686,8 @@ public class RMT2BeanUtility {
                 if (this.isPrimitiveType(propType)) {
                     value = this.getPropertyValue(propName);
                     if (value != null && !value.equals("")) {
-                        if (propType.getName().equalsIgnoreCase(
-                                "java.util.Date")) {
-                            props.setProperty(propName, RMT2Date.formatDate(
-                                    (Date) value, "MM/dd/yyyy HH:mm:ss"));
+                        if (propType.getName().equalsIgnoreCase("java.util.Date")) {
+                            props.setProperty(propName, RMT2Date.formatDate((Date) value, "MM/dd/yyyy HH:mm:ss"));
                         }
                         else {
                             props.setProperty(propName, value.toString());

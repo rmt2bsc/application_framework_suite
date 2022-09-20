@@ -14,7 +14,7 @@ import com.api.web.Response;
 import com.api.xml.RMT2XmlUtility;
 
 /**
- * A utility for performing commonly used XML operations. Conatins functionality
+ * A utility for performing commonly used XML operations. Contains functionality
  * regarding XSLT transformation and converting java objects to XML.
  * <p>
  * The XSLT functionality offering contains XSLT technology to transform XML
@@ -22,13 +22,13 @@ import com.api.xml.RMT2XmlUtility;
  * FO-XSLT, and PDF. The Apache FO Processor is used to convert XSLT-FO
  * documents to PDF's which can be directed to disk or the browser.
  * <p>
- * Also contains functionality to convert javabeans to XML documents, which the
- * the XML documents created are String based. The following javabeans are
+ * Also contains functionality to convert java beans to XML documents, which the
+ * the XML documents created are String based. The following java beans are
  * supported:
  * <ul>
  * <li>primitive data type</li>
  * <li>wrapper objects</li>
- * <li>non-native complex javabeans</li>
+ * <li>non-native complex java beans</li>
  * <li>List</li>
  * <li>Map</li>
  * <li>Set</li>
