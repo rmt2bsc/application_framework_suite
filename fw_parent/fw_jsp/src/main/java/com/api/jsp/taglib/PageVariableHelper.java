@@ -150,13 +150,13 @@ public class PageVariableHelper extends RMT2Base {
     }
 
     /**
-     * Processes object variable expessions by distinguishing if the object is
+     * Processes object variable expressions by distinguishing if the object is
      * of type DaoApi, POJO, or String. POJO's will undergo a deep property
-     * search if it contains heirachies of properties.
+     * search if it contains hierarchies of properties.
      * 
      * @param obj
      *            A reference to the base object component of an object variable
-     *            expression. The reference is genereally found in one of the
+     *            expression. The reference is generally found in one of the
      *            variable scopes.
      * @param expression
      *            A String array of property names separated from the object
@@ -182,7 +182,7 @@ public class PageVariableHelper extends RMT2Base {
                     value = this.processVarExpr(obj, expression[lastPropNdx]);
                 }
                 else {
-                    // POJO conains at least a 3 level property hierarchy.
+                    // POJO contains at least a 3 level property hierarchy.
                     value = this.doVarExprDeepSearch(obj, expression);
                 }
             }
@@ -203,7 +203,7 @@ public class PageVariableHelper extends RMT2Base {
      * 
      * @param obj
      *            A reference to the base object component of an object variable
-     *            expression. The reference is genereally found in one of the
+     *            expression. The reference is generally found in one of the
      *            variable scopes.
      * @param property
      *            The name of the target property obtain the mapped value.
@@ -241,11 +241,11 @@ public class PageVariableHelper extends RMT2Base {
     }
 
     /**
-     * Obtains the value of the varialbe expression's target property from a
-     * POJO with a deep property/object heirarchy. Uses reflection to navigate
+     * Obtains the value of the variable expression's target property from a
+     * POJO with a deep property/object hierarchy. Uses reflection to navigate
      * through all properties that were found in the object variable expression
      * in hopes that a value is obtained from the last property. This is
-     * generally used for POJO's taht have properties within properties.
+     * generally used for POJO's that have properties within properties.
      * 
      * @param obj
      *            The base object of the variable expression.
