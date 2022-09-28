@@ -73,7 +73,7 @@ public class WebContextConnectionProviderImpl extends
             return dbConn;
         } catch (Exception e) {
             this.msg = "Problem discovered during the process of creating and initializing database connection bean";
-            throw new CannotReadManagerConfigurationException(this.msg, e);
+            throw new CannotReadManagerConfigurationException(e);
         }
     }
 
@@ -110,10 +110,11 @@ public class WebContextConnectionProviderImpl extends
             return con;
         } catch (SQLException e) {
             this.msg = "Database Server is down! - " + e.getMessage();
+            logger.error(this.msg);
             throw new CannotConnectException(this.msg);
         } catch (NamingException e) {
             this.msg = e.getMessage();
-            throw new SystemException(this.msg);
+            throw new SystemException(e);
         }
     }
 

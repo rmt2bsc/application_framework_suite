@@ -178,7 +178,8 @@ public class DatabaseConnectionFactory extends RMT2Base {
             return (DatabaseConnectionBean) api.getConnection();
         } catch (CannotConnectException e) {
             msg = "Unable to obtain connection for source specified in DB-ORM-Config.properties";
-            throw new DatabaseException(msg, e);
+            logger.error(msg);
+            throw new DatabaseException(e);
         }
     }
 

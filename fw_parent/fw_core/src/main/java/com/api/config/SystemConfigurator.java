@@ -191,7 +191,9 @@ public class SystemConfigurator extends RMT2Base {
             props.addSystemProperty("SaxDriver", sysProps.getSaxDriver());
 
             // UI-4: Added logic to obtain user authenticator classname.
-            props.addSystemProperty(ConfigConstants.PROPNAME_AUTHENTICATOR, sysProps.getAuthenticator());
+            if (sysProps.getAuthenticator() != null) {
+                props.addSystemProperty(ConfigConstants.PROPNAME_AUTHENTICATOR, sysProps.getAuthenticator());
+            }
             props.addSystemProperty("javax.xml.transform.TransformerFactory", sysProps.getXsltTransformer());
 
             EmailConfig emailProps = sysProps.getEmailConfig();
