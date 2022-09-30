@@ -1,25 +1,20 @@
 package com;
 
-import java.io.Serializable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-
+import java.io.Serializable;
 import java.util.Date;
 
-import com.RMT2Base;
 import com.api.util.RMT2Date;
-import com.api.xml.adapters.XmlAdapterFactory;
-import com.api.xml.adapters.XmlBeanAdapter;
 
 /**
  * Abstract bean class which is generally used as the ancestor for all beans.
  * 
  * @author appdev
- * @deprecated This class is no longer used.
  * 
  */
 public abstract class RMT2BaseBean extends RMT2Base implements Serializable {
