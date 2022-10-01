@@ -158,11 +158,10 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      * @param _context
      *            The servlet context passed by the servlet
      * @param _request
-     *            The Http Servle Request object passed by the servlet
+     *            The Http Servlet Request object passed by the servlet
      * @throws SystemException
      */
-    public AbstractActionHandler(Context _context, Request _request)
-            throws SystemException {
+    public AbstractActionHandler(Context _context, Request _request) throws SystemException {
         this();
         this.init(_context, _request);
     }
@@ -182,7 +181,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
         this.context = _context;
         this.request = _request;
 
-        logger = Logger.getLogger("AbstractActionHandler");
+        logger = Logger.getLogger(AbstractActionHandler.class);
         if (this.request == null) {
             return;
         }
@@ -297,8 +296,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      */
     protected void initSession(String userTagId) throws SystemException {
         if (userTagId == null || userTagId.length() <= 0) {
-            throw new SystemException(
-                    "A non-user session could not be initialized. User Tag Id cannot be null or empty.");
+            throw new SystemException("A non-user session could not be initialized. User Tag Id cannot be null or empty.");
         }
         this.loginId = userTagId;
         this.initSession();
@@ -314,8 +312,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
     private void initSession() throws SystemException {
         this.session = this.request.getSession(false);
         if (session == null) {
-            throw new SystemException(
-                    RMT2SystemExceptionConst.MSG_USER_NOT_LOGGED_IN);
+            throw new SystemException(RMT2SystemExceptionConst.MSG_USER_NOT_LOGGED_IN);
         }
     }
 
@@ -463,7 +460,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      * along with its associated property in dso. The input control names from
      * the HTML or JSP form should match the exact case and spelling of the
      * property names of the datasource view. User is responsible for passing a
-     * valid dso object, and this method will not be repsonsible for its
+     * valid dso object, and this method will not be responsible for its
      * creation.
      * 
      * @param dso
@@ -520,7 +517,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      * obtained using the following constant,
      * <b>RMT2ServletConst}.QUERY_BEAN</b>. The user's selection criteria input
      * can also be stored in {@link bean.RMT2TagQueryBean RMT2TagQueryBean} via
-     * the custom object property which the client is responsible for prooperly
+     * the custom object property which the client is responsible for properly
      * casting.
      * <p>
      * The developer is responsible for passing any required data to the client
@@ -546,7 +543,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
 
     /**
      * This method queries the database using the selection criteria from the
-     * previus query, which is stored in the session object.
+     * previous query, which is stored in the session object.
      * 
      * @throws ActionHandlerException
      */
