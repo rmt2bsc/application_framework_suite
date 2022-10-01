@@ -508,7 +508,7 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
     }
 
     /**
-     * Drives the process of builing the selection criteria. The selection
+     * Drives the process of building the selection criteria. The selection
      * criteria can be used to allow server-side processes to retrieve and send
      * data to client packaged as a bean or send the selection criteria to the
      * client to be utilized accordingly. For the latter, the selection criteria
