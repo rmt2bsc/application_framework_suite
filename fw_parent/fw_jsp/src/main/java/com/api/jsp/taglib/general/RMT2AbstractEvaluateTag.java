@@ -1,7 +1,6 @@
 package com.api.jsp.taglib.general;
 
 import javax.servlet.jsp.JspException;
-
 import javax.servlet.jsp.tagext.IterationTag;
 
 import com.SystemException;
@@ -30,8 +29,7 @@ public abstract class RMT2AbstractEvaluateTag extends RMT2BodyTagSupportBase {
     public void setExpression(String value) {
         PageVariableHelper helper = new PageVariableHelper();
         try {
-            this.expression = (String) helper.getValue(this.pageContext, value,
-                    null, null);
+            this.expression = (String) helper.getValue(this.pageContext, value, null, null);
         } catch (SystemException e) {
             this.expression = value;
         }
@@ -65,14 +63,12 @@ public abstract class RMT2AbstractEvaluateTag extends RMT2BodyTagSupportBase {
      * in which the value of that attribute is returned.
      */
     public int doStartTag() throws JspException {
-        // Check if temp is refering to an attribute on one of the scop
-        // variables. If true, obtain
-        // the value of the attribute. Otherwise, accept the value of temp
-        // as-is.
+        // Check if temp is referring to an attribute on one of the scope
+        // variables. If true, obtain the value of the attribute. Otherwise,
+        // accept the value of temp as-is.
         this.obj = null;
         try {
-            this.obj = (this.obj == null ? this.getObject(this.expression,
-                    this.objScope) : this.obj);
+            this.obj = (this.obj == null ? this.getObject(this.expression, this.objScope) : this.obj);
         } catch (JspException e) {
             this.obj = this.expression;
         }
@@ -93,7 +89,7 @@ public abstract class RMT2AbstractEvaluateTag extends RMT2BodyTagSupportBase {
     }
 
     /**
-     * Sets a given value onto the page context with an object scopr of "page".
+     * Sets a given value onto the page context with an object scope of "page".
      * This makes the value accessible by other tag elements on the page.
      * 
      * @throws JspException

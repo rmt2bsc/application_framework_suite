@@ -14,9 +14,9 @@ import com.api.persistence.DatabaseException;
 
 /**
  * This abstract class provides base functionality for creating HTML list
- * controls with a "lookup" or corss-reference characteristic. Usually, these
+ * controls with a "lookup" or cross-reference characteristic. Usually, these
  * controls have a data source containing a comprehensive list of
- * code/descripton values and another data source containing an item that is to
+ * code/description values and another data source containing an item that is to
  * be matched against the list of code/description values.
  * 
  * @author roy.terrell
@@ -40,7 +40,7 @@ public abstract class RMT2AbstractLookupTag extends RMT2AbstractInputControl {
     protected DataSourceApi lookupDso = null;
 
     /**
-     * A reference to the data source containing the list of code/ddescription
+     * A reference to the data source containing the list of code/description
      * pairs.
      */
     protected String lookupSource = null;
@@ -112,11 +112,9 @@ public abstract class RMT2AbstractLookupTag extends RMT2AbstractInputControl {
     public int startUp() throws JspException {
         try {
             PageVariableHelper valueHelper = new PageVariableHelper();
-            this.masterCodeValue = (String) valueHelper.getValue(
-                    this.pageContext, this.masterCodeValue, null, this.format);
+            this.masterCodeValue = (String) valueHelper.getValue(this.pageContext, this.masterCodeValue, null, this.format);
             this.masterDso = (DataSourceApi) this.obj;
-            this.lookupDso = (DataSourceApi) pageContext
-                    .getAttribute(this.lookupSource);
+            this.lookupDso = (DataSourceApi) pageContext.getAttribute(this.lookupSource);
             this.outputHtml(buildInputControl());
             return IterationTag.SKIP_BODY;
         } catch (IOException e) {

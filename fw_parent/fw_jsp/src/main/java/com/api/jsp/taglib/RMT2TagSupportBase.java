@@ -1,9 +1,10 @@
 package com.api.jsp.taglib;
 
 import java.io.IOException;
-import javax.servlet.jsp.PageContext;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import com.SystemException;
@@ -129,7 +130,7 @@ public class RMT2TagSupportBase extends TagSupport {
     }
 
     /**
-     * Determines the data source that is assoicated with this custom tag.
+     * Determines the data source that is associated with this custom tag.
      * 
      * @return Object. The user is responsible for properly casting return value
      *         for usage.
@@ -137,12 +138,11 @@ public class RMT2TagSupportBase extends TagSupport {
      *             If datasource is not found
      */
     protected Object getObject() throws JspException {
-        return (this.obj == null ? this.getObject(this.dataSource,
-                this.objScope) : this.obj);
+        return (this.obj == null ? this.getObject(this.dataSource, this.objScope) : this.obj);
     }
 
     /**
-     * Locates the data source object that is assoicated with this custom tag
+     * Locates the data source object that is associated with this custom tag
      * using _name and _scope.
      * 
      * @param _name
@@ -173,13 +173,11 @@ public class RMT2TagSupportBase extends TagSupport {
         }
 
         // Do not reject null object if JSP intends not to use it (Setting the
-        // object == "")
-        // of if the custom tag is trying to verify the existence of an object
-        // withou
-        // providing the name of the data source.
+        // object == "") or the custom tag is trying to verify the existence of
+        // an object
+        // without providing the name of the data source.
         if (rc == null && _name != null && !_name.equalsIgnoreCase("")) {
-            throw new JspException(
-                    "Problem obtaining a reference for property, " + _name);
+            throw new JspException("Problem obtaining a reference for property, " + _name);
         }
         return rc;
     }

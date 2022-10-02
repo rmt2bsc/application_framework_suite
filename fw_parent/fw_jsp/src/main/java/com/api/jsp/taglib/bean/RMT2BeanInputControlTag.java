@@ -38,8 +38,7 @@ public class RMT2BeanInputControlTag extends RMT2AbstractInputControl {
         // the HTML Select control
         // Check data type of incoming data object and cast accordingly.
         if (this.obj == null) {
-            throw new SystemException(
-                    "HTML Select control tag must have a valid Javabean or POJO");
+            throw new SystemException("HTML Select control tag must have a valid Javabean or POJO");
         }
         if (this.obj instanceof BeanDao) {
             dao = (BeanDao) this.obj;
@@ -49,8 +48,7 @@ public class RMT2BeanInputControlTag extends RMT2AbstractInputControl {
                 dao = (BeanDao) BeanDaoFactory.createApi();
                 dao.retrieve(this.obj);
             } catch (DatabaseException e) {
-                throw new SystemException(
-                        "HTML Select control must be constructed using a List or BeanDao instance");
+                throw new SystemException("HTML Select control must be constructed using a List or BeanDao instance");
             }
         }
 
@@ -58,15 +56,13 @@ public class RMT2BeanInputControlTag extends RMT2AbstractInputControl {
             while (dao.nextRow()) {
                 displayValue = dao.getColumnValue(this.displayProperty);
                 codeValue = dao.getColumnValue(this.codeProperty);
-                displayValue = this.formatBeanValue(dao, this.displayProperty,
-                        displayValue);
+                displayValue = this.formatBeanValue(dao, this.displayProperty, displayValue);
 
                 // Build HTML select control option clause.
                 html.append("\n\t<option value=\"");
                 html.append(codeValue);
                 html.append("\"");
-                if (this.selectedValue != null
-                        && codeValue.equalsIgnoreCase(this.selectedValue)) {
+                if (this.selectedValue != null && codeValue.equalsIgnoreCase(this.selectedValue)) {
                     html.append(" selected ");
                 }
                 html.append("> ");
@@ -148,8 +144,7 @@ public class RMT2BeanInputControlTag extends RMT2AbstractInputControl {
      * @return The formated value as a String.
      * @throws JspException
      */
-    protected String formatBeanValue(BeanDao dao, String propName,
-            String propValue) throws JspException {
+    protected String formatBeanValue(BeanDao dao, String propName, String propValue) throws JspException {
         String result = null;
         int javaType = 0;
 

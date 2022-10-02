@@ -5,7 +5,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 /**
- * This class exports a custom tag atrribute declared as, <i>id</i>, into the
+ * This class exports a custom tag attribute declared as, <i>id</i>, into the
  * JSP as a scripting variable.&nbsp;&nbsp;<i>id</> is required to be defined in
  * the TLD as an attribute. This applies to most attributes that are common to
  * most custom tags.
@@ -31,8 +31,7 @@ public class RMT2ScritableVariableTei extends TagExtraInfo {
         this.attr = data.getId();
         this.className = "java.lang.String";
         this.addMoreVariables(data);
-        rc[0] = new VariableInfo(this.attr, this.className, true,
-                VariableInfo.AT_BEGIN);
+        rc[0] = new VariableInfo(this.attr, this.className, true, VariableInfo.AT_BEGIN);
         return rc;
     }
 

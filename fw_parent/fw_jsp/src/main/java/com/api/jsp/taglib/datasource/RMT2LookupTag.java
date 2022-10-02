@@ -116,7 +116,7 @@ public class RMT2LookupTag extends RMT2AbstractLookupTag {
      * @throws DatabaseException
      *             Database access errors
      * @throws SystemException
-     *             if a problem occured obtaining the master code name, lookup
+     *             if a problem occurred obtaining the master code name, lookup
      *             display name, or lookup code name values.
      */
     protected String buildTextControl() throws NotFoundException,
@@ -128,19 +128,15 @@ public class RMT2LookupTag extends RMT2AbstractLookupTag {
 
         try {
             if (masterDso != null && this.masterCodeName != null) {
-                masterDsoCodeValue = masterDso
-                        .getColumnValue(this.masterCodeName);
+                masterDsoCodeValue = masterDso.getColumnValue(this.masterCodeName);
             }
-            if (masterDso == null && this.masterCodeName == null
-                    && this.masterCodeValue != null) {
+            if (masterDso == null && this.masterCodeName == null && this.masterCodeValue != null) {
                 masterDsoCodeValue = this.masterCodeValue;
             }
             while (lookupDso.getRs().next()) {
-                codeValue = lookupDso.getColumnValue(this.lookupCodeName)
-                        .trim();
+                codeValue = lookupDso.getColumnValue(this.lookupCodeName).trim();
                 if (masterDsoCodeValue.equalsIgnoreCase(codeValue)) {
-                    displayValue = lookupDso.getColumnValue(
-                            this.lookupDisplayName).trim();
+                    displayValue = lookupDso.getColumnValue(this.lookupDisplayName).trim();
                     if (this.typeInt == DataSourceConst.LOOKUPTYPE_TEXT) {
                         return displayValue;
                     }
@@ -189,7 +185,7 @@ public class RMT2LookupTag extends RMT2AbstractLookupTag {
      * 
      * @return HTML as a String
      * @throws SystemException
-     *             if a problem occured obtaining the master code name, lookup
+     *             if a problem occurred obtaining the master code name, lookup
      *             display name, or lookup code name values.
      */
     protected String buildSelectControlData() throws SystemException {
@@ -200,23 +196,18 @@ public class RMT2LookupTag extends RMT2AbstractLookupTag {
 
         try {
             if (masterDso != null && this.masterCodeName != null) {
-                masterDsoCodeValue = masterDso
-                        .getColumnValue(this.masterCodeName);
+                masterDsoCodeValue = masterDso.getColumnValue(this.masterCodeName);
             }
-            if (masterDso == null && this.masterCodeName == null
-                    && this.masterCodeValue != null) {
+            if (masterDso == null && this.masterCodeName == null && this.masterCodeValue != null) {
                 masterDsoCodeValue = this.masterCodeValue;
             }
             html.append("\n\t<option value=\"\">-- Select One --");
             while (lookupDso.getRs().next()) {
-                displayValue = lookupDso.getColumnValue(this.lookupDisplayName)
-                        .trim();
-                codeValue = lookupDso.getColumnValue(this.lookupCodeName)
-                        .trim();
+                displayValue = lookupDso.getColumnValue(this.lookupDisplayName).trim();
+                codeValue = lookupDso.getColumnValue(this.lookupCodeName).trim();
                 html.append("\n\t<option value=");
                 html.append(codeValue);
-                if (masterDsoCodeValue != null
-                        && codeValue.equalsIgnoreCase(masterDsoCodeValue)) {
+                if (masterDsoCodeValue != null && codeValue.equalsIgnoreCase(masterDsoCodeValue)) {
                     html.append(" selected ");
                 }
                 html.append("> ");
@@ -226,16 +217,13 @@ public class RMT2LookupTag extends RMT2AbstractLookupTag {
             return html.toString();
         } // end try
         catch (SQLException e) {
-            throw new SystemException("A SQLException occurred: "
-                    + e.getMessage());
+            throw new SystemException("A SQLException occurred: " + e.getMessage());
         } catch (NullPointerException e) {
             throw new SystemException("Something was null");
         } catch (DatabaseException e) {
-            throw new SystemException("A DatabaseExcepion ocurred: "
-                    + e.getMessage());
+            throw new SystemException("A DatabaseExcepion ocurred: " + e.getMessage());
         } catch (NotFoundException e) {
-            throw new SystemException("A NotFoundException ocurred: "
-                    + e.getMessage());
+            throw new SystemException("A NotFoundException ocurred: " + e.getMessage());
         }
     }
 

@@ -1,12 +1,10 @@
 package com.api.jsp.taglib.general;
 
 import java.io.IOException;
-
 import java.util.Stack;
 
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspException;
-
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.IterationTag;
 
 /**
@@ -25,7 +23,7 @@ public class RMT2EvaluateWhenTag extends RMT2AbstractEvaluateTag {
     private EvalData evalObj;
 
     /**
-     * Obtains the evaluate expsression and the case expression to determine
+     * Obtains the evaluate expression and the case expression to determine
      * equality. The evaluate expression resides on the pageContext as an
      * attribute, and the case expression is processed for the first time via
      * the "expression" property. The evaluation will fail if either expression
@@ -34,9 +32,7 @@ public class RMT2EvaluateWhenTag extends RMT2AbstractEvaluateTag {
      */
     public int doStartTag() throws JspException {
         // Get expression from the parent evaluate tag
-        Object exprStack = pageContext.getAttribute(
-                RMT2EvaluateExpressionTag.EXPRESSION_NAME,
-                PageContext.PAGE_SCOPE);
+        Object exprStack = pageContext.getAttribute(RMT2EvaluateExpressionTag.EXPRESSION_NAME, PageContext.PAGE_SCOPE);
 
         // Verify that parent expression and this tag's expression are of the
         // correct type

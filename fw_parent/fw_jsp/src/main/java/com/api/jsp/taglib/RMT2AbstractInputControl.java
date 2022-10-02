@@ -21,9 +21,7 @@ import com.api.persistence.DatabaseException;
  */
 public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     private static final long serialVersionUID = -6105678683658087570L;
-
-    private static Logger logger = Logger
-            .getLogger(RMT2AbstractInputControl.class);
+    private static Logger logger = Logger.getLogger(RMT2AbstractInputControl.class);
 
     /**
      * Tracks the position of the item that is currently being processed from a
@@ -49,7 +47,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     /** The name of the property targeted for this tag */
     protected String property = null;
 
-    /** The datatype the property */
+    /** The data type the property */
     protected String type = null;
 
     /** The name of the HTML input control */
@@ -58,7 +56,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     /** The size of the HTML input control */
     protected String size = null;
 
-    /** Maximumn length of HTML input control */
+    /** Maximum length of HTML input control */
     protected String maxLength = null;
 
     /** Value indicating the alignment of the contents of the HTML input control */
@@ -71,15 +69,15 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     protected boolean disabled = false;
 
     /**
-     * Indicates whether or not the HTML input control is readonly. It is
-     * readonly by default.
+     * Indicates whether or not the HTML input control is read only. It is read
+     * only by default.
      */
     protected boolean readOnly = false;
 
     /** Indicates the tab ordering of the HTML input */
     protected String tabIndex = null;
 
-    /** The style cluase of the HTML input control */
+    /** The style clause of the HTML input control */
     protected String style = null;
 
     /** The onFocus event handler invocation implementation */
@@ -177,7 +175,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
 
     /**
      * Used as one of the custom tag properties to indicate whether or not the
-     * custom tag is part of master/detai relationship
+     * custom tag is part of master/detail relationship
      */
     protected String masterDetailLink = null;
 
@@ -192,7 +190,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
 
     /**
      * The position text value is to be displayed on radio button or checkbox
-     * control. The default postion is "left".
+     * control. The default position is "left".
      */
     protected String displayPropertyPos;
 
@@ -265,9 +263,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @param _value
      */
     public void setDisabled(String _value) {
-        this.disabled = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+        this.disabled = (_value.equalsIgnoreCase("yes") || _value.equalsIgnoreCase("y") || _value.equalsIgnoreCase("true"));
     }
 
     /**
@@ -276,9 +272,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @param _value
      */
     public void setReadOnly(String _value) {
-        this.readOnly = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+        this.readOnly = (_value.equalsIgnoreCase("yes") || _value.equalsIgnoreCase("y") || _value.equalsIgnoreCase("true"));
     }
 
     /**
@@ -367,8 +361,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     public void setCheckedValue(String value) {
         PageVariableHelper helper = new PageVariableHelper();
         try {
-            this.checkedValue = (String) helper.getValue(this.pageContext,
-                    value, null, null);
+            this.checkedValue = (String) helper.getValue(this.pageContext, value, null, null);
         } catch (SystemException e) {
             this.checkedValue = value;
         }
@@ -382,8 +375,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     public void setUnCheckedValue(String value) {
         PageVariableHelper helper = new PageVariableHelper();
         try {
-            this.unCheckedValue = (String) helper.getValue(this.pageContext,
-                    value, null, null);
+            this.unCheckedValue = (String) helper.getValue(this.pageContext, value, null, null);
         } catch (SystemException e) {
             this.unCheckedValue = value;
         }
@@ -395,20 +387,16 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @param _value
      */
     public void setUniqueName(String _value) {
-        this.uniqueName = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+        this.uniqueName = (_value.equalsIgnoreCase("yes") || _value.equalsIgnoreCase("y") || _value.equalsIgnoreCase("true"));
     }
 
     /**
-     * Set the multi-select inidcator for HTML Select tag
+     * Set the multi-select indicator for HTML Select tag
      * 
      * @param _value
      */
     public void setMultiSelect(String _value) {
-        this.multiple = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+        this.multiple = (_value.equalsIgnoreCase("yes") || _value.equalsIgnoreCase("y") || _value.equalsIgnoreCase("true"));
     }
 
     /**
@@ -419,8 +407,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     public void setSelectedValue(String value) {
         PageVariableHelper helper = new PageVariableHelper();
         try {
-            this.selectedValue = (String) helper.getValue(this.pageContext,
-                    value, null, null);
+            this.selectedValue = (String) helper.getValue(this.pageContext, value, null, null);
         } catch (SystemException e) {
             this.selectedValue = value;
         }
@@ -458,10 +445,8 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * 
      * @param _value
      */
-    public void setBorder(String _value) {
-        this.drawBorder = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+    public void setBorder(String value) {
+        this.drawBorder = (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("y") || value.equalsIgnoreCase("true"));
     }
 
     /**
@@ -495,10 +480,8 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * 
      * @param _value
      */
-    public void setMasterDetailLink(String _value) {
-        this.masterDetail = (_value.equalsIgnoreCase("yes")
-                || _value.equalsIgnoreCase("y") || _value
-                .equalsIgnoreCase("true"));
+    public void setMasterDetailLink(String value) {
+        this.masterDetail = (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("y") || value.equalsIgnoreCase("true"));
     }
 
     /**
@@ -513,7 +496,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     }
 
     /**
-     * Set the display text postion for a radio button or a checkbox. Valid
+     * Set the display text position for a radio button or a checkbox. Valid
      * values should be "left" and "right".
      * 
      * @param textPos
@@ -538,7 +521,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * <ul>
      * <li>Calls startUp method to obtain the value.</li>
      * <li>Builds the appropriate HTML input control based on the Type attribute
-     * of the custom tag by inkoking the method, buildInputControl()</li>
+     * of the custom tag by invoking the method, buildInputControl()</li>
      * <li>Outputs the dynamic HTML to the JSP page by invoking the method,
      * outputHtml(String).</li>
      * </ul>
@@ -587,7 +570,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * {@link com.constants.RMT2TagConst.ROW_ID_REGULAR ROW_ID_REGULAR} or
      * {@link com.constants.RMT2TagConst.ROW_ID_MASTERDETAIL
      * ROW_ID_MASTERDETAIL} named attributes that exist on one of the web
-     * conainter variable scopes.</li>
+     * container variable scopes.</li>
      * <li>Attempts to obtain the value from an object variable expression
      * forwarded from the user's JSP.</li>
      * <li>Apply any formatting to the value, if applicable</li>
@@ -601,22 +584,17 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
         // Attempt to obtain the value from target data source.
         if (this.value != null) {
             if (this.value.equalsIgnoreCase(RMT2TagConst.HTML_ROWID)) {
-                this.value = (String) pageContext
-                        .getAttribute(RMT2TagConst.ROW_ID_REGULAR);
+                this.value = (String) pageContext.getAttribute(RMT2TagConst.ROW_ID_REGULAR);
             }
-            else if (this.value
-                    .equalsIgnoreCase(RMT2TagConst.HTML_MASTER_ROWID)) {
-                this.value = (String) pageContext
-                        .getAttribute(RMT2TagConst.ROW_ID_MASTERDETAIL);
+            else if (this.value.equalsIgnoreCase(RMT2TagConst.HTML_MASTER_ROWID)) {
+                this.value = (String) pageContext.getAttribute(RMT2TagConst.ROW_ID_MASTERDETAIL);
             }
             else if (this.value != null && !this.value.equals("")) {
                 try {
                     PageVariableHelper valueHelper = new PageVariableHelper();
-                    this.value = (String) valueHelper.getValue(
-                            this.pageContext, this.value, null, this.format);
+                    this.value = (String) valueHelper.getValue(this.pageContext, this.value, null, this.format);
                 } catch (SystemException e) {
-                    RMT2AbstractInputControl.logger.log(Level.WARN,
-                            "Variable Expression Language (VEL) property expressiion, "
+                    RMT2AbstractInputControl.logger.log(Level.WARN, "Variable Expression Language (VEL) property expressiion, "
                                     + this.value + ", is invalid");
                     this.value = null;
                 }
@@ -666,32 +644,24 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @throws SystemException
      * @throws JspException
      */
-    protected String buildInputControl() throws DatabaseException,
-            NotFoundException, SystemException, JspException {
+    protected String buildInputControl() throws DatabaseException, NotFoundException, SystemException, JspException {
         StringBuffer html = new StringBuffer(200);
 
-        if (this.type
-                .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_SELECT)
-                || this.type
-                        .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIOLOOKUP)
-                || this.type
-                        .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_MUTILINE)) {
+        if (this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_SELECT)
+                || this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIOLOOKUP)
+                || this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_MUTILINE)) {
 
             // Build HTML for Select control
-            if (this.type
-                    .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_SELECT)) {
+            if (this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_SELECT)) {
                 return this.buildSelectControl(html);
             }
             // Build HTML for a group of radio buttons driven by the database
-            if (this.type
-                    .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIOLOOKUP)
-                    || this.type
-                            .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIO)) {
+            if (this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIOLOOKUP)
+                    || this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_RADIO)) {
                 return this.buildRadioControl(html);
             }
             // Build HTML for textarea control.
-            if (this.type
-                    .equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_MUTILINE)) {
+            if (this.type.equalsIgnoreCase(RMT2AbstractInputControl.INPUT_TYPE_MUTILINE)) {
                 return this.buildTextArea(html);
             }
         }
@@ -701,8 +671,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append(" id=\"");
             html.append(this.id);
             if (this.uniqueName) {
-                String row = (String) pageContext
-                        .getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
+                String row = (String) pageContext.getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
                                 : RMT2TagConst.ROW_ID_REGULAR);
                 if (row != null && row.length() > 0) {
                     html.append(row);
@@ -726,8 +695,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append(" name=\"");
             html.append(this.name);
             if (this.uniqueName) {
-                String row = (String) pageContext
-                        .getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
+                String row = (String) pageContext.getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
                                 : RMT2TagConst.ROW_ID_REGULAR);
                 if (row != null && row.length() > 0) {
                     html.append(row);
@@ -794,8 +762,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
         }
 
         // Determine if checkbox is slected.
-        if (this.type.equalsIgnoreCase("checkbox")
-                || this.type.equalsIgnoreCase("radio")) {
+        if (this.type.equalsIgnoreCase("checkbox") || this.type.equalsIgnoreCase("radio")) {
             if (this.value.equalsIgnoreCase(this.checkedValue)) {
                 html.append(" checked ");
             }
@@ -846,12 +813,10 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
 
         String finalHtlm = html.toString();
 
-        if (this.type.equalsIgnoreCase("radio")
-                || this.type.equalsIgnoreCase("checkbox")) {
+        if (this.type.equalsIgnoreCase("radio") || this.type.equalsIgnoreCase("checkbox")) {
             if (this.displayProperty != null) {
                 // Determine the position of display text, if available.
-                if (this.displayPropertyPos == null
-                        || this.displayPropertyPos.equalsIgnoreCase("left")) {
+                if (this.displayPropertyPos == null || this.displayPropertyPos.equalsIgnoreCase("left")) {
                     finalHtlm = this.displayProperty + html.toString();
                 }
                 else {
@@ -884,8 +849,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append(" id=\"");
             html.append(this.id);
             if (this.uniqueName) {
-                String row = (String) pageContext
-                        .getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
+                String row = (String) pageContext.getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
                                 : RMT2TagConst.ROW_ID_REGULAR);
                 if (row != null && row.length() > 0) {
                     html.append(row);
@@ -987,14 +951,12 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @throws SystemException
      * @throws JspException
      */
-    protected String buildSelectControl(StringBuffer html)
-            throws NotFoundException, SystemException, JspException {
+    protected String buildSelectControl(StringBuffer html) throws NotFoundException, SystemException, JspException {
 
         if (this.name != null) {
             html.append("<select name=\"" + this.name);
             if (this.uniqueName) {
-                String row = (String) pageContext
-                        .getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
+                String row = (String) pageContext.getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
                                 : RMT2TagConst.ROW_ID_REGULAR);
                 if (row != null && row.length() > 0) {
                     html.append(row);
@@ -1011,8 +973,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append(" id=\"");
             html.append(this.id);
             if (this.uniqueName) {
-                String row = (String) pageContext
-                        .getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
+                String row = (String) pageContext.getAttribute(this.masterDetail ? RMT2TagConst.ROW_ID_MASTERDETAIL
                                 : RMT2TagConst.ROW_ID_REGULAR);
                 if (row != null && row.length() > 0) {
                     html.append(row);
@@ -1114,7 +1075,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append("  <tr>\n");
             html.append("     <td>\n");
         }
-        // Create table to contain the actual readio buttons.
+        // Create table to contain the actual radio buttons.
         html.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
 
         // Gather rows of radio buttons
@@ -1163,8 +1124,7 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      * @return The HTML needed to render the table row and its required number
      *         of columns.
      */
-    protected String buildRadioControlHtml(String codeValue,
-            String displayValue, int itemIndex) {
+    protected String buildRadioControlHtml(String codeValue, String displayValue, int itemIndex) {
         // Increment item index to change index base from zero to one.
         this.itemNdx = itemIndex + 1;
         return buildRadioControlHtml(codeValue, displayValue);
