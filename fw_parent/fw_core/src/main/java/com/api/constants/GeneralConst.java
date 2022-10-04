@@ -85,6 +85,9 @@ public class GeneralConst {
     /** Print action code */
     public static final String REQ_RESET = "reset";
 
+    /** Change Password action code */
+    public static final String REQ_CHANGE_PASSWORD = "changepassword";
+
     /** Service Id action code */
     public static final String REQ_SERVICEID = "serviceId";
 

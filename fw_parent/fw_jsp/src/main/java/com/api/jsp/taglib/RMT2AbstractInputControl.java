@@ -95,6 +95,15 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
     /** The onClick event handler invocation implementation */
     protected String onClick = null;
 
+    /** The onkeydown event handler invocation implementation */
+    protected String onKeydown = null;
+
+    /** The onkeypress event handler invocation implementation */
+    protected String onKeypress = null;
+
+    /** The onkeyup event handler invocation implementation */
+    protected String onKeyup = null;
+
     /**
      * The format string to be applied to property value of the HTML input
      * control. Uses basic Java Masks
@@ -341,6 +350,30 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
      */
     public void setOnClick(String _value) {
         this.onClick = _value;
+    }
+
+    public String getOnKeydown() {
+        return onKeydown;
+    }
+
+    public void setOnKeydown(String onKeydown) {
+        this.onKeydown = onKeydown;
+    }
+
+    public String getOnKeypress() {
+        return onKeypress;
+    }
+
+    public void setOnKeypress(String onKeypress) {
+        this.onKeypress = onKeypress;
+    }
+
+    public String getOnKeyup() {
+        return onKeyup;
+    }
+
+    public void setOnKeyup(String onKeyup) {
+        this.onKeyup = onKeyup;
     }
 
     /**
@@ -800,6 +833,27 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
         if (this.onClick != null) {
             html.append(" onClick=\"");
             html.append(this.onClick);
+            html.append("\"");
+        }
+
+        // Add onkeydown attribute
+        if (this.onKeydown != null) {
+            html.append(" onkeydown=\"");
+            html.append(this.onKeydown);
+            html.append("\"");
+        }
+
+        // Add onkeypress attribute
+        if (this.onKeypress != null) {
+            html.append(" onkeypress=\"");
+            html.append(this.onKeypress);
+            html.append("\"");
+        }
+
+        // Add onkeyup attribute
+        if (this.onKeyup != null) {
+            html.append(" onkeyup=\"");
+            html.append(this.onKeyup);
             html.append("\"");
         }
 

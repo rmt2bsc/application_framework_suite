@@ -203,6 +203,26 @@
        <rtexprvalue>false</rtexprvalue>
     </attribute>
     <attribute>
+       <name>onChange</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+       <name>onKeydown</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+       <name>onKeypress</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+       <name>onKeyup</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
        <name>format</name>
        <required>false</required>
        <rtexprvalue>false</rtexprvalue>
