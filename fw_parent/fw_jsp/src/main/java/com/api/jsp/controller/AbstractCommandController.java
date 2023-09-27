@@ -276,7 +276,7 @@ public abstract class AbstractCommandController extends AbstractServlet {
             }
             logger.log(Level.DEBUG, "next url is error");
             msg = RMT2Utility.getRootErrorMessage(e);
-            messages.setProperty(RMT2ServletConst.REQUEST_MSG_INFO, msg);
+            messages.setProperty(RMT2ServletConst.REQUEST_MSG_INFO, (msg == null ? "Root Error message is unknown" : msg));
             error = true;
             logger.error(e);
         } finally {
