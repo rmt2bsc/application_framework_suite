@@ -1,1 +1,1 @@
-java -cp C:/ProjectServer/dist/fw2012.jar;C:/ProjectServer/lib/log4j-1.2.9.jar com.util.DirectoryBackup //rmtdaldb01/archives //RMTDALMEDIA01/data/rmt2 archives true
+java -cp C:/ProjectServer/dist/fw2012.jar;C:/ProjectServer/lib/log4j-1.2.9.jar com.util.DirectoryBackup //192.168.254.16/archives //192.168.254.5/data/rmt2 archives true
