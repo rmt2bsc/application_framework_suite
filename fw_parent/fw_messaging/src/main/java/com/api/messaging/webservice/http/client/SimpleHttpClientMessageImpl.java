@@ -19,6 +19,7 @@ import com.api.messaging.AbstractMessagingImpl;
 import com.api.messaging.MessageException;
 import com.api.messaging.webservice.http.HttpClient;
 import com.api.messaging.webservice.http.HttpException;
+import com.api.messaging.webservice.soap.client.SoapClientFactory;
 import com.api.util.RMT2File;
 import com.api.web.Request;
 import com.api.web.util.RMT2WebUtility;
@@ -141,6 +142,8 @@ class SimpleHttpClientMessageImpl extends AbstractMessagingImpl implements
      * @see com.api.messaging.MessageManager#sendMessage(java.io.Serializable)
      */
     public Object sendMessage(Serializable data) throws MessageException {
+        ProviderConfig config = SoapClientFactory.getSoapConfigInstance();
+        this.client = new HttpClient(config.getHost());
         Properties props = this.setupRequestParms(data);
         Object results = this.client.sendPostMessage(props);
         this.processResults(results);
@@ -152,12 +155,12 @@ class SimpleHttpClientMessageImpl extends AbstractMessagingImpl implements
      * processed results into a member variable designated to hold the results.
      * By default, the final results of the service call exists as String
      * (generally an XML document). Override this method to provide more of a
-     * customized implemntation. If a custom implementation is provided, ensure
+     * customized implementation. If a custom implementation is provided, ensure
      * that a call is made to {@link setServiceResults(Object)
      * setServiceResults} passing the final data results as a generic parameter.
      * <p>
      * If this method id overridden, be sure to call the getServiceResults()
-     * method at the descendent level in order to further process the value
+     * method at the descendant level in order to further process the value
      * returned from the remote call.
      * 
      * @param results
