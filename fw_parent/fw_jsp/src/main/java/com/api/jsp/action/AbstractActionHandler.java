@@ -525,6 +525,33 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      * 
      * @throws ActionHandlerException
      */
+    public void buildXMLSearchCriteria() throws ActionCommandException {
+        Object customObj = this.doCustomInitialization();
+        this.query = (RMT2TagQueryBean) this.getSession().getAttribute(RMT2ServletConst.QUERY_BEAN);
+        this.query.setCustomObj(customObj);
+        this.doPostCustomInitialization(query, RMT2ServletConst.SEARCH_MODE_NEW);
+        this.getSession().setAttribute(RMT2ServletConst.QUERY_BEAN, query);
+        return;
+    }
+
+    /**
+     * Drives the process of building the selection criteria. The selection
+     * criteria can be used to allow server-side processes to retrieve and send
+     * data to client packaged as a bean or send the selection criteria to the
+     * client to be utilized accordingly. For the latter, the selection criteria
+     * is stored in the session object as
+     * {@link com.constants.RMT2ServletConst#QUERY_BEAN QUERY_BEAN} and can be
+     * obtained using the following constant,
+     * <b>RMT2ServletConst}.QUERY_BEAN</b>. The user's selection criteria input
+     * can also be stored in {@link bean.RMT2TagQueryBean RMT2TagQueryBean} via
+     * the custom object property which the client is responsible for properly
+     * casting.
+     * <p>
+     * The developer is responsible for passing any required data to the client
+     * via the request and session objects
+     * 
+     * @throws ActionHandlerException
+     */
     public void buildSearchCriteria() throws ActionCommandException {
         String sql = null;
         this.firstTime = false;
