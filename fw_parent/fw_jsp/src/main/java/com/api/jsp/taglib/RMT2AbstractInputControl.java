@@ -924,6 +924,13 @@ public abstract class RMT2AbstractInputControl extends RMT2TagSupportBase {
             html.append(this.cols);
         }
 
+        // Add maxLength attribute
+        if (this.maxLength != null) {
+            html.append(" maxlength=\"");
+            html.append(this.maxLength);
+            html.append("\"");
+        }
+
         // Set wrap attribute
         if (this.wrap != null) {
             html.append(" wrap=");
