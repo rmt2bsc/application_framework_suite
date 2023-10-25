@@ -204,7 +204,7 @@ public class SoapClientWrapper extends RMT2Base {
         }
         SoapMessageHelper helper = new SoapMessageHelper();
         String xml = helper.getSoap(this.soapResponse);
-        logger.info(xml);
+        logger.debug(xml);
         return xml;
     }
 

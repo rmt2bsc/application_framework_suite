@@ -53,7 +53,7 @@ public class SoapJaxbClientWrapper extends RMT2Base {
                 throw new RMT2RuntimeException(errMsg);
             }
             String result = client.getSoapResponsePayloadString();
-            logger.info(result);
+            logger.debug(result);
 
             T response = (T) jaxb.unMarshalMessage(result);
             return response;

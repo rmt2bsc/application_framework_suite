@@ -182,8 +182,8 @@ public class MessageRouterHelper extends RMT2Base {
         
         try {
             // Output request to logger
-            logger.info("Routing SOAP Request: ");
-            logger.info(modifiedPayload);
+            logger.debug("Routing SOAP Request: ");
+            logger.debug(modifiedPayload);
             MessageHandlerResults results = ((SoapMessageRouterImpl) router).routeMessage(routeInfo, modifiedPayload, attachments);
             // Convert results to SOAP Message
             SOAPMessage soapResponse = this.createSoapResponse(results);
