@@ -526,8 +526,10 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
      * @throws ActionHandlerException
      */
     public void buildXMLSearchCriteria() throws ActionCommandException {
-        Object customObj = this.doCustomInitialization();
         this.query = (RMT2TagQueryBean) this.getSession().getAttribute(RMT2ServletConst.QUERY_BEAN);
+        Object customObj = this.query.getCustomObj();
+        customObj = null;
+        customObj = this.doCustomInitialization();
         this.query.setCustomObj(customObj);
         this.doPostCustomInitialization(query, RMT2ServletConst.SEARCH_MODE_NEW);
         this.getSession().setAttribute(RMT2ServletConst.QUERY_BEAN, query);
