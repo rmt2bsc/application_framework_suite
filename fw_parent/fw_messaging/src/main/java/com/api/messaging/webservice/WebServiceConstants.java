@@ -145,4 +145,8 @@ public class WebServiceConstants {
     public static final String ERROR_MSG_SESSIONID_REQUIRED = "The user's session id or security token is required when accessing web services";
     public static final String ERROR_MSG_SESSIONID_MISSING = "The user's session id or security token is missing which may prevent the proper operation of some services";
 
+    // UI-37: Added for missing user id in the payload header section
+    public static final String USERID = "user_id";
+    public static final String ERROR_MSG_USERID_MISSING = "The required user id is missing from the payload's header section";
+
 }

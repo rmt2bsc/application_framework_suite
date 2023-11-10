@@ -22,6 +22,7 @@ import com.api.pool.DatabaseConnectionPool;
 import com.api.security.RMT2TagQueryBean;
 import com.api.security.authentication.web.AuthenticationConst;
 import com.api.util.RMT2String;
+import com.api.util.RMT2String2;
 import com.api.util.RMT2Utility;
 import com.api.web.ActionCommandException;
 import com.api.web.Context;
@@ -313,6 +314,11 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
         this.session = this.request.getSession(false);
         if (session == null) {
             throw new SystemException(RMT2SystemExceptionConst.MSG_USER_NOT_LOGGED_IN);
+        }
+
+        // UI-37: Obtain logged in user id for action handler.
+        if (RMT2String2.isEmpty(this.loginId)) {
+            this.loginId = this.getLoginId();
         }
     }
 

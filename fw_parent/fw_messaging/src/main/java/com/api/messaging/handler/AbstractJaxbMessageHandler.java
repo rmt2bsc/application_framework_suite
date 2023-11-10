@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import com.RMT2Base;
 import com.api.config.ConfigConstants;
 import com.api.config.SystemConfigurator;
+import com.api.foundation.TransactionApi;
 import com.api.messaging.InvalidRequestException;
 import com.api.messaging.webservice.WebServiceConstants;
 import com.api.util.RMT2File;
@@ -56,6 +57,10 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
 
     protected String sessionId;
 
+    // UI-37: Added to capture user id from the payload header section
+    protected String userId;
+    protected TransactionApi transApi;
+
     /**
      * Creates a AbstractMessageHandler 
      */
@@ -96,6 +101,20 @@ public abstract class AbstractJaxbMessageHandler<T1, T2, P> extends RMT2Base imp
             logger.warn(WebServiceConstants.ERROR_MSG_SESSIONID_MISSING);
             // throw new
             // MessageHandlerException(WebServiceConstants.ERROR_MSG_SESSIONID_REQUIRED);
+        }
+
+        // UI-37: Get user id from the header section of the payload
+        try {
+            this.userId = RMT2XmlUtility.getElementValue(WebServiceConstants.USERID, reqXml);
+        } catch (Exception e) {
+            // logger.warn(WebServiceConstants.ERROR_MSG_USERID_MISSING);
+            // throw new
+            // MessageHandlerException(WebServiceConstants.ERROR_MSG_USERID_MISSING);
+        }
+
+        // UI-37: Associate user with the target API object
+        if (this.transApi != null) {
+            this.transApi.setApiUser(this.userId);
         }
 
         try {

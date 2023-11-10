@@ -158,6 +158,9 @@ public class UserAuthenticationRequestAction extends AbstractActionHandler imple
                 token = (RMT2SecurityToken) this.api.authenticate(creds.getUserId(), creds.getPassword(), creds.getAppCode(),
                         creds.getCurrentSessionId());
                 sessionBean = token.getSession();
+
+                // UI-37: Added logged in user to session bean.
+                sessionBean.setLoginId(creds.getUserId());
                 this.assignSessionBean(sessionBean);
             }
             else if (command.equalsIgnoreCase(UserAuthenticationRequestAction.COMMAND_LOGOUT)) {
