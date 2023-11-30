@@ -759,8 +759,7 @@ class SoapProductBuilderImpl extends RMT2Base implements SoapProductBuilder {
             // UI-28: Commented out code to prevent extraneous output to
             // console.
             // TODO: Uncomment to send output to console
-            // transformer.transform(new DOMSource(root), new
-            // StreamResult(System.out));
+             transformer.transform(new DOMSource(root), new StreamResult(System.out));
 
             // Use input parameter as output stream
             transformer.transform(new DOMSource(root), new StreamResult(out));
