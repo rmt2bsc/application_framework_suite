@@ -96,6 +96,8 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
 
     public static String ADV_SRCH_EXACT = "exact";
 
+    protected final static String ERR_MSG_UNKOWN = "Unknown Error";
+
     /** Tracks the page title of response JSP page */
     protected String pageTitle;
 
@@ -1396,6 +1398,26 @@ public abstract class AbstractActionHandler extends RMT2Base implements ICommonA
             throw new ActionCommandException(e);
         }
         this.sendClientData();
+    }
+
+    /**
+     * Creates an error message using content stored in <i>baseMsg</i> and
+     * <i>extMsg</i>.
+     * 
+     * @param baseMsg
+     *            the base error message to display
+     * @param extMsg
+     *            the extended detail explanation of the error message
+     * @throws ActionCommandException
+     *             the error text will be derived from <i>baseMsg</i> and
+     *             <i>extMsg</i>. "Unknown Error" is the error text when
+     *             <i>baseMsg</i> and <i>extMsg</i> are found to be empty.
+     */
+    protected void throwActionError(String baseMsg, String extMsg) throws ActionCommandException {
+        this.msg = (RMT2String2.isNotEmpty(baseMsg)
+                ? (baseMsg + (RMT2String2.isNotEmpty(extMsg) ? (": " + extMsg) : AbstractActionHandler.ERR_MSG_UNKOWN))
+                : (RMT2String2.isNotEmpty(extMsg) ? extMsg : AbstractActionHandler.ERR_MSG_UNKOWN));
+        throw new ActionCommandException(this.msg);
     }
 
     /**
