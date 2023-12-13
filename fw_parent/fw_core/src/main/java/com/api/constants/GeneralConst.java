@@ -131,4 +131,51 @@ public class GeneralConst {
 
     public static String NAMESPACES_RESOURCES = "com.api.xml.RMT2NamespaceContext";
 
+    public static final String COND_OPS_EQUALS = "Equal";
+    public static final String COND_OPS_NOT_EQUAL = "NotEqual";
+    public static final String COND_OPS_GREATER_THAN = "GreaterThan";
+    public static final String COND_OPS_GREATER_THAN_OR_EQUAL = "GreaterThanOrEqual";
+    public static final String COND_OPS_LESS_THAN = "LessThan";
+    public static final String COND_OPS_LESS_THAN_OR_EQUAL = "LessThanOrEqual";
+    public static final String COND_OPS_NOTSELECTED = "-- Select One --";
+
+    /**
+     * Translates a conditional operator's name to the actual relational
+     * operater used in predicates.
+     * 
+     * @param operator
+     *            String
+     * @return String as the relational operator
+     */
+    public static final String translateCondOps(String operator) {
+        if (operator == null) {
+            return null;
+        }
+
+        String results = null;
+        switch (operator) {
+            case GeneralConst.COND_OPS_EQUALS:
+                results = "=";
+                break;
+            case GeneralConst.COND_OPS_GREATER_THAN:
+                results = ">";
+                break;
+            case GeneralConst.COND_OPS_GREATER_THAN_OR_EQUAL:
+                results = ">=";
+                break;
+            case GeneralConst.COND_OPS_LESS_THAN:
+                results = "<";
+                break;
+            case GeneralConst.COND_OPS_LESS_THAN_OR_EQUAL:
+                results = "<=";
+                break;
+            case GeneralConst.COND_OPS_NOT_EQUAL:
+                results = "<>";
+                break;
+            default:
+                results = "";
+                break;
+        }
+        return results;
+    }
 }

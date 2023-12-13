@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 import com.SystemException;
+import com.api.constants.GeneralConst;
 import com.api.constants.RMT2TagConst;
 import com.api.jsp.taglib.RMT2AbstractInputControl;
 
@@ -148,54 +149,67 @@ public class RMT2ConditionalOperatorTag extends RMT2AbstractInputControl {
         StringBuffer html = new StringBuffer();
         // Do first one.
         html.append("\n\t<option value=\"\">");
+        html.append("-- Select One --");
 
-        // Do =
-        html.append("\n\t<option value=\"=\" ");
-        if (this.selectedValue != null && this.selectedValue.equals("=")) {
+        // Do Equals
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_EQUALS);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_EQUALS)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append("=");
+        html.append("Equals");
 
-        // Do <>
-        html.append("\n\t<option value=\"<>\" ");
-        if (this.selectedValue != null && this.selectedValue.equals("<>")) {
+        // Do Not Equal
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_NOT_EQUAL);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_NOT_EQUAL)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append("<>");
+        html.append("Not Equal");
 
-        // Do >
-        html.append("\n\t<option value=\">\" ");
-        if (this.selectedValue != null && this.selectedValue.equals(">")) {
+        // Do Greater Than>
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_GREATER_THAN);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_GREATER_THAN)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append(">");
+        html.append("Greater Than");
 
-        // Do >=
-        html.append("\n\t<option value=\">=\" ");
-        if (this.selectedValue != null && this.selectedValue.equals(">=")) {
+        // Do Greater Than or Equal
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_GREATER_THAN_OR_EQUAL);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_GREATER_THAN_OR_EQUAL)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append(">=");
+        html.append("Greater Than or Equal");
 
-        // Do <
-        html.append("\n\t<option value=\"<\" ");
-        if (this.selectedValue != null && this.selectedValue.equals("<")) {
+        // Do Less Than
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_LESS_THAN);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_LESS_THAN)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append("<");
+        html.append("Less Than");
 
-        // Do <=
-        html.append("\n\t<option value=\"<=\" ");
-        if (this.selectedValue != null && this.selectedValue.equals("<=")) {
+        // Do Less Than or Equal
+        html.append("\n\t<option value=\"");
+        html.append(GeneralConst.COND_OPS_LESS_THAN_OR_EQUAL);
+        html.append("\"");
+        if (this.selectedValue != null && this.selectedValue.equals(GeneralConst.COND_OPS_LESS_THAN_OR_EQUAL)) {
             html.append(" selected ");
         }
         html.append("> ");
-        html.append("<=");
+        html.append("Less Than or Equal");
         return html.toString();
     }
 
