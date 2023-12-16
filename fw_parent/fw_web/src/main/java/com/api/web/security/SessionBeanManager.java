@@ -129,11 +129,13 @@ public class SessionBeanManager extends RMT2Base {
             Logger.getLogger("SessionBeanManager").log(Level.ERROR, msg);
             throw new SystemException(msg);
         }
-        if (bean.getOrigAppId() == null) {
-            msg = "The user session object must have the name of the source application";
-            Logger.getLogger("SessionBeanManager").log(Level.ERROR, msg);
-            throw new SystemException(msg);
-        }
+        // UI-31: Removed to eliminate null pointer exception.
+        // if (bean.getOrigAppId() == null) {
+        // msg =
+        // "The user session object must have the name of the source application";
+        // Logger.getLogger("SessionBeanManager").log(Level.ERROR, msg);
+        // throw new SystemException(msg);
+        // }
     }
 
     /**

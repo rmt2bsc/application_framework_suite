@@ -39,7 +39,7 @@ public class ConfigConstants {
     public static final String API_DUMMY_SESSION_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /** Envirionment variable name */
-    public static String PROPNAME_ENVIRONMENT = "ENVIRONMENT";
+    public static String PROPNAME_ENVIRONMENT = "environment";
     /** Envirionment variable name abreviation */
     public static String PROPNAME_ENV = "env";
     /** Envirionment variable name */

@@ -211,9 +211,8 @@ public abstract class AbstractCommandController extends AbstractServlet {
             int sessionState = this.doSessionCheck(request);
 
             // In the event we are dealing with a non-java based client in the
-            // Development/Test environment and
-            // the browser's session management functionality behaves a bit
-            // peculiar rendering the session to be
+            // Development/Test environment and the browser's session management
+            // functionality behaves a bit peculiar rendering the session to be
             // invalid or the user's login is not evident...
             if (sessionState != AbstractCommandController.SESSION_LOGGED_IN && !clientAction.equalsIgnoreCase("login")
                     && !clientAction.equalsIgnoreCase("verifyauthentication")) {
@@ -329,10 +328,11 @@ public abstract class AbstractCommandController extends AbstractServlet {
     /**
      * Tries to obtain a temporary session for HTTP requests that point to
      * invalid session handles despite the fact that the requester is designed
-     * to be internal to the current web application context. These requests
-     * generally exist within the current web application context and are not
-     * web service calls. The nomenclature of a web service call exists in the
-     * format of "Services.RQ_". Once a session is created, it will be
+     * to be internal to the current web application context.
+     * <p>
+     * These requests generally exist within the current web application context
+     * and are not web service calls. The nomenclature of a web service call
+     * follows the SOAP/REST protocol. Once a session is created, it will be
      * associated with the login id of <i>TempUser</i>
      * <p>
      * This method targets requests that potentially are associated with an
@@ -360,8 +360,9 @@ public abstract class AbstractCommandController extends AbstractServlet {
      *            or <i>Security.Authentication.login</i>.
      * @param currentSessionStateCode
      *            The session state code before before evaluating <i>request</i>
-     * @return int 1 for user is logged into the application, -1 for user is not
-     *         logged into application, or -100 for invalid or null session.
+     * @return int 1 means that the user is logged into the application, -1 for
+     *         user is not logged into application, or -100 for invalid or null
+     *         session.
      */
     protected int doSessionCheckForExternalRequest(HttpServletRequest request, String command, int currentSessionStateCode) {
         String tempLoginId = "TempUser";
@@ -375,8 +376,10 @@ public abstract class AbstractCommandController extends AbstractServlet {
         boolean webServiceCall = command.contains("Services.RQ_");
         boolean devMode = env.equals(ConfigConstants.ENVTYPE_DEV);
 
-        // Only get session for those requests that are executed in development
-        // environment and are not web service calls.
+        // Only force the user to get a valid session for requests that
+        // are executed in development environment and are not web service
+        // calls. This effort tries to bypass forcing the user to log in again
+        // when in development mode.
         if (devMode && !webServiceCall) {
             RMT2SessionBean bean = null;
             HttpSession session = request.getSession();
