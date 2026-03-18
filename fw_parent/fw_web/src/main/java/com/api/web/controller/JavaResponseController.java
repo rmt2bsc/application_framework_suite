@@ -50,7 +50,7 @@ public class JavaResponseController extends AbstractCommandServlet {
     }
 
     /**
-     * Sends the response to the JSP client, which is capable of interpretting
+     * Sends the response to the JSP client, which is capable of interpreting
      * and managing the Java objects stored on the Request or Session contexts
      * as data for its presentation. The JSP resource, <i>nextURL</i>, is sent
      * either as a forward or as a sendRedirect.
